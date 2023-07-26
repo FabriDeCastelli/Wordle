@@ -1,4 +1,4 @@
-package Client;
+package client;
 
 /**
  * WordleClient is the client for the Wordle game.
