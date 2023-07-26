@@ -1,0 +1,127 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+      - 'dev-*'
+      - 'feat/*'
+  pull_request:
+    branches: [ "main", "dev" ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: 11
+          distribution: 'adopt'
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: build
+          path: |
+            build/libs/*.jar
+            build/classes
+            build/jacoco/test.exec
+  
+
+  style:
+    name: "Run style checks"
+    needs: [ "build" ]
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: build
+          path: build
+
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: 11
+          distribution: 'adopt'
+
+      - name: Run Checkstyle
+        run: ./gradlew checkstyleMain checkstyleTest
+      
+      - name: Run PMD
+        run: ./gradlew pmdMain pmdTest
+
+  test:
+    name: "Run Tests"
+    needs: [ "build" ]
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: build
+          path: build
+
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: 11
+          distribution: 'adopt'
+
+      - name: Run Tests
+        run: ./gradlew test
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-reports
+          path: |
+            build/reports/jacoco/test/*
+            build/reports/tests/*
+            build/test-results/test/TEST-*
+            build/classes
+            build/jacoco/test.exec
+
+  coverage-check:
+    needs: [ "test" ]
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: build
+          path: build
+
+      - name: Download Test Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: test-reports
+          path: build
+        
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: 11
+          distribution: 'adopt'
+
+      - name: Run Jacoco Coverage Check
+        run: ./gradlew jacocoTestCoverageVerification
