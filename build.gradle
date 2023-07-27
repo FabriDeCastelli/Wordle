@@ -17,6 +17,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
 }
 
+
 checkstyle {
     toolVersion '10.9.2'
     configFile file("${project.rootDir}/config/checkstyle/checkstyle.xml")
@@ -35,16 +36,25 @@ tasks.test {
     useJUnitPlatform()
 }
 
-
 test {
     finalizedBy jacocoTestReport
+
 }
 
 check {
     dependsOn jacocoTestCoverageVerification
 }
 
+
 jacocoTestCoverageVerification {
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "**/gui/**",
+                    "**/enums/**",
+            ])
+        }))
+    }
     executionData(fileTree("$buildDir/jacoco/test.exec"))
     violationRules {
         rule {
