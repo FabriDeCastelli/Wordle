@@ -30,11 +30,11 @@ public class AuthenticationPage extends JFrame implements ActionListener {
 
         setTitle("Wordle");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(500, 170);
+        setSize(600, 400);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 50));
+        final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 170));
 
         final JButton button1 = new JButton("Login");
         final JButton button2 = new JButton("Register");

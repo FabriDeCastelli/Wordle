@@ -2,14 +2,13 @@ package gui;
 
 import client.WordleClient;
 import enums.AuthType;
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
+import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
@@ -17,9 +16,16 @@ import javax.swing.JTextField;
  * Dialog to perform an authentication, that can be either login or register.
  */
 public class AuthenticationDialog extends JFrame implements ActionListener {
+    /**
+     * Required by the PMD.
+     */
     public static final long serialVersionUID = 4328743;
-    private final JTextField usernameField;
-    private final JPasswordField passwordField;
+    private final Container container = getContentPane();
+    private final JLabel usernameLabel = new JLabel("Username:");
+    private final JLabel passwordLabel = new JLabel("Password:");
+    private final JTextField usernameField = new JTextField();
+    private final JPasswordField passwordField = new JPasswordField();
+    private final JButton authButton;
 
     /**
      * Constructor for the AuthenticationDialog.
@@ -27,29 +33,45 @@ public class AuthenticationDialog extends JFrame implements ActionListener {
      * @param authType the type of authentication
      */
     public AuthenticationDialog(AuthType authType) {
-        // Set up the JFrame
+
+        authButton = new JButton(authType.name());
+
+        setLayoutManager();
+        setLocationAndSize();
+        addComponentsToContainer();
+        addActionEvent();
+
         setTitle(authType.name());
-        // setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(600, 300);
-        setLocationRelativeTo(null); // Center the window on the screen
-        setLayout(new BorderLayout());
+        pack();
+        setLocationRelativeTo(null);
+        setVisible(true);
 
-        // Create components
-        final JPanel inputPanel = new JPanel(new GridLayout(2, 2, 10, 10));
-        final JLabel usernameLabel = new JLabel("Username:");
-        final JLabel passwordLabel = new JLabel("Password:");
-        usernameField = new JTextField(15);
-        passwordField = new JPasswordField(15);
-        inputPanel.add(usernameLabel);
-        inputPanel.add(usernameField);
-        inputPanel.add(passwordLabel);
-        inputPanel.add(passwordField);
 
-        JButton authButton = new JButton(authType.name());
+    }
+
+    private void setLayoutManager() {
+        container.setLayout(null);
+        container.setPreferredSize(new Dimension(400, 265));
+    }
+
+    private void setLocationAndSize() {
+        usernameLabel.setBounds(50, 50, 100, 30);
+        passwordLabel.setBounds(50, 120, 100, 30);
+        usernameField.setBounds(150, 50, 150, 30);
+        passwordField.setBounds(150, 120, 150, 30);
+        authButton.setBounds(150, 200, 120, 30);
+    }
+
+    private void addComponentsToContainer() {
+        container.add(usernameLabel);
+        container.add(passwordLabel);
+        container.add(usernameField);
+        container.add(passwordField);
+        container.add(authButton);
+    }
+
+    private void addActionEvent() {
         authButton.addActionListener(this);
-
-        add(inputPanel, BorderLayout.CENTER);
-        add(authButton, BorderLayout.SOUTH);
     }
 
 
