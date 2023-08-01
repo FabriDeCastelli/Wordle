@@ -38,7 +38,7 @@ public class TerminationHandlerTests {
     public void testRun() {
         TerminationHandler terminationHandler =
                 new TerminationHandler(maximumDelay, executorService, serverSocket);
-        terminationHandler.run();
+        terminationHandler.start();
     }
 
     @AfterAll
