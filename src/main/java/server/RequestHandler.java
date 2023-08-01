@@ -29,7 +29,7 @@ public class RequestHandler implements Runnable, AutoCloseable {
     public RequestHandler(
             @NotNull Socket socket,
             ObjectInputStream in,
-            ObjectOutputStream out) throws IOException {
+            ObjectOutputStream out) {
         this.socket = socket;
         this.out = out;
         this.in = in;
