@@ -30,7 +30,7 @@ public class RequestHandlerTests {
      * Sets up the test suite.
      */
     @BeforeEach
-    public void setUp() throws Exception {
+    public void setUp() {
         in = mock(ObjectInputStream.class);
         out = mock(ObjectOutputStream.class);
         socket = mock(Socket.class);

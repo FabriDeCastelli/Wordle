@@ -1,9 +1,6 @@
 package client;
 
-import enums.Request;
 import java.io.IOException;
-import model.User;
-import model.UserRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +32,7 @@ public class WordleClientMainTests {
 
     @Test
     @DisplayName(" can correctly connect to the server socket")
-    public void testWordleMain() throws IOException {
+    public void testWordleMain() {
         // TODO
     }
 
