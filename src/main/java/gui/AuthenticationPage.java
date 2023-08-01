@@ -15,7 +15,9 @@ import javax.swing.JPanel;
  * The authentication can be done by either logging in or registering.
  * The server can handle both of these requests.
  */
-public class AuthenticationPage extends JFrame implements ActionListener {
+public class AuthenticationPage
+        extends JFrame
+        implements ActionListener, AuthenticationDialog.AuthDialogListener {
 
     /**
      * Required by the PMD.
@@ -62,8 +64,12 @@ public class AuthenticationPage extends JFrame implements ActionListener {
 
         final JButton sourceButton = (JButton) e.getSource();
         final String buttonText = sourceButton.getText();
-        new AuthenticationDialog(AuthType.valueOf(buttonText)).setVisible(true);
+        new AuthenticationDialog(AuthType.valueOf(buttonText), this).setVisible(true);
+    }
 
+    @Override
+    public void onAuthDialogClose() {
+        dispose();
     }
 
 }

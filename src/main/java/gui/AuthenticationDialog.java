@@ -1,6 +1,6 @@
 package gui;
 
-import client.WordleClient;
+import client.WordleClientMain;
 import enums.AuthType;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -9,17 +9,29 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import model.ServerResponse;
 
 /**
  * Dialog to perform an authentication, that can be either login or register.
  */
 public class AuthenticationDialog extends JFrame implements ActionListener {
+
     /**
      * Required by the PMD.
      */
     public static final long serialVersionUID = 4328743;
+
+    /**
+     * Interface for the AuthenticationDialogListener.
+     */
+    public interface AuthDialogListener {
+        void onAuthDialogClose();
+    }
+
+    private final AuthDialogListener resultListener;
     private final Container container = getContentPane();
     private final JLabel usernameLabel = new JLabel("Username:");
     private final JLabel passwordLabel = new JLabel("Password:");
@@ -32,7 +44,9 @@ public class AuthenticationDialog extends JFrame implements ActionListener {
      *
      * @param authType the type of authentication
      */
-    public AuthenticationDialog(AuthType authType) {
+    public AuthenticationDialog(AuthType authType, AuthDialogListener listener) {
+
+        this.resultListener = listener;
 
         authButton = new JButton(authType.name());
 
@@ -80,11 +94,24 @@ public class AuthenticationDialog extends JFrame implements ActionListener {
 
         final JButton sourceButton = (JButton) e.getSource();
         final String buttonText = sourceButton.getText();
+        final ServerResponse response;
 
         if (AuthType.Login.name().equals(buttonText)) {
-            WordleClient.login(usernameField.getText(), passwordField.getName());
-        } else if (AuthType.Register.name().equals(buttonText)) {
-            WordleClient.register(usernameField.getText(), passwordField.getName());
+            response = WordleClientMain.login(usernameField.getText(),
+                            new String(passwordField.getPassword()));
+        } else {
+            response = WordleClientMain.register(usernameField.getText(),
+                            new String(passwordField.getPassword()));
+        }
+
+        if (-1 == response.status()) {
+            JOptionPane.showMessageDialog(this, response.message());
+            usernameField.setText("");
+            passwordField.setText("");
+        } else {
+            dispose();
+            resultListener.onAuthDialogClose();
+            new HomePage(usernameField.getText()).setVisible(true);
         }
     }
 
