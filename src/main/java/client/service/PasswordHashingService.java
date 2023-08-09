@@ -1,4 +1,4 @@
-package service;
+package client.service;
 
 import java.util.Base64;
 

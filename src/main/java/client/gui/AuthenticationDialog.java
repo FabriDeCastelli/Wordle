@@ -1,7 +1,6 @@
-package gui;
+package client.gui;
 
 import client.WordleClientMain;
-import enums.AuthType;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -13,6 +12,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import model.ServerResponse;
+import model.enums.AuthType;
 
 /**
  * Dialog to perform an authentication, that can be either login or register.

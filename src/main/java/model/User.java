@@ -46,4 +46,18 @@ public final class User implements Serializable {
         return passwordHash;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof User user) {
+            return this.username.equals(user.username)
+                    && this.passwordHash.equals(user.passwordHash);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.username.hashCode() + this.passwordHash.hashCode();
+    }
+
 }

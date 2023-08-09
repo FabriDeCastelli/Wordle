@@ -1,4 +1,4 @@
-package server;
+package server.controller;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -9,7 +9,7 @@ import model.ServerResponse;
 import model.User;
 import model.UserRequest;
 import org.jetbrains.annotations.NotNull;
-import service.AuthenticationService;
+import server.service.AuthenticationService;
 
 /**
  * Handles a request from a client.
@@ -81,7 +81,7 @@ public class RequestHandler implements Runnable, AutoCloseable {
         } else if (isRegistered.get().equals(user)) {
             response = new ServerResponse(0, "Login successful.");
         } else {
-            response = new ServerResponse(-1, "Wrong getUsername or password.");
+            response = new ServerResponse(-1, "Wrong username or password.");
         }
 
         sendResponse(response);

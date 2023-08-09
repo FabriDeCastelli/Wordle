@@ -1,4 +1,4 @@
-package enums;
+package model.enums;
 
 /**
  * AuthType is an enum that represents the type of authentication.

@@ -1,7 +1,7 @@
 package model;
 
-import enums.Request;
 import java.io.Serializable;
+import model.enums.Request;
 
 /**
  * Represents a user request.

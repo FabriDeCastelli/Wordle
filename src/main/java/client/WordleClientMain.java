@@ -1,7 +1,7 @@
 package client;
 
-import enums.Request;
-import gui.AuthenticationPage;
+import client.gui.AuthenticationPage;
+import client.service.PasswordHashingService;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +12,7 @@ import java.util.Properties;
 import model.ServerResponse;
 import model.User;
 import model.UserRequest;
-import service.PasswordHashingService;
+import model.enums.Request;
 
 /**
  * WordleClientMain is the client for the Wordle game.

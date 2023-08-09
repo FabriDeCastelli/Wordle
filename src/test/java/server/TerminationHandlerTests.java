@@ -8,6 +8,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import server.controller.TerminationHandler;
 
 /**
  * TerminationHandlerTests is the test suite for TerminationHandler.

@@ -1,4 +1,4 @@
-package service;
+package server.service;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
