@@ -1,6 +1,11 @@
 package client.service;
 
+
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Service to hash passwords.
@@ -33,11 +38,17 @@ public class PasswordHashingService {
      * @param password the not hashed password
      * @return         the hashed password
      */
-    public String hashPassword(String password) {
-        if (password == null) {
-            throw new IllegalArgumentException("Password cannot be null");
+    public String hashPassword(@NotNull String password) {
+        try {
+            final MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+            byte[] passwordBytes = password.getBytes(StandardCharsets.UTF_8);
+            byte[] hashBytes = messageDigest.digest(passwordBytes);
+            return Base64.getEncoder().encodeToString(hashBytes);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("SHA-256 algorithm not available.", e);
+        } catch (Exception e) {
+            throw new RuntimeException("Error hashing password.", e);
         }
-        return Base64.getEncoder().encodeToString(password.getBytes());
     }
 
     /**
@@ -48,8 +59,8 @@ public class PasswordHashingService {
      * @return                  true if the password matches the hashed password
      */
     public boolean passwordMatches(String password, String hashedPassword) {
-        final String decodedHashedPassword = new String(Base64.getDecoder().decode(hashedPassword));
-        return decodedHashedPassword.equals(password);
+        final String hashedInputPassword = hashPassword(password);
+        return hashedInputPassword.equals(hashedPassword);
     }
 
 

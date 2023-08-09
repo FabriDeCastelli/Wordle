@@ -36,13 +36,6 @@ public class PasswordHashingServiceTests {
     }
 
     @Test
-    @DisplayName(" should throw a IllegalArgumentException if the password is null")
-    public void testHashPasswordNull() {
-        assertThrows(IllegalArgumentException.class,
-                () -> passwordHashingService.hashPassword(null));
-    }
-
-    @Test
     @DisplayName(" can correctly check if a password matches a hashed password")
     public void testPasswordMatches() {
         final String hashedPassword = passwordHashingService.hashPassword("password");
