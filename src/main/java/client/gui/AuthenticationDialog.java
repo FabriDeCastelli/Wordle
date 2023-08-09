@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serial;
+import java.util.Optional;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -40,6 +41,7 @@ public class AuthenticationDialog extends JFrame implements ActionListener {
     private final JTextField usernameField = new JTextField();
     private final JPasswordField passwordField = new JPasswordField();
     private final JButton authButton;
+    private final AuthType authType;
 
     /**
      * Constructor for the AuthenticationDialog.
@@ -48,6 +50,7 @@ public class AuthenticationDialog extends JFrame implements ActionListener {
      */
     public AuthenticationDialog(AuthType authType, AuthDialogListener listener) {
 
+        this.authType = authType;
         this.resultListener = listener;
 
         authButton = new JButton(authType.name());
@@ -94,20 +97,19 @@ public class AuthenticationDialog extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        final JButton sourceButton = (JButton) e.getSource();
-        final String buttonText = sourceButton.getText();
-        final ServerResponse response;
+        final Optional<ServerResponse> response;
 
-        if (AuthType.Login.name().equals(buttonText)) {
+        if (this.authType == AuthType.Login) {
             response = WordleClientMain.login(usernameField.getText(),
                             new String(passwordField.getPassword()));
         } else {
             response = WordleClientMain.register(usernameField.getText(),
                             new String(passwordField.getPassword()));
         }
-
-        if (-1 == response.status()) {
-            JOptionPane.showMessageDialog(this, response.message());
+        if (response.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Server could not respond.");
+        } else if (-1 == response.get().status()) {
+            JOptionPane.showMessageDialog(this, response.get().message());
             usernameField.setText("");
             passwordField.setText("");
         } else {

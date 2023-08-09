@@ -26,13 +26,10 @@ public class RequestHandler implements Runnable, AutoCloseable {
      *
      * @param socket the socket to accept
      */
-    public RequestHandler(
-            @NotNull Socket socket,
-            ObjectInputStream in,
-            ObjectOutputStream out) {
+    public RequestHandler(@NotNull Socket socket) throws IOException {
         this.socket = socket;
-        this.out = out;
-        this.in = in;
+        this.out = new ObjectOutputStream(socket.getOutputStream());
+        this.in = new ObjectInputStream(socket.getInputStream());
     }
 
 
@@ -40,7 +37,9 @@ public class RequestHandler implements Runnable, AutoCloseable {
     @Override
     public void run() {
         while (true) {
-            this.handleUserRequest();
+            if (!this.handleUserRequest()) {
+                break;
+            }
         }
 
     }
@@ -48,7 +47,7 @@ public class RequestHandler implements Runnable, AutoCloseable {
     /**
      * Handles a user request.
      */
-    public void handleUserRequest() {
+    public boolean handleUserRequest() {
         UserRequest userRequest;
         try {
             userRequest = (UserRequest) in.readObject();
@@ -61,7 +60,9 @@ public class RequestHandler implements Runnable, AutoCloseable {
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
 
     /**
@@ -70,6 +71,7 @@ public class RequestHandler implements Runnable, AutoCloseable {
      * @param user the user that wants to log in
      */
     public void login(@NotNull User user) {
+
         final AuthenticationService authenticationService =
                 new AuthenticationService();
         final Optional<User> isRegistered =
@@ -84,7 +86,9 @@ public class RequestHandler implements Runnable, AutoCloseable {
             response = new ServerResponse(-1, "Wrong username or password.");
         }
 
-        sendResponse(response);
+        if (!sendResponse(response)) {
+            throw new IllegalStateException("Cannot send response to client.");
+        }
 
     }
 
@@ -103,12 +107,15 @@ public class RequestHandler implements Runnable, AutoCloseable {
             serverResponse = new ServerResponse(-1, "Password cannot be empty.");
         } else if (new AuthenticationService().getUserByUsername(user.getUsername()).isPresent()) {
             serverResponse = new ServerResponse(-1, "User already registered.");
-        } else {
+        } else if (new AuthenticationService().add(user)) {
             serverResponse = new ServerResponse(0, "Registration successful.");
-            new AuthenticationService().add(user);
+        } else {
+            serverResponse = new ServerResponse(-1, "Registration failed.");
         }
 
-        sendResponse(serverResponse);
+        if (sendResponse(serverResponse)) {
+            throw new IllegalStateException("Cannot send response to client.");
+        }
     }
 
     /**
@@ -123,7 +130,10 @@ public class RequestHandler implements Runnable, AutoCloseable {
         if (authenticationService.getUserByUsername(user.getUsername()).isEmpty()) {
             throw new IllegalStateException("Cannot logout a not registered user");
         }
-        sendResponse(new ServerResponse(0, "Logout successful."));
+
+        if (!sendResponse(new ServerResponse(0, "Logout successful."))) {
+            throw new IllegalStateException("Cannot send response to client.");
+        }
     }
 
     /**
@@ -131,13 +141,15 @@ public class RequestHandler implements Runnable, AutoCloseable {
      *
      * @param serverResponse the server response
      */
-    private void sendResponse(@NotNull ServerResponse serverResponse) {
+    private boolean sendResponse(@NotNull ServerResponse serverResponse) {
         try {
             out.writeObject(serverResponse);
             out.flush();
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
 
     /**

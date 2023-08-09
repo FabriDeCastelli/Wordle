@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serial;
+import java.util.Optional;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -45,8 +46,10 @@ public class HomePage extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        final ServerResponse response = WordleClientMain.logout(username);
-        if (response.status() == 0) {
+        final Optional<ServerResponse> response = WordleClientMain.logout(username);
+        if (response.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Server could not respond.");
+        } else if (response.get().status() == 0) {
             JOptionPane.showMessageDialog(this, "Successfully logged out.");
             this.dispose();
             new AuthenticationPage().setVisible(true);

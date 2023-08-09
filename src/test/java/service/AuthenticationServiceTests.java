@@ -33,7 +33,7 @@ public class AuthenticationServiceTests {
         authenticationService.add(user);
         Optional<User> userOptional = authenticationService.getUserByUsername("testUser");
         assertTrue(userOptional.isPresent());
-        authenticationService.delete(user);
+        assertTrue(authenticationService.delete(user));
         userOptional = authenticationService.getUserByUsername("testUser");
         assertTrue(userOptional.isEmpty());
     }
@@ -82,13 +82,6 @@ public class AuthenticationServiceTests {
     @Nested
     @DisplayName(" when deleting a user ")
     class WhenDeletingUser {
-        @Test
-        @DisplayName(" should throw an IllegalArgumentException if the user is null")
-        public void testDeleteNullUser() {
-            assertThrows(
-                    IllegalArgumentException.class,
-                    () -> authenticationService.delete(null));
-        }
 
         @Test
         @DisplayName(" should throw an IllegalArgumentException if the user is not registered")

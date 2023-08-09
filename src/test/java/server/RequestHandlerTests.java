@@ -35,7 +35,6 @@ public class RequestHandlerTests {
         in = mock(ObjectInputStream.class);
         out = mock(ObjectOutputStream.class);
         socket = mock(Socket.class);
-        requestHandler = new RequestHandler(socket, in, out);
     }
 
 

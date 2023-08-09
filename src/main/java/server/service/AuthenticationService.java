@@ -61,7 +61,7 @@ public class AuthenticationService {
      *
      * @param user the user to be added
      */
-    public synchronized void add(User user) {
+    public synchronized boolean add(User user) {
 
         if (user == null) {
             throw new IllegalArgumentException("The user cannot be null.");
@@ -73,8 +73,9 @@ public class AuthenticationService {
         try (final FileWriter writer = new FileWriter(filePath)) {
             gson.toJson(registeredUsers, writer);
         } catch (IOException e) {
-            e.printStackTrace();
+            return false;
         }
+        return true;
 
     }
 
@@ -83,10 +84,8 @@ public class AuthenticationService {
      *
      * @param user the user to be deleted
      */
-    public synchronized void delete(User user) {
-        if (user == null) {
-            throw new IllegalArgumentException("The user cannot be null.");
-        } else if (getUserByUsername(user.getUsername()).isEmpty()) {
+    public synchronized boolean delete(@NotNull User user) {
+        if (getUserByUsername(user.getUsername()).isEmpty()) {
             throw new IllegalArgumentException("Cannot delete a user that is not registered.");
         }
 
@@ -94,8 +93,9 @@ public class AuthenticationService {
         try (final FileWriter writer = new FileWriter(filePath)) {
             gson.toJson(registeredUsers, writer);
         } catch (IOException e) {
-            e.printStackTrace();
+            return false;
         }
+        return true;
 
     }
 

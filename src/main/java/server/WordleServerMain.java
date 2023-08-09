@@ -3,10 +3,7 @@ package server;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -44,12 +41,7 @@ public class WordleServerMain {
             );
 
             while (true) {
-                final Socket socket = server.accept();
-                final ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-                final ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-                final RequestHandler requestHandler = new RequestHandler(socket, in, out);
-                executorService.execute(requestHandler);
-
+                executorService.execute(new RequestHandler(server.accept()));
             }
 
         } catch (IOException e) {
