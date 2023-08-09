@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.Serial;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -22,7 +23,8 @@ public class AuthenticationPage
     /**
      * Required by the PMD.
      */
-    public static final long serialVersionUID = 4328743;
+    @Serial
+    private static final long serialVersionUID = 4328743;
 
 
     /**

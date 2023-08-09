@@ -99,7 +99,7 @@ public class RequestHandler implements Runnable, AutoCloseable {
 
         final ServerResponse serverResponse;
 
-        if (user.getPasswordHash().equals("")) {
+        if (user.getPasswordHash().isEmpty()) {
             serverResponse = new ServerResponse(-1, "Password cannot be empty.");
         } else if (new AuthenticationService().getUserByUsername(user.getUsername()).isPresent()) {
             serverResponse = new ServerResponse(-1, "User already registered.");
