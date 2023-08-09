@@ -113,7 +113,7 @@ public class RequestHandler implements Runnable, AutoCloseable {
             serverResponse = new ServerResponse(-1, "Registration failed.");
         }
 
-        if (sendResponse(serverResponse)) {
+        if (!sendResponse(serverResponse)) {
             throw new IllegalStateException("Cannot send response to client.");
         }
     }

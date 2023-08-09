@@ -3,6 +3,7 @@ package service;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import client.service.PasswordHashingService;
 import java.util.Optional;
 import model.User;
 import org.junit.jupiter.api.BeforeAll;
@@ -75,7 +76,7 @@ public class AuthenticationServiceTests {
             assertThrows(
                     IllegalArgumentException.class,
                     () -> authenticationService.add(
-                            new User("fabry", "fabry")));
+                            new User("f", PasswordHashingService.getInstance().hashPassword("f"))));
         }
     }
 
