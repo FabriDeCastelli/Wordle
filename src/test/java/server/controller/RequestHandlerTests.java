@@ -1,8 +1,7 @@
-package server;
+package server.controller;
 
 import static org.mockito.Mockito.mock;
 
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -11,7 +10,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import server.controller.RequestHandler;
 
 /**
  * RequestHandlerTests is the test suite for RequestHandler.
@@ -47,14 +45,10 @@ public class RequestHandlerTests {
 
     /**
      * Tears down the test suite.
-     *
-     * @throws IOException if an I/O error occurs when closing resources.
      */
     @AfterEach
-    public void tearDown() throws IOException {
-        in.close();
-        out.close();
-        socket.close();
+    public void tearDown() {
+        // TODO
     }
 
 }
