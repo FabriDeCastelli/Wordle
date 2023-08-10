@@ -4,12 +4,16 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Optional;
-import model.ServerResponse;
-import model.User;
+import java.util.HashMap;
+import java.util.Map;
 import model.UserRequest;
+import model.enums.Request;
 import org.jetbrains.annotations.NotNull;
+import server.model.Command;
 import server.service.AuthenticationService;
+import server.service.LoginCommand;
+import server.service.LogoutCommand;
+import server.service.RegisterCommand;
 
 /**
  * Handles a request from a client.
@@ -19,6 +23,7 @@ public class RequestHandler implements Runnable, AutoCloseable {
     private final Socket socket;
     private final ObjectInputStream in;
     private final ObjectOutputStream out;
+    private final Map<Request, Command> commandMap = new HashMap<>();
 
 
     /**
@@ -30,126 +35,31 @@ public class RequestHandler implements Runnable, AutoCloseable {
         this.socket = socket;
         this.out = new ObjectOutputStream(socket.getOutputStream());
         this.in = new ObjectInputStream(socket.getInputStream());
+        final AuthenticationService authenticationService = new AuthenticationService();
+        this.commandMap.put(Request.LOGIN, new LoginCommand(authenticationService, out));
+        this.commandMap.put(Request.LOGOUT, new LogoutCommand(authenticationService, out));
+        this.commandMap.put(Request.REGISTER, new RegisterCommand(authenticationService, out));
     }
-
-
 
     @Override
     public void run() {
+
         while (true) {
-            if (!this.handleUserRequest()) {
+            UserRequest userRequest;
+            try {
+                userRequest = (UserRequest) in.readObject();
+                final Command command = commandMap.get(userRequest.request());
+                if (command == null) {
+                    throw new IllegalStateException("Command not found.");
+                }
+                if (!command.handle(userRequest)) {
+                    break;
+                }
+            } catch (IOException | ClassNotFoundException e) {
                 break;
             }
         }
 
-    }
-
-    /**
-     * Handles a user request.
-     */
-    public boolean handleUserRequest() {
-        UserRequest userRequest;
-        try {
-            userRequest = (UserRequest) in.readObject();
-            switch (userRequest.request()) {
-                case LOGIN -> this.login(userRequest.user());
-                case REGISTER -> this.register(userRequest.user());
-                case LOGOUT -> this.logout(userRequest.user());
-                case ENDSESSION -> this.close();
-                default -> throw new IllegalStateException("RequestHandler: Unexpected request.");
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Handles a login request.
-     *
-     * @param user the user that wants to log in
-     */
-    public void login(@NotNull User user) {
-
-        final AuthenticationService authenticationService =
-                new AuthenticationService();
-        final Optional<User> isRegistered =
-                authenticationService.getUserByUsername(user.getUsername());
-        final ServerResponse response;
-
-        if (isRegistered.isEmpty()) {
-            response = new ServerResponse(-1, "User not registered.");
-        } else if (isRegistered.get().equals(user)) {
-            response = new ServerResponse(0, "Login successful.");
-        } else {
-            response = new ServerResponse(-1, "Wrong username or password.");
-        }
-
-        if (!sendResponse(response)) {
-            throw new IllegalStateException("Cannot send response to client.");
-        }
-
-    }
-
-    /**
-     * Handles a register request.
-     *
-     * @param user the user to register
-     */
-    public void register(@NotNull User user) {
-
-        // TODO: understand why PMD reports DU anomaly if I initialize the authentication service
-
-        final ServerResponse serverResponse;
-
-        if (user.getPasswordHash().isEmpty()) {
-            serverResponse = new ServerResponse(-1, "Password cannot be empty.");
-        } else if (new AuthenticationService().getUserByUsername(user.getUsername()).isPresent()) {
-            serverResponse = new ServerResponse(-1, "User already registered.");
-        } else if (new AuthenticationService().add(user)) {
-            serverResponse = new ServerResponse(0, "Registration successful.");
-        } else {
-            serverResponse = new ServerResponse(-1, "Registration failed.");
-        }
-
-        if (!sendResponse(serverResponse)) {
-            throw new IllegalStateException("Cannot send response to client.");
-        }
-    }
-
-    /**
-     * Handles a logout request.
-     *
-     * @param user the user to logout
-     */
-    public void logout(@NotNull User user) {
-
-        final AuthenticationService authenticationService =
-                new AuthenticationService();
-        if (authenticationService.getUserByUsername(user.getUsername()).isEmpty()) {
-            throw new IllegalStateException("Cannot logout a not registered user");
-        }
-
-        if (!sendResponse(new ServerResponse(0, "Logout successful."))) {
-            throw new IllegalStateException("Cannot send response to client.");
-        }
-    }
-
-    /**
-     * Sends a response to the client.
-     *
-     * @param serverResponse the server response
-     */
-    private boolean sendResponse(@NotNull ServerResponse serverResponse) {
-        try {
-            out.writeObject(serverResponse);
-            out.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
     }
 
     /**
