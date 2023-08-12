@@ -3,6 +3,7 @@ package server.service;
 import model.ServerResponse;
 import model.User;
 import model.UserRequest;
+import model.enums.Request;
 import org.jetbrains.annotations.NotNull;
 import server.model.Command;
 
@@ -29,6 +30,12 @@ public class RegisterCommand implements Command {
      * @return the server response
      */
     public ServerResponse handle(@NotNull UserRequest userRequest) {
+
+        if (userRequest.request() != Request.REGISTER) {
+            throw new IllegalArgumentException("Cannot handle a non-register request");
+        } else if (userRequest.user() == null) {
+            throw new IllegalArgumentException("Cannot register a null user");
+        }
 
         final User user = userRequest.user();
 

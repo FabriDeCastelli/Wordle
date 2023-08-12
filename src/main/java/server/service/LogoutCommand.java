@@ -1,9 +1,9 @@
 package server.service;
 
-import java.io.ObjectOutputStream;
 import model.ServerResponse;
 import model.User;
 import model.UserRequest;
+import model.enums.Request;
 import org.jetbrains.annotations.NotNull;
 import server.model.Command;
 
@@ -30,6 +30,12 @@ public class LogoutCommand implements Command {
      * @return the server response
      */
     public ServerResponse handle(@NotNull UserRequest userRequest) {
+
+        if (userRequest.request() != Request.LOGOUT) {
+            throw new IllegalArgumentException("Cannot handle a non-logout request");
+        } else if (userRequest.user() == null) {
+            throw new IllegalArgumentException("Cannot logout a null user");
+        }
 
         final User user = userRequest.user();
         if (authenticationService.getUserByUsername(user.getUsername()).isEmpty()) {
