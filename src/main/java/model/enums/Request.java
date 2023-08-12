@@ -8,5 +8,5 @@ public enum Request {
     LOGIN,
     REGISTER,
     LOGOUT,
-    ENDSESSION,
+    PLAY,
 }
