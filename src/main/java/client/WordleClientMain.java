@@ -11,6 +11,7 @@ import java.net.Socket;
 import java.util.Optional;
 import java.util.Properties;
 import model.ServerResponse;
+import model.StreamHandler;
 import model.User;
 import model.UserRequest;
 import model.enums.Request;
@@ -45,44 +46,13 @@ public class WordleClientMain {
             out.flush();
             in = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error connecting to server.");
             return;
         }
-
         new AuthenticationPage().setVisible(true);
 
-
     }
 
-    /**
-     * Sends a request to the server.
-     *
-     * @param userRequest the user request
-     */
-    public static boolean sendRequest(UserRequest userRequest) {
-        try {
-            out.writeObject(userRequest);
-            out.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Gets a response from the server.
-     *
-     * @return the response
-     */
-    public static Optional<ServerResponse> getResponse() {
-        try {
-            return Optional.of((ServerResponse) in.readObject());
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-            return Optional.empty();
-        }
-    }
 
     /**
      * Sends a login request to the server.
@@ -95,12 +65,12 @@ public class WordleClientMain {
         final String hashedPassword = passwordHashingService.hashPassword(password);
         final User user = new User(username, hashedPassword);
         final UserRequest userRequest = new UserRequest(Request.LOGIN, user);
-        if (!sendRequest(userRequest)) {
-            return Optional.of(
-                    new ServerResponse(-1, "Error sending request to server.")
-            );
+        if (StreamHandler.sendData(out, userRequest)) {
+            return StreamHandler.getData(in, ServerResponse.class);
         }
-        return getResponse();
+        return Optional.of(
+                new ServerResponse(-1, "Error sending request to server.")
+        );
     }
 
     /**
@@ -114,12 +84,12 @@ public class WordleClientMain {
         final String hashedPassword = passwordHashingService.hashPassword(password);
         final User user = new User(username, hashedPassword);
         final UserRequest userRequest = new UserRequest(Request.REGISTER, user);
-        if (!sendRequest(userRequest)) {
-            return Optional.of(
-                    new ServerResponse(-1, "Error sending request to server.")
-            );
+        if (StreamHandler.sendData(out, userRequest)) {
+            return StreamHandler.getData(in, ServerResponse.class);
         }
-        return getResponse();
+        return Optional.of(
+                new ServerResponse(-1, "Error sending request to server.")
+        );
     }
 
     /**
@@ -130,12 +100,12 @@ public class WordleClientMain {
     public static Optional<ServerResponse> logout(String username) {
         final User user = new User(username, "");
         final UserRequest userRequest = new UserRequest(Request.LOGOUT, user);
-        if (!sendRequest(userRequest)) {
-            return Optional.of(
-                    new ServerResponse(-1, "Error sending request to server.")
-            );
+        if (StreamHandler.sendData(out, userRequest)) {
+            return StreamHandler.getData(in, ServerResponse.class);
         }
-        return getResponse();
+        return Optional.of(
+                new ServerResponse(-1, "Error sending request to server.")
+        );
     }
 
 }
