@@ -46,8 +46,6 @@ public class PasswordHashingService {
             return Base64.getEncoder().encodeToString(hashBytes);
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("SHA-256 algorithm not available.", e);
-        } catch (Exception e) {
-            throw new RuntimeException("Error hashing password.", e);
         }
     }
 
