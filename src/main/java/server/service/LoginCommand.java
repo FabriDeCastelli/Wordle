@@ -5,6 +5,7 @@ import java.util.Optional;
 import model.ServerResponse;
 import model.User;
 import model.UserRequest;
+import org.jetbrains.annotations.NotNull;
 import server.model.Command;
 
 /**
@@ -32,7 +33,7 @@ public class LoginCommand implements Command {
      * @param userRequest the user request
      * @return true if the user request was handled successfully
      */
-    public boolean handle(UserRequest userRequest) {
+    public boolean handle(@NotNull UserRequest userRequest) {
 
         final User user = userRequest.user();
         final Optional<User> isRegistered =
@@ -48,5 +49,6 @@ public class LoginCommand implements Command {
         }
         return sendResponse(out, response);
     }
+
 }
 

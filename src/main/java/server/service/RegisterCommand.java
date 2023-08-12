@@ -4,6 +4,7 @@ import java.io.ObjectOutputStream;
 import model.ServerResponse;
 import model.User;
 import model.UserRequest;
+import org.jetbrains.annotations.NotNull;
 import server.model.Command;
 
 /**
@@ -31,7 +32,7 @@ public class RegisterCommand implements Command {
      * @param userRequest the user request
      * @return true if the user request was handled successfully
      */
-    public boolean handle(UserRequest userRequest) {
+    public boolean handle(@NotNull UserRequest userRequest) {
 
         final User user = userRequest.user();
         final ServerResponse serverResponse;

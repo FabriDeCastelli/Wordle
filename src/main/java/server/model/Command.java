@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import model.ServerResponse;
 import model.UserRequest;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a command to be handled by the server.
@@ -16,7 +17,7 @@ public interface Command {
      * @param userRequest the user request
      * @return true if the user request was handled successfully
      */
-    boolean handle(UserRequest userRequest);
+    boolean handle(@NotNull UserRequest userRequest);
 
     /**
      * Writes a ServerResponse object on an output stream.
