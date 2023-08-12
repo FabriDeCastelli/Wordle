@@ -13,26 +13,29 @@ import server.model.Command;
 public class LogoutCommand implements Command {
 
     private final AuthenticationService authenticationService;
-    private final ObjectOutputStream out;
 
-    public LogoutCommand(AuthenticationService authenticationService, ObjectOutputStream out) {
+    /**
+     * Constructor for LogoutCommand.
+     *
+     * @param authenticationService the authentication service
+     */
+    public LogoutCommand(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
-        this.out = out;
     }
 
     /**
      * Handles a user request.
      *
      * @param userRequest the user request
-     * @return true if the user request was handled successfully
+     * @return the server response
      */
-    public boolean handle(@NotNull UserRequest userRequest) {
+    public ServerResponse handle(@NotNull UserRequest userRequest) {
 
         final User user = userRequest.user();
         if (authenticationService.getUserByUsername(user.getUsername()).isEmpty()) {
             throw new IllegalStateException("Cannot logout a not registered user");
         }
-        return sendResponse(out, new ServerResponse(0, "Logout successful."));
+        return new ServerResponse(0, "Logout successful.");
     }
 
 }
