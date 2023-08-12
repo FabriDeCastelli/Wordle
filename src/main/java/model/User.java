@@ -48,6 +48,9 @@ public final class User implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
         if (obj instanceof User user) {
             return this.username.equals(user.username)
                     && this.passwordHash.equals(user.passwordHash);

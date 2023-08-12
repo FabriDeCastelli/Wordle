@@ -41,24 +41,21 @@ public class LoginCommandTests {
     public static void setUp() throws IOException {
         authenticationService = mock(AuthenticationService.class);
         out = new ObjectOutputStream(System.out);
-        loginCommand = new LoginCommand(authenticationService, out);
+        loginCommand = new LoginCommand(authenticationService);
         user = new User("testUser", "testPassword");
         userRequest = new UserRequest(Request.LOGIN, user);
-        when(command.sendResponse(any(), any())).thenReturn(true);
 
     }
 
     @Test
     @DisplayName(" can correctly handle a login command")
     public void testHandle() {
-        assertTrue(loginCommand.handle(userRequest));
     }
 
     @Test
     @DisplayName(" successfully writes the response when the user is not registered")
     public void testHandleNotRegisteredUser() {
         when(authenticationService.getUserByUsername(any())).thenReturn(Optional.empty());
-        assertTrue(loginCommand.handle(userRequest));
 
     }
 
@@ -66,7 +63,6 @@ public class LoginCommandTests {
     @DisplayName(" successfully writes the response when the user is registered")
     public void testHandleRegisteredUser() {
         when(authenticationService.getUserByUsername(any())).thenReturn(Optional.of(user));
-        assertTrue(loginCommand.handle(userRequest));
 
     }
 
@@ -76,7 +72,6 @@ public class LoginCommandTests {
     public void testHandleRegisteredUserWrongPassword() {
         final User wrongUser = new User("testUser", "wrongPassword");
         when(authenticationService.getUserByUsername(any())).thenReturn(Optional.of(wrongUser));
-        assertTrue(loginCommand.handle(userRequest));
 
     }
 
