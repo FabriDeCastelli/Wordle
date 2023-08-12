@@ -17,14 +17,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 /**
- * LoginCommand tests.
+ * LogoutCommand Tests.
  */
-@DisplayName("The LoginCommand tests ")
-public class LoginCommandTests {
+@DisplayName("The LogoutCommand Tests ")
+public class LogoutCommandTests {
 
     @Mock
     private final AuthenticationService authenticationService = mock(AuthenticationService.class);
-    private LoginCommand loginCommand;
+    private LogoutCommand logoutCommand;
     private User user;
 
     /**
@@ -32,65 +32,47 @@ public class LoginCommandTests {
      */
     @BeforeEach
     void setUp() {
-        loginCommand = new LoginCommand(authenticationService);
+        logoutCommand = new LogoutCommand(authenticationService);
         user = new User("username", "password");
     }
 
 
     @Test
-    @DisplayName(" cannot handle a request that is not login")
+    @DisplayName(" cannot handle a request that is not logout")
     void testHandleInvalidRequest() {
         assertThrows(IllegalArgumentException.class,
-            () -> loginCommand.handle(new UserRequest(Request.LOGOUT, user))
+            () -> logoutCommand.handle(new UserRequest(Request.LOGIN, user))
         );
     }
 
     @Test
-    @DisplayName(" cannot login a null user")
+    @DisplayName(" cannot logout a null user")
     void testHandleNullUser() {
         assertThrows(IllegalArgumentException.class,
-            () -> loginCommand.handle(new UserRequest(Request.LOGIN, null))
+            () -> logoutCommand.handle(new UserRequest(Request.LOGOUT, null))
         );
     }
 
     @Test
-    @DisplayName(" cannot login a not registered user")
+    @DisplayName(" cannot logout a not registered user")
     void testHandleNotRegisteredUser() {
         when(authenticationService.getUserByUsername(any()))
                 .thenReturn(Optional.empty());
-        assertEquals(
-            new ServerResponse(-1, "User not registered."),
-            loginCommand.handle(new UserRequest(Request.LOGIN, user))
-        );
-    }
-
-
-    @Test
-    @DisplayName(" cannot login a user with wrong password")
-    void testHandleWrongPassword() {
-        when(authenticationService.getUserByUsername(any()))
-                .thenReturn(Optional.of(new User("username", "wrong password")));
-        assertEquals(
-            new ServerResponse(-1, "Wrong username or password."),
-            loginCommand.handle(new UserRequest(Request.LOGIN, user))
+        assertThrows(IllegalStateException.class,
+            () -> logoutCommand.handle(new UserRequest(Request.LOGOUT, user))
         );
     }
 
     @Test
-    @DisplayName(" can handle a correct login request")
+    @DisplayName(" can handle a correct logout request")
     void testHandle() {
         when(authenticationService.getUserByUsername(any()))
                 .thenReturn(Optional.of(user));
         assertEquals(
-            new ServerResponse(0, "Login successful."),
-            loginCommand.handle(new UserRequest(Request.LOGIN, user))
+                logoutCommand.handle(new UserRequest(Request.LOGOUT, user)),
+                new ServerResponse(0, "Logout successful.")
         );
     }
-
-
-
-
-
 
 
 }
