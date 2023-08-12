@@ -6,6 +6,9 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import model.ServerResponse;
+import model.StreamHandler;
 import model.UserRequest;
 import model.enums.Request;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +26,15 @@ public class RequestHandler implements Runnable, AutoCloseable {
     private final Socket socket;
     private final ObjectInputStream in;
     private final ObjectOutputStream out;
-    private final Map<Request, Command> commandMap = new HashMap<>();
+    private static final Map<Request, Command> commandMap;
+
+    static {
+        commandMap = new HashMap<>();
+        final AuthenticationService authenticationService = new AuthenticationService();
+        commandMap.put(Request.LOGIN, new LoginCommand(authenticationService));
+        commandMap.put(Request.LOGOUT, new LogoutCommand(authenticationService));
+        commandMap.put(Request.REGISTER, new RegisterCommand(authenticationService));
+    }
 
 
     /**
@@ -35,27 +46,25 @@ public class RequestHandler implements Runnable, AutoCloseable {
         this.socket = socket;
         this.out = new ObjectOutputStream(socket.getOutputStream());
         this.in = new ObjectInputStream(socket.getInputStream());
-        final AuthenticationService authenticationService = new AuthenticationService();
-        this.commandMap.put(Request.LOGIN, new LoginCommand(authenticationService, out));
-        this.commandMap.put(Request.LOGOUT, new LogoutCommand(authenticationService, out));
-        this.commandMap.put(Request.REGISTER, new RegisterCommand(authenticationService, out));
     }
 
     @Override
     public void run() {
 
         while (true) {
-            UserRequest userRequest;
-            try {
-                userRequest = (UserRequest) in.readObject();
-                final Command command = commandMap.get(userRequest.request());
-                if (command == null) {
-                    throw new IllegalStateException("Command not found.");
-                }
-                if (!command.handle(userRequest)) {
-                    break;
-                }
-            } catch (IOException | ClassNotFoundException e) {
+            final Optional<UserRequest> userRequest = StreamHandler.getData(in, UserRequest.class);
+            if (userRequest.isEmpty()) {
+                break;
+            }
+
+            final Command command = commandMap.get(userRequest.get().request());
+            if (command == null) {
+                throw new IllegalStateException("Command not found.");
+            }
+
+            final ServerResponse serverResponse = command.handle(userRequest.get());
+
+            if (!StreamHandler.sendData(out, serverResponse)) {
                 break;
             }
         }
