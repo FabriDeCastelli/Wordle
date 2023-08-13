@@ -27,6 +27,9 @@ public class WordleClientMain {
     private static ObjectInputStream in;
     private static ObjectOutputStream out;
 
+    private static final ServerResponse errorResponse =
+            new ServerResponse(-1, "Error sending request to server.");
+
 
     /**
      * Main method for the WordleClientMain.
@@ -57,8 +60,8 @@ public class WordleClientMain {
     /**
      * Sends a login request to the server.
      *
-     * @param username the getUsername
-     * @param password the password
+     * @param username the username of the user sending the request
+     * @param password the password of the user sending the request
      */
     public static Optional<ServerResponse> login(String username, String password) {
         final PasswordHashingService passwordHashingService = PasswordHashingService.getInstance();
@@ -68,16 +71,14 @@ public class WordleClientMain {
         if (StreamHandler.sendData(out, userRequest)) {
             return StreamHandler.getData(in, ServerResponse.class);
         }
-        return Optional.of(
-                new ServerResponse(-1, "Error sending request to server.")
-        );
+        return Optional.of(errorResponse);
     }
 
     /**
      * Sends a register request to the server.
      *
-     * @param username the getUsername
-     * @param password the password
+     * @param username the username of the user sending the request
+     * @param password the password of the user sending the request
      */
     public static Optional<ServerResponse> register(String username, String password) {
         final PasswordHashingService passwordHashingService = PasswordHashingService.getInstance();
@@ -87,15 +88,13 @@ public class WordleClientMain {
         if (StreamHandler.sendData(out, userRequest)) {
             return StreamHandler.getData(in, ServerResponse.class);
         }
-        return Optional.of(
-                new ServerResponse(-1, "Error sending request to server.")
-        );
+        return Optional.of(errorResponse);
     }
 
     /**
      * Sends a logout request to the server.
      *
-     * @param username the username
+     * @param username the username of the user sending the request
      */
     public static Optional<ServerResponse> logout(String username) {
         final User user = new User(username, "");
@@ -103,9 +102,21 @@ public class WordleClientMain {
         if (StreamHandler.sendData(out, userRequest)) {
             return StreamHandler.getData(in, ServerResponse.class);
         }
-        return Optional.of(
-                new ServerResponse(-1, "Error sending request to server.")
-        );
+        return Optional.of(errorResponse);
+    }
+
+    /**
+     * Sends a play request to the server.
+     *
+     * @param username the username of the user sending the request
+     */
+    public static Optional<ServerResponse> play(String username) {
+        final User user = new User(username, "");
+        final UserRequest userRequest = new UserRequest(Request.PLAY, user);
+        if (StreamHandler.sendData(out, userRequest)) {
+            return StreamHandler.getData(in, ServerResponse.class);
+        }
+        return Optional.of(errorResponse);
     }
 
 }
