@@ -16,6 +16,8 @@ import server.model.Command;
 import server.service.AuthenticationService;
 import server.service.LoginCommand;
 import server.service.LogoutCommand;
+import server.service.PlayCommand;
+import server.service.PlayWordleService;
 import server.service.RegisterCommand;
 
 /**
@@ -34,6 +36,7 @@ public class RequestHandler implements Runnable, AutoCloseable {
         commandMap.put(Request.LOGIN, new LoginCommand(authenticationService));
         commandMap.put(Request.LOGOUT, new LogoutCommand(authenticationService));
         commandMap.put(Request.REGISTER, new RegisterCommand(authenticationService));
+        commandMap.put(Request.PLAY, new PlayCommand(new PlayWordleService()));
     }
 
 
