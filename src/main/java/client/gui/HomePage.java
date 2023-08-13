@@ -41,6 +41,21 @@ public class HomePage extends JFrame implements ActionListener {
         buttonPanel.add(logoutButton);
         add(buttonPanel, BorderLayout.CENTER);
 
+        final JButton playButton = new JButton("Play");
+        playButton.addActionListener(e -> {
+            final Optional<ServerResponse> response = WordleClientMain.play(username);
+            if (response.isEmpty()) {
+                JOptionPane.showMessageDialog(HomePage.this, "Server could not respond.");
+            } else if (response.get().status() == 0) {
+                new PlayPage(username).setVisible(true);
+                HomePage.this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(HomePage.this, response.get().message());
+            }
+        });
+        buttonPanel.add(playButton);
+        add(buttonPanel, BorderLayout.CENTER);
+
 
     }
 
