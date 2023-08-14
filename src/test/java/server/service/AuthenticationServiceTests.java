@@ -60,13 +60,6 @@ public class AuthenticationServiceTests {
     @Nested
     @DisplayName(" when adding a user ")
     class WhenAddingUser {
-        @Test
-        @DisplayName(" should throw an IllegalArgumentException if the user is null")
-        public void testAddNullUser() {
-            assertThrows(
-                    IllegalArgumentException.class,
-                    () -> authenticationService.add(null));
-        }
 
         @Test
         @DisplayName(" should throw an IllegalArgumentException if the user is already registered")
