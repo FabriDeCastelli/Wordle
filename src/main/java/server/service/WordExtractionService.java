@@ -11,7 +11,7 @@ import java.util.Random;
  */
 public class WordExtractionService extends Thread {
 
-    public static volatile String currentWord;
+    private static volatile String currentWord;
     private static final List<String> dictionary;
     private static final List<String> extractedWords;
 
@@ -37,6 +37,15 @@ public class WordExtractionService extends Thread {
     public WordExtractionService() {
     }
 
+    /**
+     * Gets the current word.
+     *
+     * @return the current word
+     */
+    public static String getCurrentWord() {
+        return currentWord;
+    }
+
 
     /**
      * Runs the service.
@@ -58,6 +67,7 @@ public class WordExtractionService extends Thread {
         final String word = dictionary.get(random.nextInt(notExtractedWords.size()));
         extractedWords.add(word);
         currentWord = word;
+        System.out.println("Extracted new word: " + word);
 
     }
 

@@ -61,11 +61,9 @@ public class AuthenticationService {
      *
      * @param user the user to be added
      */
-    public synchronized boolean add(User user) {
+    public synchronized boolean add(@NotNull User user) {
 
-        if (user == null) {
-            throw new IllegalArgumentException("The user cannot be null.");
-        } else if (getUserByUsername(user.getUsername()).isPresent()) {
+        if (getUserByUsername(user.getUsername()).isPresent()) {
             throw new IllegalArgumentException("The user is already stored.");
         }
 

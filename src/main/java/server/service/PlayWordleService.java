@@ -5,10 +5,15 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import model.User;
+import model.WordHints;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -60,6 +65,54 @@ public class PlayWordleService {
         return playedGames.get(user).contains(word);
     }
 
+
+    /**
+     * Guesses the word.
+     *
+     * @param word the word to guess
+     * @return the hints
+     */
+    public WordHints guessWord(@NotNull String word) {
+        final String currentWord = WordExtractionService.getCurrentWord();
+        if (word.length() != currentWord.length()) {
+            throw new IllegalStateException("Word must be the same length as the current word.");
+        }
+
+        final List<Integer> correctPositions = IntStream.range(0, word.length())
+                .filter(i -> word.charAt(i) == currentWord.charAt(i))
+                .boxed()
+                .collect(Collectors.toList());
+
+        final List<Integer> presentLetters = IntStream.range(0, word.length())
+                .filter(i -> word.charAt(i) != currentWord.charAt(i)
+                        && currentWord.contains(String.valueOf(word.charAt(i))))
+                .boxed()
+                .collect(Collectors.toList());
+
+        return new WordHints(correctPositions, presentLetters);
+    }
+
+    /**
+     * Adds a played game to the list of played games.
+     *
+     * @param user the user
+     * @param word the word
+     */
+    public synchronized boolean addPlayedGame(@NotNull User user, @NotNull String word) {
+        if (!playedGames.containsKey(user)) {
+            playedGames.put(user, new ArrayList<>());
+        }
+        playedGames.get(user).add(word);
+        System.out.println("Added played game for " + user.getUsername() + " for word " + word);
+        try (final FileWriter writer =
+                     new FileWriter("src/main/java/server/conf/playedGames.json")) {
+            gson.toJson(playedGames, writer);
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
+
+    }
 
 
 }

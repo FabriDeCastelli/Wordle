@@ -38,10 +38,12 @@ public class PlayCommand implements Command {
         }
 
         final User user = userRequest.user();
-        if (playWordleService.hasPlayed(user, WordExtractionService.currentWord)) {
+        if (playWordleService.hasPlayed(user, WordExtractionService.getCurrentWord())) {
             return new ServerResponse(-1, "You have already played the game for this word.");
+        } else if (playWordleService.addPlayedGame(user, WordExtractionService.getCurrentWord())) {
+            return new ServerResponse(0, "The user can play the game.");
         }
-        return new ServerResponse(0, "The user can play the game.");
+        return new ServerResponse(-1, "Error while saving the played game.");
     }
 
 }
