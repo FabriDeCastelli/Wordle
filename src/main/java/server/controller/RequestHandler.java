@@ -19,6 +19,7 @@ import server.service.LogoutCommand;
 import server.service.PlayCommand;
 import server.service.PlayWordleService;
 import server.service.RegisterCommand;
+import server.service.SendWordCommand;
 
 /**
  * Handles a request from a client.
@@ -37,6 +38,7 @@ public class RequestHandler implements Runnable, AutoCloseable {
         commandMap.put(Request.LOGOUT, new LogoutCommand(authenticationService));
         commandMap.put(Request.REGISTER, new RegisterCommand(authenticationService));
         commandMap.put(Request.PLAY, new PlayCommand(new PlayWordleService()));
+        commandMap.put(Request.SENDWORD, new SendWordCommand(new PlayWordleService()));
     }
 
 
