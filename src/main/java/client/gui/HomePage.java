@@ -1,6 +1,7 @@
 package client.gui;
 
 import client.WordleClientMain;
+import client.gui.play.PlayPage;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -48,7 +49,6 @@ public class HomePage extends JFrame implements ActionListener {
                 JOptionPane.showMessageDialog(HomePage.this, "Server could not respond.");
             } else if (response.get().status() == 0) {
                 new PlayPage(username).setVisible(true);
-                HomePage.this.dispose();
             } else {
                 JOptionPane.showMessageDialog(HomePage.this, response.get().message());
             }
