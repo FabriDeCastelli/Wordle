@@ -48,7 +48,7 @@ public class WordleServerMain {
             final ScheduledExecutorService wordExtractionService =
                     Executors.newSingleThreadScheduledExecutor();
             wordExtractionService.scheduleAtFixedRate(
-                    new WordExtractionService(), 0, wordDuration, TimeUnit.MILLISECONDS
+                    new WordExtractionService(), 0, wordDuration, TimeUnit.MINUTES
             );
 
             while (true) {

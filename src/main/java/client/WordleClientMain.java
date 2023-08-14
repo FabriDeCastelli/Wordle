@@ -119,4 +119,20 @@ public class WordleClientMain {
         return Optional.of(errorResponse);
     }
 
+    /**
+     * Sends a word to the server.
+     *
+     * @param username the username of the user sending the request
+     * @param word the word to send
+     * @return the response from the server
+     */
+    public static Optional<ServerResponse> sendWord(String username, String word) {
+        final User user = new User(username, "");
+        final UserRequest userRequest = new UserRequest(Request.SENDWORD, user, word);
+        if (StreamHandler.sendData(out, userRequest)) {
+            return StreamHandler.getData(in, ServerResponse.class);
+        }
+        return Optional.of(errorResponse);
+    }
+
 }
