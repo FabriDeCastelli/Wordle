@@ -7,10 +7,10 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import model.ServerResponse;
+import model.Response;
 import model.StreamHandler;
 import model.UserRequest;
-import model.enums.Request;
+import model.enums.RequestType;
 import org.jetbrains.annotations.NotNull;
 import server.model.Command;
 import server.service.AuthenticationService;
@@ -22,23 +22,23 @@ import server.service.RegisterCommand;
 import server.service.SendWordCommand;
 
 /**
- * Handles a request from a client.
+ * Handles a requestType from a client.
  */
 public class RequestHandler implements Runnable, AutoCloseable {
 
     private final Socket socket;
     private final ObjectInputStream in;
     private final ObjectOutputStream out;
-    private static final Map<Request, Command> commandMap;
+    private static final Map<RequestType, Command> commandMap;
 
     static {
         commandMap = new HashMap<>();
         final AuthenticationService authenticationService = new AuthenticationService();
-        commandMap.put(Request.LOGIN, new LoginCommand(authenticationService));
-        commandMap.put(Request.LOGOUT, new LogoutCommand(authenticationService));
-        commandMap.put(Request.REGISTER, new RegisterCommand(authenticationService));
-        commandMap.put(Request.PLAY, new PlayCommand(new PlayWordleService()));
-        commandMap.put(Request.SENDWORD, new SendWordCommand(new PlayWordleService()));
+        commandMap.put(RequestType.LOGIN, new LoginCommand(authenticationService));
+        commandMap.put(RequestType.LOGOUT, new LogoutCommand(authenticationService));
+        commandMap.put(RequestType.REGISTER, new RegisterCommand(authenticationService));
+        commandMap.put(RequestType.PLAY, new PlayCommand(new PlayWordleService()));
+        commandMap.put(RequestType.SENDWORD, new SendWordCommand(new PlayWordleService()));
     }
 
 
@@ -62,14 +62,14 @@ public class RequestHandler implements Runnable, AutoCloseable {
                 break;
             }
 
-            final Command command = commandMap.get(userRequest.get().request());
+            final Command command = commandMap.get(userRequest.get().requestType());
             if (command == null) {
                 throw new IllegalStateException("Command not found.");
             }
 
-            final ServerResponse serverResponse = command.handle(userRequest.get());
+            final Response response = command.handle(userRequest.get());
 
-            if (!StreamHandler.sendData(out, serverResponse)) {
+            if (!StreamHandler.sendData(out, response)) {
                 break;
             }
         }

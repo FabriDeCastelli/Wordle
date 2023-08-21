@@ -1,9 +1,9 @@
 package server.service;
 
-import model.ServerResponse;
+import model.Response;
 import model.User;
 import model.UserRequest;
-import model.enums.Request;
+import model.enums.RequestType;
 import org.jetbrains.annotations.NotNull;
 import server.model.Command;
 
@@ -24,15 +24,15 @@ public class LogoutCommand implements Command {
     }
 
     /**
-     * Handles a user request.
+     * Handles a user requestType.
      *
-     * @param userRequest the user request
+     * @param userRequest the user requestType
      * @return the server response
      */
-    public ServerResponse handle(@NotNull UserRequest userRequest) {
+    public Response handle(@NotNull UserRequest userRequest) {
 
-        if (userRequest.request() != Request.LOGOUT) {
-            throw new IllegalArgumentException("Cannot handle a non-logout request");
+        if (userRequest.requestType() != RequestType.LOGOUT) {
+            throw new IllegalArgumentException("Cannot handle a non-logout requestType");
         } else if (userRequest.user() == null) {
             throw new IllegalArgumentException("Cannot logout a null user");
         }
@@ -41,7 +41,7 @@ public class LogoutCommand implements Command {
         if (authenticationService.getUserByUsername(user.getUsername()).isEmpty()) {
             throw new IllegalStateException("Cannot logout a not registered user");
         }
-        return new ServerResponse(0, "Logout successful.");
+        return new Response(0, "Logout successful.");
     }
 
 }

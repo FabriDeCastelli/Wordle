@@ -1,8 +1,6 @@
 package server.model;
 
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import model.ServerResponse;
+import model.Response;
 import model.UserRequest;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,12 +10,12 @@ import org.jetbrains.annotations.NotNull;
 public interface Command {
 
     /**
-     * Handles a user request.
+     * Handles a user requestType.
      *
-     * @param userRequest the user request
+     * @param userRequest the user requestType
      * @return the server response
      */
-    ServerResponse handle(@NotNull UserRequest userRequest);
+    Response handle(@NotNull UserRequest userRequest);
 
 
 

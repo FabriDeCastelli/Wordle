@@ -7,10 +7,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
-import model.ServerResponse;
+import model.Response;
 import model.User;
 import model.UserRequest;
-import model.enums.Request;
+import model.enums.RequestType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,10 +38,10 @@ public class LoginCommandTests {
 
 
     @Test
-    @DisplayName(" cannot handle a request that is not login")
+    @DisplayName(" cannot handle a requestType that is not login")
     void testHandleInvalidRequest() {
         assertThrows(IllegalArgumentException.class,
-            () -> loginCommand.handle(new UserRequest(Request.LOGOUT, user))
+            () -> loginCommand.handle(new UserRequest(RequestType.LOGOUT, user))
         );
     }
 
@@ -49,7 +49,7 @@ public class LoginCommandTests {
     @DisplayName(" cannot login a null user")
     void testHandleNullUser() {
         assertThrows(IllegalArgumentException.class,
-            () -> loginCommand.handle(new UserRequest(Request.LOGIN, null))
+            () -> loginCommand.handle(new UserRequest(RequestType.LOGIN, null))
         );
     }
 
@@ -59,8 +59,8 @@ public class LoginCommandTests {
         when(authenticationService.getUserByUsername(any()))
                 .thenReturn(Optional.empty());
         assertEquals(
-            new ServerResponse(-1, "User not registered."),
-            loginCommand.handle(new UserRequest(Request.LOGIN, user))
+            new Response(-1, "User not registered."),
+            loginCommand.handle(new UserRequest(RequestType.LOGIN, user))
         );
     }
 
@@ -71,19 +71,19 @@ public class LoginCommandTests {
         when(authenticationService.getUserByUsername(any()))
                 .thenReturn(Optional.of(new User("username", "wrong password")));
         assertEquals(
-            new ServerResponse(-1, "Wrong username or password."),
-            loginCommand.handle(new UserRequest(Request.LOGIN, user))
+            new Response(-1, "Wrong username or password."),
+            loginCommand.handle(new UserRequest(RequestType.LOGIN, user))
         );
     }
 
     @Test
-    @DisplayName(" can handle a correct login request")
+    @DisplayName(" can handle a correct login requestType")
     void testHandle() {
         when(authenticationService.getUserByUsername(any()))
                 .thenReturn(Optional.of(user));
         assertEquals(
-            new ServerResponse(0, "Login successful."),
-            loginCommand.handle(new UserRequest(Request.LOGIN, user))
+            new Response(0, "Login successful."),
+            loginCommand.handle(new UserRequest(RequestType.LOGIN, user))
         );
     }
 

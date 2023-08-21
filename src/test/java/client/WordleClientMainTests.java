@@ -1,6 +1,5 @@
 package client;
 
-import java.io.IOException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -37,7 +36,7 @@ public class WordleClientMainTests {
     }
 
     @Test
-    @DisplayName(" can correctly send a request")
+    @DisplayName(" can correctly send a requestType")
     public void testSendRequest() {
         // TODO
 

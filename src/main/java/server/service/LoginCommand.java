@@ -1,10 +1,10 @@
 package server.service;
 
 import java.util.Optional;
-import model.ServerResponse;
+import model.Response;
 import model.User;
 import model.UserRequest;
-import model.enums.Request;
+import model.enums.RequestType;
 import org.jetbrains.annotations.NotNull;
 import server.model.Command;
 
@@ -25,15 +25,15 @@ public class LoginCommand implements Command {
     }
 
     /**
-     * Handles a user request.
+     * Handles a user requestType.
      *
-     * @param userRequest the user request
+     * @param userRequest the user requestType
      * @return the server response
      */
-    public ServerResponse handle(@NotNull UserRequest userRequest) {
+    public Response handle(@NotNull UserRequest userRequest) {
 
-        if (userRequest.request() != Request.LOGIN) {
-            throw new IllegalArgumentException("Cannot handle a non-logout request");
+        if (userRequest.requestType() != RequestType.LOGIN) {
+            throw new IllegalArgumentException("Cannot handle a non-logout requestType");
         } else if (userRequest.user() == null) {
             throw new IllegalArgumentException("Cannot logout a null user");
         }
@@ -43,11 +43,11 @@ public class LoginCommand implements Command {
                 authenticationService.getUserByUsername(user.getUsername());
 
         if (isRegistered.isEmpty()) {
-            return new ServerResponse(-1, "User not registered.");
+            return new Response(-1, "User not registered.");
         } else if (isRegistered.get().equals(user)) {
-            return new ServerResponse(0, "Login successful.");
+            return new Response(0, "Login successful.");
         }
-        return new ServerResponse(-1, "Wrong username or password.");
+        return new Response(-1, "Wrong username or password.");
 
     }
 

@@ -12,7 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import model.ServerResponse;
+import model.Response;
 
 /**
  * Interface for the home page.
@@ -44,7 +44,7 @@ public class HomePage extends JFrame implements ActionListener {
 
         final JButton playButton = new JButton("Play");
         playButton.addActionListener(e -> {
-            final Optional<ServerResponse> response = WordleClientMain.play(username);
+            final Optional<Response> response = WordleClientMain.play(username);
             if (response.isEmpty()) {
                 JOptionPane.showMessageDialog(HomePage.this, "Server could not respond.");
             } else if (response.get().status() == 0) {
@@ -61,7 +61,7 @@ public class HomePage extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        final Optional<ServerResponse> response = WordleClientMain.logout(username);
+        final Optional<Response> response = WordleClientMain.logout(username);
         if (response.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Server could not respond.");
         } else if (response.get().status() == 0) {

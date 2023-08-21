@@ -1,21 +1,21 @@
 package model;
 
 import java.io.Serializable;
-import model.enums.Request;
+import model.enums.RequestType;
 
 /**
- * Represents a user request.
+ * Represents a user requestType.
  */
-public record UserRequest(Request request, User user, String word) implements Serializable {
+public record UserRequest(RequestType requestType, User user, String word) implements Serializable {
 
     /**
      * Constructor for the UserRequest.
      *
-     * @param request the request type
-     * @param user the user sending the request
+     * @param requestType the requestType type
+     * @param user the user sending the requestType
      */
-    public UserRequest(Request request, User user) {
-        this(request, user, null);
+    public UserRequest(RequestType requestType, User user) {
+        this(requestType, user, null);
     }
 
 

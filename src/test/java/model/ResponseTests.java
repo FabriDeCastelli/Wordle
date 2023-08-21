@@ -6,23 +6,23 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for ServerResponse class.
+ * Tests for Response class.
  */
-@DisplayName("The ServerResponse tests ")
-public class ServerResponseTests {
+@DisplayName("The Response tests ")
+public class ResponseTests {
 
-    private final ServerResponse serverResponse = new ServerResponse(123, "testMessage");
+    private final Response response = new Response(123, "testMessage");
 
     @Test
     @DisplayName(" can correctly get the status")
     public void testGetStatus() {
-        assertEquals(123, serverResponse.status());
+        assertEquals(123, response.status());
     }
 
     @Test
     @DisplayName(" can correctly get the message")
     public void testGetMessage() {
-        assertEquals("testMessage", serverResponse.message());
+        assertEquals("testMessage", response.message());
     }
 
 }

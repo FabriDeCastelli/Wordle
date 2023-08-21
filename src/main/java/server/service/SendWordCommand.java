@@ -1,8 +1,8 @@
 package server.service;
 
-import model.ServerResponse;
+import model.Response;
 import model.UserRequest;
-import model.enums.Request;
+import model.enums.RequestType;
 import org.jetbrains.annotations.NotNull;
 import server.model.Command;
 
@@ -23,17 +23,17 @@ public class SendWordCommand implements Command {
     }
 
     @Override
-    public ServerResponse handle(@NotNull UserRequest userRequest) {
+    public Response handle(@NotNull UserRequest userRequest) {
 
-        if (userRequest.request() != Request.SENDWORD) {
-            throw new IllegalArgumentException("Cannot handle a non-sendword request");
+        if (userRequest.requestType() != RequestType.SENDWORD) {
+            throw new IllegalArgumentException("Cannot handle a non-sendword requestType");
         } else if (userRequest.word() == null) {
             throw new IllegalArgumentException("Cannot send a null word");
         }
         if (userRequest.word().equals(WordExtractionService.getCurrentWord())) {
-            return new ServerResponse(1, "You guessed the word!");
+            return new Response(1, "You guessed the word!");
         }
-        return new ServerResponse(0, playWordleService.guessWord(userRequest.word()));
+        return new Response(0, playWordleService.guessWord(userRequest.word()));
 
     }
 

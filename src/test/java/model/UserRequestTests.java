@@ -2,13 +2,13 @@ package model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import model.enums.Request;
+import model.enums.RequestType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for user request.
+ * Tests for user requestType.
  */
 @DisplayName("The UserRequest tests ")
 public class UserRequestTests {
@@ -21,18 +21,18 @@ public class UserRequestTests {
     }
 
     @Test
-    @DisplayName(" can correctly get the request")
+    @DisplayName(" can correctly get the requestType")
     public void testGetRequest() {
         final UserRequest userRequest =
-                new UserRequest(Request.LOGIN, user);
-        assertEquals(Request.LOGIN, userRequest.request());
+                new UserRequest(RequestType.LOGIN, user);
+        assertEquals(RequestType.LOGIN, userRequest.requestType());
     }
 
     @Test
     @DisplayName(" can correctly get the user")
     public void testGetUser() {
         final UserRequest userRequest =
-                new UserRequest(Request.LOGIN, user);
+                new UserRequest(RequestType.LOGIN, user);
         assertEquals(user, userRequest.user());
     }
 

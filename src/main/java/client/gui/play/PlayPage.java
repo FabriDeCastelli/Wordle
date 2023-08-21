@@ -22,7 +22,7 @@ import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import model.ServerResponse;
+import model.Response;
 import model.WordHints;
 
 /**
@@ -115,7 +115,7 @@ public class PlayPage extends JFrame implements ActionListener {
         Arrays.stream(inputFields[currentAttempt])
                 .forEach(field -> guess.append(field.getText()));
 
-        final Optional<ServerResponse> response =
+        final Optional<Response> response =
                 WordleClientMain.sendWord(username, guess.toString());
 
         if (response.isEmpty()) {

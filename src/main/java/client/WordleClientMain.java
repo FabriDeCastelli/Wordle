@@ -10,11 +10,11 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Optional;
 import java.util.Properties;
-import model.ServerResponse;
+import model.Response;
 import model.StreamHandler;
 import model.User;
 import model.UserRequest;
-import model.enums.Request;
+import model.enums.RequestType;
 
 /**
  * WordleClientMain is the client for the Wordle game.
@@ -27,8 +27,8 @@ public class WordleClientMain {
     private static ObjectInputStream in;
     private static ObjectOutputStream out;
 
-    private static final ServerResponse errorResponse =
-            new ServerResponse(-1, "Error sending request to server.");
+    private static final Response errorResponse =
+            new Response(-1, "Error sending requestType to server.");
 
 
     /**
@@ -58,63 +58,63 @@ public class WordleClientMain {
 
 
     /**
-     * Sends a login request to the server.
+     * Sends a login requestType to the server.
      *
-     * @param username the username of the user sending the request
-     * @param password the password of the user sending the request
+     * @param username the username of the user sending the requestType
+     * @param password the password of the user sending the requestType
      */
-    public static Optional<ServerResponse> login(String username, String password) {
+    public static Optional<Response> login(String username, String password) {
         final PasswordHashingService passwordHashingService = PasswordHashingService.getInstance();
         final String hashedPassword = passwordHashingService.hashPassword(password);
         final User user = new User(username, hashedPassword);
-        final UserRequest userRequest = new UserRequest(Request.LOGIN, user);
+        final UserRequest userRequest = new UserRequest(RequestType.LOGIN, user);
         if (StreamHandler.sendData(out, userRequest)) {
-            return StreamHandler.getData(in, ServerResponse.class);
+            return StreamHandler.getData(in, Response.class);
         }
         return Optional.of(errorResponse);
     }
 
     /**
-     * Sends a register request to the server.
+     * Sends a register requestType to the server.
      *
-     * @param username the username of the user sending the request
-     * @param password the password of the user sending the request
+     * @param username the username of the user sending the requestType
+     * @param password the password of the user sending the requestType
      */
-    public static Optional<ServerResponse> register(String username, String password) {
+    public static Optional<Response> register(String username, String password) {
         final PasswordHashingService passwordHashingService = PasswordHashingService.getInstance();
         final String hashedPassword = passwordHashingService.hashPassword(password);
         final User user = new User(username, hashedPassword);
-        final UserRequest userRequest = new UserRequest(Request.REGISTER, user);
+        final UserRequest userRequest = new UserRequest(RequestType.REGISTER, user);
         if (StreamHandler.sendData(out, userRequest)) {
-            return StreamHandler.getData(in, ServerResponse.class);
+            return StreamHandler.getData(in, Response.class);
         }
         return Optional.of(errorResponse);
     }
 
     /**
-     * Sends a logout request to the server.
+     * Sends a logout requestType to the server.
      *
-     * @param username the username of the user sending the request
+     * @param username the username of the user sending the requestType
      */
-    public static Optional<ServerResponse> logout(String username) {
+    public static Optional<Response> logout(String username) {
         final User user = new User(username, "");
-        final UserRequest userRequest = new UserRequest(Request.LOGOUT, user);
+        final UserRequest userRequest = new UserRequest(RequestType.LOGOUT, user);
         if (StreamHandler.sendData(out, userRequest)) {
-            return StreamHandler.getData(in, ServerResponse.class);
+            return StreamHandler.getData(in, Response.class);
         }
         return Optional.of(errorResponse);
     }
 
     /**
-     * Sends a play request to the server.
+     * Sends a play requestType to the server.
      *
-     * @param username the username of the user sending the request
+     * @param username the username of the user sending the requestType
      */
-    public static Optional<ServerResponse> play(String username) {
+    public static Optional<Response> play(String username) {
         final User user = new User(username, "");
-        final UserRequest userRequest = new UserRequest(Request.PLAY, user);
+        final UserRequest userRequest = new UserRequest(RequestType.PLAY, user);
         if (StreamHandler.sendData(out, userRequest)) {
-            return StreamHandler.getData(in, ServerResponse.class);
+            return StreamHandler.getData(in, Response.class);
         }
         return Optional.of(errorResponse);
     }
@@ -122,15 +122,15 @@ public class WordleClientMain {
     /**
      * Sends a word to the server.
      *
-     * @param username the username of the user sending the request
+     * @param username the username of the user sending the requestType
      * @param word the word to send
      * @return the response from the server
      */
-    public static Optional<ServerResponse> sendWord(String username, String word) {
+    public static Optional<Response> sendWord(String username, String word) {
         final User user = new User(username, "");
-        final UserRequest userRequest = new UserRequest(Request.SENDWORD, user, word);
+        final UserRequest userRequest = new UserRequest(RequestType.SENDWORD, user, word);
         if (StreamHandler.sendData(out, userRequest)) {
-            return StreamHandler.getData(in, ServerResponse.class);
+            return StreamHandler.getData(in, Response.class);
         }
         return Optional.of(errorResponse);
     }

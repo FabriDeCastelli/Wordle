@@ -1,9 +1,9 @@
 package server.service;
 
-import model.ServerResponse;
+import model.Response;
 import model.User;
 import model.UserRequest;
-import model.enums.Request;
+import model.enums.RequestType;
 import org.jetbrains.annotations.NotNull;
 import server.model.Command;
 
@@ -24,26 +24,26 @@ public class PlayCommand implements Command {
     }
 
     /**
-     * Handles a user request.
+     * Handles a user requestType.
      *
-     * @param userRequest the user request
+     * @param userRequest the user requestType
      * @return the server response
      */
-    public ServerResponse handle(@NotNull UserRequest userRequest) {
+    public Response handle(@NotNull UserRequest userRequest) {
 
-        if (userRequest.request() != Request.PLAY) {
-            throw new IllegalArgumentException("Cannot handle a non-play request");
+        if (userRequest.requestType() != RequestType.PLAY) {
+            throw new IllegalArgumentException("Cannot handle a non-play requestType");
         } else if (userRequest.user() == null) {
             throw new IllegalArgumentException("Cannot play a null user");
         }
 
         final User user = userRequest.user();
         if (playWordleService.hasPlayed(user, WordExtractionService.getCurrentWord())) {
-            return new ServerResponse(-1, "You have already played the game for this word.");
+            return new Response(-1, "You have already played the game for this word.");
         } else if (playWordleService.addPlayedGame(user, WordExtractionService.getCurrentWord())) {
-            return new ServerResponse(0, "The user can play the game.");
+            return new Response(0, "The user can play the game.");
         }
-        return new ServerResponse(-1, "Error while saving the played game.");
+        return new Response(-1, "Error while saving the played game.");
     }
 
 }

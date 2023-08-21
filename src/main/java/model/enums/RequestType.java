@@ -1,9 +1,9 @@
 package model.enums;
 
 /**
- * Represents a request.
+ * Represents a requestType.
  */
-public enum Request {
+public enum RequestType {
 
     LOGIN,
     REGISTER,

@@ -14,7 +14,7 @@ import org.mockito.Mock;
 /**
  * RequestHandlerTests is the test suite for RequestHandler.
  */
-@DisplayName("The request handler tests ")
+@DisplayName("The requestType handler tests ")
 public class RequestHandlerTests {
 
     @Mock
@@ -37,7 +37,7 @@ public class RequestHandlerTests {
 
 
     @Test
-    @DisplayName(" can correctly handle a user request")
+    @DisplayName(" can correctly handle a user requestType")
     public void testHandleUserRequest() {
         // TODO
 

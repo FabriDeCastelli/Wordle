@@ -13,7 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import model.ServerResponse;
+import model.Response;
 import model.enums.AuthType;
 
 /**
@@ -97,7 +97,7 @@ public class AuthenticationDialog extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        final Optional<ServerResponse> response;
+        final Optional<Response> response;
 
         if (this.authType == AuthType.Login) {
             response = WordleClientMain.login(usernameField.getText(),
