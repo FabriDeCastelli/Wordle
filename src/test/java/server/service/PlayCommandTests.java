@@ -5,9 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import model.Request;
 import model.Response;
 import model.User;
-import model.UserRequest;
 import model.enums.RequestType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,7 +38,7 @@ public class PlayCommandTests {
     @DisplayName(" cannot handle a requestType that is not play")
     void testHandleInvalidRequest() {
         assertThrows(IllegalArgumentException.class,
-            () -> playCommand.handle(new UserRequest(RequestType.LOGIN, user))
+            () -> playCommand.handle(new Request(RequestType.LOGIN, user))
         );
     }
 
@@ -46,7 +46,7 @@ public class PlayCommandTests {
     @DisplayName(" correctly throws exception when user is null")
     void testHandleNullUser() {
         assertThrows(IllegalArgumentException.class,
-            () -> playCommand.handle(new UserRequest(RequestType.PLAY, null))
+            () -> playCommand.handle(new Request(RequestType.PLAY, null))
         );
     }
 
@@ -57,7 +57,7 @@ public class PlayCommandTests {
                 .thenReturn(true);
         assertEquals(
                 new Response(-1, "You have already played the game for this word."),
-                playCommand.handle(new UserRequest(RequestType.PLAY, user))
+                playCommand.handle(new Request(RequestType.PLAY, user))
         );
     }
 
@@ -70,7 +70,7 @@ public class PlayCommandTests {
                 .thenReturn(true);
         assertEquals(
                 new Response(0, "The user can play the game."),
-                playCommand.handle(new UserRequest(RequestType.PLAY, user))
+                playCommand.handle(new Request(RequestType.PLAY, user))
         );
     }
 
@@ -83,7 +83,7 @@ public class PlayCommandTests {
                 .thenReturn(false);
         assertEquals(
                 new Response(-1, "Error while saving the played game."),
-                playCommand.handle(new UserRequest(RequestType.PLAY, user))
+                playCommand.handle(new Request(RequestType.PLAY, user))
         );
     }
 

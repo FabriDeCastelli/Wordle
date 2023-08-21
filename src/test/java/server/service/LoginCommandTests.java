@@ -7,9 +7,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
+import model.Request;
 import model.Response;
 import model.User;
-import model.UserRequest;
 import model.enums.RequestType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,7 +41,7 @@ public class LoginCommandTests {
     @DisplayName(" cannot handle a requestType that is not login")
     void testHandleInvalidRequest() {
         assertThrows(IllegalArgumentException.class,
-            () -> loginCommand.handle(new UserRequest(RequestType.LOGOUT, user))
+            () -> loginCommand.handle(new Request(RequestType.LOGOUT, user))
         );
     }
 
@@ -49,7 +49,7 @@ public class LoginCommandTests {
     @DisplayName(" cannot login a null user")
     void testHandleNullUser() {
         assertThrows(IllegalArgumentException.class,
-            () -> loginCommand.handle(new UserRequest(RequestType.LOGIN, null))
+            () -> loginCommand.handle(new Request(RequestType.LOGIN, null))
         );
     }
 
@@ -60,7 +60,7 @@ public class LoginCommandTests {
                 .thenReturn(Optional.empty());
         assertEquals(
             new Response(-1, "User not registered."),
-            loginCommand.handle(new UserRequest(RequestType.LOGIN, user))
+            loginCommand.handle(new Request(RequestType.LOGIN, user))
         );
     }
 
@@ -72,7 +72,7 @@ public class LoginCommandTests {
                 .thenReturn(Optional.of(new User("username", "wrong password")));
         assertEquals(
             new Response(-1, "Wrong username or password."),
-            loginCommand.handle(new UserRequest(RequestType.LOGIN, user))
+            loginCommand.handle(new Request(RequestType.LOGIN, user))
         );
     }
 
@@ -83,7 +83,7 @@ public class LoginCommandTests {
                 .thenReturn(Optional.of(user));
         assertEquals(
             new Response(0, "Login successful."),
-            loginCommand.handle(new UserRequest(RequestType.LOGIN, user))
+            loginCommand.handle(new Request(RequestType.LOGIN, user))
         );
     }
 

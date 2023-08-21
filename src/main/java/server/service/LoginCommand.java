@@ -1,9 +1,9 @@
 package server.service;
 
 import java.util.Optional;
+import model.Request;
 import model.Response;
 import model.User;
-import model.UserRequest;
 import model.enums.RequestType;
 import org.jetbrains.annotations.NotNull;
 import server.model.Command;
@@ -27,18 +27,18 @@ public class LoginCommand implements Command {
     /**
      * Handles a user requestType.
      *
-     * @param userRequest the user requestType
+     * @param request the user requestType
      * @return the server response
      */
-    public Response handle(@NotNull UserRequest userRequest) {
+    public Response handle(@NotNull Request request) {
 
-        if (userRequest.requestType() != RequestType.LOGIN) {
+        if (request.requestType() != RequestType.LOGIN) {
             throw new IllegalArgumentException("Cannot handle a non-logout requestType");
-        } else if (userRequest.user() == null) {
+        } else if (request.user() == null) {
             throw new IllegalArgumentException("Cannot logout a null user");
         }
 
-        final User user = userRequest.user();
+        final User user = request.user();
         final Optional<User> isRegistered =
                 authenticationService.getUserByUsername(user.getUsername());
 

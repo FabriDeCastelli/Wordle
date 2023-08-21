@@ -7,9 +7,9 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import model.Request;
 import model.Response;
 import model.StreamHandler;
-import model.UserRequest;
 import model.enums.RequestType;
 import org.jetbrains.annotations.NotNull;
 import server.model.Command;
@@ -57,7 +57,7 @@ public class RequestHandler implements Runnable, AutoCloseable {
     public void run() {
 
         while (true) {
-            final Optional<UserRequest> userRequest = StreamHandler.getData(in, UserRequest.class);
+            final Optional<Request> userRequest = StreamHandler.getData(in, Request.class);
             if (userRequest.isEmpty()) {
                 break;
             }

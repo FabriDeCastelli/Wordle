@@ -6,15 +6,15 @@ import model.enums.RequestType;
 /**
  * Represents a user requestType.
  */
-public record UserRequest(RequestType requestType, User user, String word) implements Serializable {
+public record Request(RequestType requestType, User user, String word) implements Serializable {
 
     /**
-     * Constructor for the UserRequest.
+     * Constructor for the Request.
      *
      * @param requestType the requestType type
      * @param user the user sending the requestType
      */
-    public UserRequest(RequestType requestType, User user) {
+    public Request(RequestType requestType, User user) {
         this(requestType, user, null);
     }
 

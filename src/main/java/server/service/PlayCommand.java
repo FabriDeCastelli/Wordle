@@ -1,8 +1,8 @@
 package server.service;
 
+import model.Request;
 import model.Response;
 import model.User;
-import model.UserRequest;
 import model.enums.RequestType;
 import org.jetbrains.annotations.NotNull;
 import server.model.Command;
@@ -26,18 +26,18 @@ public class PlayCommand implements Command {
     /**
      * Handles a user requestType.
      *
-     * @param userRequest the user requestType
+     * @param request the user requestType
      * @return the server response
      */
-    public Response handle(@NotNull UserRequest userRequest) {
+    public Response handle(@NotNull Request request) {
 
-        if (userRequest.requestType() != RequestType.PLAY) {
+        if (request.requestType() != RequestType.PLAY) {
             throw new IllegalArgumentException("Cannot handle a non-play requestType");
-        } else if (userRequest.user() == null) {
+        } else if (request.user() == null) {
             throw new IllegalArgumentException("Cannot play a null user");
         }
 
-        final User user = userRequest.user();
+        final User user = request.user();
         if (playWordleService.hasPlayed(user, WordExtractionService.getCurrentWord())) {
             return new Response(-1, "You have already played the game for this word.");
         } else if (playWordleService.addPlayedGame(user, WordExtractionService.getCurrentWord())) {

@@ -3,8 +3,8 @@ package server.service;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
+import model.Request;
 import model.User;
-import model.UserRequest;
 import model.enums.RequestType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,7 +35,7 @@ public class SendWordCommandTests {
     @DisplayName(" cannot handle a requestType that is not send word")
     void testHandleInvalidRequest() {
         assertThrows(IllegalArgumentException.class,
-            () -> playCommand.handle(new UserRequest(RequestType.LOGIN, user))
+            () -> playCommand.handle(new Request(RequestType.LOGIN, user))
         );
     }
 
@@ -44,7 +44,7 @@ public class SendWordCommandTests {
     void testHandleNullWord() {
         assertThrows(IllegalArgumentException.class,
             () -> playCommand.handle(
-                    new UserRequest(RequestType.SENDWORD, new User("", ""), null))
+                    new Request(RequestType.SENDWORD, new User("", ""), null))
         );
     }
 

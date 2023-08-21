@@ -10,10 +10,10 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Optional;
 import java.util.Properties;
+import model.Request;
 import model.Response;
 import model.StreamHandler;
 import model.User;
-import model.UserRequest;
 import model.enums.RequestType;
 
 /**
@@ -67,8 +67,8 @@ public class WordleClientMain {
         final PasswordHashingService passwordHashingService = PasswordHashingService.getInstance();
         final String hashedPassword = passwordHashingService.hashPassword(password);
         final User user = new User(username, hashedPassword);
-        final UserRequest userRequest = new UserRequest(RequestType.LOGIN, user);
-        if (StreamHandler.sendData(out, userRequest)) {
+        final Request request = new Request(RequestType.LOGIN, user);
+        if (StreamHandler.sendData(out, request)) {
             return StreamHandler.getData(in, Response.class);
         }
         return Optional.of(errorResponse);
@@ -84,8 +84,8 @@ public class WordleClientMain {
         final PasswordHashingService passwordHashingService = PasswordHashingService.getInstance();
         final String hashedPassword = passwordHashingService.hashPassword(password);
         final User user = new User(username, hashedPassword);
-        final UserRequest userRequest = new UserRequest(RequestType.REGISTER, user);
-        if (StreamHandler.sendData(out, userRequest)) {
+        final Request request = new Request(RequestType.REGISTER, user);
+        if (StreamHandler.sendData(out, request)) {
             return StreamHandler.getData(in, Response.class);
         }
         return Optional.of(errorResponse);
@@ -98,8 +98,8 @@ public class WordleClientMain {
      */
     public static Optional<Response> logout(String username) {
         final User user = new User(username, "");
-        final UserRequest userRequest = new UserRequest(RequestType.LOGOUT, user);
-        if (StreamHandler.sendData(out, userRequest)) {
+        final Request request = new Request(RequestType.LOGOUT, user);
+        if (StreamHandler.sendData(out, request)) {
             return StreamHandler.getData(in, Response.class);
         }
         return Optional.of(errorResponse);
@@ -112,8 +112,8 @@ public class WordleClientMain {
      */
     public static Optional<Response> play(String username) {
         final User user = new User(username, "");
-        final UserRequest userRequest = new UserRequest(RequestType.PLAY, user);
-        if (StreamHandler.sendData(out, userRequest)) {
+        final Request request = new Request(RequestType.PLAY, user);
+        if (StreamHandler.sendData(out, request)) {
             return StreamHandler.getData(in, Response.class);
         }
         return Optional.of(errorResponse);
@@ -128,8 +128,8 @@ public class WordleClientMain {
      */
     public static Optional<Response> sendWord(String username, String word) {
         final User user = new User(username, "");
-        final UserRequest userRequest = new UserRequest(RequestType.SENDWORD, user, word);
-        if (StreamHandler.sendData(out, userRequest)) {
+        final Request request = new Request(RequestType.SENDWORD, user, word);
+        if (StreamHandler.sendData(out, request)) {
             return StreamHandler.getData(in, Response.class);
         }
         return Optional.of(errorResponse);

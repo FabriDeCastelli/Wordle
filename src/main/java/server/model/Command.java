@@ -1,7 +1,7 @@
 package server.model;
 
+import model.Request;
 import model.Response;
-import model.UserRequest;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -12,10 +12,10 @@ public interface Command {
     /**
      * Handles a user requestType.
      *
-     * @param userRequest the user requestType
+     * @param request the user requestType
      * @return the server response
      */
-    Response handle(@NotNull UserRequest userRequest);
+    Response handle(@NotNull Request request);
 
 
 

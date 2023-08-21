@@ -7,9 +7,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
+import model.Request;
 import model.Response;
 import model.User;
-import model.UserRequest;
 import model.enums.RequestType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,7 +41,7 @@ public class LogoutCommandTests {
     @DisplayName(" cannot handle a requestType that is not logout")
     void testHandleInvalidRequest() {
         assertThrows(IllegalArgumentException.class,
-            () -> logoutCommand.handle(new UserRequest(RequestType.LOGIN, user))
+            () -> logoutCommand.handle(new Request(RequestType.LOGIN, user))
         );
     }
 
@@ -49,7 +49,7 @@ public class LogoutCommandTests {
     @DisplayName(" cannot logout a null user")
     void testHandleNullUser() {
         assertThrows(IllegalArgumentException.class,
-            () -> logoutCommand.handle(new UserRequest(RequestType.LOGOUT, null))
+            () -> logoutCommand.handle(new Request(RequestType.LOGOUT, null))
         );
     }
 
@@ -59,7 +59,7 @@ public class LogoutCommandTests {
         when(authenticationService.getUserByUsername(any()))
                 .thenReturn(Optional.empty());
         assertThrows(IllegalStateException.class,
-            () -> logoutCommand.handle(new UserRequest(RequestType.LOGOUT, user))
+            () -> logoutCommand.handle(new Request(RequestType.LOGOUT, user))
         );
     }
 
@@ -69,7 +69,7 @@ public class LogoutCommandTests {
         when(authenticationService.getUserByUsername(any()))
                 .thenReturn(Optional.of(user));
         assertEquals(
-                logoutCommand.handle(new UserRequest(RequestType.LOGOUT, user)),
+                logoutCommand.handle(new Request(RequestType.LOGOUT, user)),
                 new Response(0, "Logout successful.")
         );
     }

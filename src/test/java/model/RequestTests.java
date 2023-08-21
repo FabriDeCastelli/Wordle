@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests for user requestType.
  */
-@DisplayName("The UserRequest tests ")
-public class UserRequestTests {
+@DisplayName("The Request tests ")
+public class RequestTests {
 
     private static User user;
 
@@ -23,17 +23,17 @@ public class UserRequestTests {
     @Test
     @DisplayName(" can correctly get the requestType")
     public void testGetRequest() {
-        final UserRequest userRequest =
-                new UserRequest(RequestType.LOGIN, user);
-        assertEquals(RequestType.LOGIN, userRequest.requestType());
+        final Request request =
+                new Request(RequestType.LOGIN, user);
+        assertEquals(RequestType.LOGIN, request.requestType());
     }
 
     @Test
     @DisplayName(" can correctly get the user")
     public void testGetUser() {
-        final UserRequest userRequest =
-                new UserRequest(RequestType.LOGIN, user);
-        assertEquals(user, userRequest.user());
+        final Request request =
+                new Request(RequestType.LOGIN, user);
+        assertEquals(user, request.user());
     }
 
 }

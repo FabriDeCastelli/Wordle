@@ -1,8 +1,8 @@
 package server.service;
 
+import model.Request;
 import model.Response;
 import model.User;
-import model.UserRequest;
 import model.enums.RequestType;
 import org.jetbrains.annotations.NotNull;
 import server.model.Command;
@@ -26,18 +26,18 @@ public class RegisterCommand implements Command {
     /**
      * Handles a user requestType.
      *
-     * @param userRequest the user requestType
+     * @param request the user requestType
      * @return the server response
      */
-    public Response handle(@NotNull UserRequest userRequest) {
+    public Response handle(@NotNull Request request) {
 
-        if (userRequest.requestType() != RequestType.REGISTER) {
+        if (request.requestType() != RequestType.REGISTER) {
             throw new IllegalArgumentException("Cannot handle a non-register requestType");
-        } else if (userRequest.user() == null) {
+        } else if (request.user() == null) {
             throw new IllegalArgumentException("Cannot register a null user");
         }
 
-        final User user = userRequest.user();
+        final User user = request.user();
 
         if (user.getPasswordHash().isEmpty()) {
             return new Response(-1, "Password cannot be empty.");
