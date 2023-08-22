@@ -18,15 +18,6 @@ public record Response(int status, String message, Object data) implements Seria
     }
 
     /**
-     * Single argument constructor for Response.
-     *
-     * @param status the status of the response
-     */
-    public Response(int status) {
-        this(status, "", null);
-    }
-
-    /**
      * Two argument constructor for Response.
      *
      * @param status the status of the response
