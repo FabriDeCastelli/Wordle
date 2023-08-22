@@ -24,7 +24,7 @@ public class StreamHandler {
                 return Optional.of(clazz.cast(obj));
             }
         } catch (IOException | ClassNotFoundException e) {
-            System.out.println("Error reading object from stream.");
+            System.out.println("Stream closed");
         }
         return Optional.empty();
     }
