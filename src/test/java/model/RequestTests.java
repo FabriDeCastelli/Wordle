@@ -14,17 +14,19 @@ import org.junit.jupiter.api.Test;
 public class RequestTests {
 
     private static User user;
+    private static String username;
 
     @BeforeAll
     public static void setUp() {
         user = new User("testUser", "testPassword");
+        username = "testUser";
     }
 
     @Test
     @DisplayName(" can correctly get the requestType")
     public void testGetRequest() {
         final Request request =
-                new Request(RequestType.LOGIN, user);
+                new Request(RequestType.LOGIN, username);
         assertEquals(RequestType.LOGIN, request.requestType());
     }
 
@@ -32,8 +34,8 @@ public class RequestTests {
     @DisplayName(" can correctly get the user")
     public void testGetUser() {
         final Request request =
-                new Request(RequestType.LOGIN, user);
-        assertEquals(user, request.user());
+                new Request(RequestType.LOGIN, username);
+        assertEquals(username, request.username());
     }
 
 }
