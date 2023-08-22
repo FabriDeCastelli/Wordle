@@ -15,46 +15,22 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Service for authenticating users.
  */
-public class AuthenticationService {
-
-    private final String filePath = "src/main/java/server/conf/users.json";
-    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    private final ConcurrentHashMap<String, User> registeredUsers;
+public class AuthenticationService extends UserService {
 
 
     /**
      * Constructor for the AuthenticationService.
+     *
+     * @param filePath the file path of the json file
      */
+    public AuthenticationService(String filePath) {
+        super(filePath);
+    }
+
     public AuthenticationService() {
-        this.registeredUsers = getRegisteredUsers();
+        super("src/main/java/server/conf/users.json");
     }
 
-
-    /**
-     * Gets the list of all already registered users.
-     *
-     * @return the map of all already registered users
-     */
-    private synchronized ConcurrentHashMap<String, User> getRegisteredUsers() {
-        try (final JsonReader reader = new JsonReader(new FileReader(filePath))) {
-            ConcurrentHashMap<String, User> users;
-            users = gson.fromJson(
-                    reader, new TypeToken<ConcurrentHashMap<String, User>>() {}.getType());
-            return users == null ? new ConcurrentHashMap<>() : users;
-        } catch (IOException e) {
-            System.out.println("Error getting all users.");
-        }
-        return new ConcurrentHashMap<>();
-    }
-
-    /**
-     * Gets the user with the given getUsername.
-     *
-     * @param username the getUsername.
-     */
-    public synchronized Optional<User> getUserByUsername(@NotNull String username) {
-        return Optional.ofNullable(getRegisteredUsers().get(username));
-    }
 
     /**
      * Saves a new user the json file.
@@ -67,9 +43,9 @@ public class AuthenticationService {
             throw new IllegalArgumentException("The user is already stored.");
         }
 
-        this.registeredUsers.put(user.getUsername(), user);
+        users.put(user.getUsername(), user);
         try (final FileWriter writer = new FileWriter(filePath)) {
-            gson.toJson(registeredUsers, writer);
+            gson.toJson(users, writer);
         } catch (IOException e) {
             return false;
         }
@@ -87,19 +63,14 @@ public class AuthenticationService {
             throw new IllegalArgumentException("Cannot delete a user that is not registered.");
         }
 
-        this.registeredUsers.remove(user.getUsername());
+        users.remove(user.getUsername());
         try (final FileWriter writer = new FileWriter(filePath)) {
-            gson.toJson(registeredUsers, writer);
+            gson.toJson(users, writer);
         } catch (IOException e) {
             return false;
         }
         return true;
 
     }
-
-
-
-
-
 
 }
