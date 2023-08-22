@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import model.User;
 import model.WordHints;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 public class PlayWordleService {
 
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    private final ConcurrentHashMap<User, List<String>> playedGames;
+    private final ConcurrentHashMap<String, List<String>> playedGames;
 
     /**
      * Constructor for PlayWordleService.
@@ -36,12 +35,11 @@ public class PlayWordleService {
      *
      * @return the map of all already played games
      */
-    private synchronized ConcurrentHashMap<User, List<String>> getPlayedGames() {
+    private synchronized ConcurrentHashMap<String, List<String>> getPlayedGames() {
         try (final JsonReader reader = new JsonReader(
                 new FileReader("src/main/java/server/conf/playedGames.json"))) {
-            ConcurrentHashMap<User, List<String>> games;
-            games = gson.fromJson(
-                    reader, new TypeToken<ConcurrentHashMap<User, List<String>>>() {
+            final ConcurrentHashMap<String, List<String>> games = gson.fromJson(
+                    reader, new TypeToken<ConcurrentHashMap<String, List<String>>>() {
                     }.getType());
             return games == null ? new ConcurrentHashMap<>() : games;
         } catch (IOException e) {
@@ -54,15 +52,15 @@ public class PlayWordleService {
     /**
      * Determines whether a user has already played the Wordle game for that word.
      *
-     * @param user the user
-     * @param word the word
-     * @return true if the user has played the word
+     * @param username the username of the user that wants to play the game
+     * @param word the word of the current game
+     * @return true if the user has played the game for that word
      */
-    public synchronized boolean hasPlayed(@NotNull User user, @NotNull String word) {
-        if (!playedGames.containsKey(user)) {
+    public synchronized boolean hasPlayed(@NotNull String username, @NotNull String word) {
+        if (!playedGames.containsKey(username)) {
             return false;
         }
-        return playedGames.get(user).contains(word);
+        return playedGames.get(username).contains(word);
     }
 
 
@@ -95,15 +93,14 @@ public class PlayWordleService {
     /**
      * Adds a played game to the list of played games.
      *
-     * @param user the user
-     * @param word the word
+     * @param username the username of the user
+     * @param word the word to be added
      */
-    public synchronized boolean addPlayedGame(@NotNull User user, @NotNull String word) {
-        if (!playedGames.containsKey(user)) {
-            playedGames.put(user, new ArrayList<>());
+    public synchronized boolean addPlayedGame(@NotNull String username,  @NotNull String word) {
+        if (!playedGames.containsKey(username)) {
+            playedGames.put(username, new ArrayList<>());
         }
-        playedGames.get(user).add(word);
-        System.out.println("Added played game for " + user.getUsername() + " for word " + word);
+        playedGames.get(username).add(word);
         try (final FileWriter writer =
                      new FileWriter("src/main/java/server/conf/playedGames.json")) {
             gson.toJson(playedGames, writer);
