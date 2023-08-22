@@ -14,18 +14,21 @@ public final class User implements Serializable {
     private static final long serialVersionUID = 1L;
     private final String username;
     private final String passwordHash;
+    private UserStatistics statistics;
 
 
     /**
      * Constructor for the User.
      *
-     * @param username     the getUsername
-     * @param passwordHash the getPasswordHash
+     * @param username     the username
+     * @param passwordHash the hashed password
      */
     public User(@NotNull String username, @NotNull String passwordHash) {
         this.username = username;
         this.passwordHash = passwordHash;
+        this.statistics = new UserStatistics();
     }
+
 
     /**
      * Getter for the getUsername.
@@ -34,6 +37,14 @@ public final class User implements Serializable {
      */
     public String getUsername() {
         return username;
+    }
+
+    public UserStatistics getUserStatistics() {
+        return statistics;
+    }
+
+    public void setUserStatistics(UserStatistics userStatistics) {
+        this.statistics = userStatistics;
     }
 
 
