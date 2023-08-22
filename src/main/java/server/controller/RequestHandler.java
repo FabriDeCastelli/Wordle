@@ -14,12 +14,13 @@ import model.enums.RequestType;
 import org.jetbrains.annotations.NotNull;
 import server.model.Command;
 import server.service.AuthenticationService;
-import server.service.LoginCommand;
-import server.service.LogoutCommand;
-import server.service.PlayCommand;
 import server.service.PlayWordleService;
-import server.service.RegisterCommand;
-import server.service.SendWordCommand;
+import server.service.UserStatisticsService;
+import server.service.command.LoginCommand;
+import server.service.command.LogoutCommand;
+import server.service.command.PlayCommand;
+import server.service.command.RegisterCommand;
+import server.service.command.SendWordCommand;
 
 /**
  * Handles a requestType from a client.
@@ -34,11 +35,15 @@ public class RequestHandler implements Runnable, AutoCloseable {
     static {
         commandMap = new HashMap<>();
         final AuthenticationService authenticationService = new AuthenticationService();
+        final UserStatisticsService userStatisticsService = new UserStatisticsService();
+        final PlayWordleService playWordleService = new PlayWordleService();
         commandMap.put(RequestType.LOGIN, new LoginCommand(authenticationService));
         commandMap.put(RequestType.LOGOUT, new LogoutCommand(authenticationService));
         commandMap.put(RequestType.REGISTER, new RegisterCommand(authenticationService));
-        commandMap.put(RequestType.PLAY, new PlayCommand(new PlayWordleService()));
-        commandMap.put(RequestType.SENDWORD, new SendWordCommand(new PlayWordleService()));
+        commandMap.put(RequestType.PLAY, new PlayCommand(playWordleService, userStatisticsService));
+        commandMap.put(
+                RequestType.SENDWORD,
+                new SendWordCommand(playWordleService, userStatisticsService));
     }
 
 
