@@ -1,6 +1,7 @@
 package client.gui.play;
 
 import client.WordleClientMain;
+import client.gui.ShareDialog;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
@@ -67,7 +68,7 @@ public class PlayPage extends JFrame implements ActionListener {
     }
 
     private void createComponents() {
-        Border roundedBorder =
+        final Border roundedBorder =
                 new CompoundBorder(
                         new LineBorder(Color.GRAY), new EmptyBorder(5, 10, 5, 10));
 
@@ -107,7 +108,9 @@ public class PlayPage extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         if (currentAttempt - 12 >= 0) {
-            JOptionPane.showMessageDialog(this, "You have used all your attempts.");
+            JOptionPane.showMessageDialog(this, "You have used all attempts.");
+            dispose();
+            new ShareDialog(username).setVisible(true);
             return;
         }
 
@@ -116,10 +119,11 @@ public class PlayPage extends JFrame implements ActionListener {
                 .forEach(field -> guess.append(field.getText()));
 
         final Optional<Response> response =
-                WordleClientMain.sendWord(username, guess.toString());
+                WordleClientMain.sendWord(username, guess.toString(), currentAttempt + 1);
 
         if (response.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Server could not respond.");
+            dispose();
         } else if (response.get().status() == 0) {
             Arrays.stream(inputFields[currentAttempt]).forEach(elem -> elem.setEditable(false));
             final WordHints wordHints = (WordHints) response.get().data();
@@ -132,6 +136,8 @@ public class PlayPage extends JFrame implements ActionListener {
 
         } else {
             JOptionPane.showMessageDialog(this, response.get().message());
+            new ShareDialog(username).setVisible(true);
+            dispose();
         }
 
 
