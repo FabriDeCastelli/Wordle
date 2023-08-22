@@ -1,14 +1,17 @@
 {
-  "fabry": {
-    "username": "fabry",
-    "passwordHash": "fabry"
-  },
   "f": {
     "username": "f",
-    "passwordHash": "JS8QyDYQ68oaBZwLroJV66L5W+TR17z6idckioLZ8RE\u003d"
-  },
-  "ciao": {
-    "username": "ciao",
-    "passwordHash": "sTOgwOm+474gFj0q0x1iSNspKqbcse4IeiqlDg/HWuI\u003d"
+    "passwordHash": "JS8QyDYQ68oaBZwLroJV66L5W+TR17z6idckioLZ8RE\u003d",
+    "statistics": {
+      "gamesPlayed": 2,
+      "gamesWon": 2,
+      "gamesWonPercentage": 1.0,
+      "currentStreak": 2,
+      "longestStreak": 2,
+      "guessDistribution": [
+        2,
+        1
+      ]
+    }
   }
 }
