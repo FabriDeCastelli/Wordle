@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import server.service.command.LogoutCommand;
 
 /**
  * LogoutCommand Tests.
@@ -26,6 +27,7 @@ public class LogoutCommandTests {
     private final AuthenticationService authenticationService = mock(AuthenticationService.class);
     private LogoutCommand logoutCommand;
     private User user;
+    private String username;
 
     /**
      * Sets up the test suite.
@@ -34,6 +36,7 @@ public class LogoutCommandTests {
     void setUp() {
         logoutCommand = new LogoutCommand(authenticationService);
         user = new User("username", "password");
+        username = "username";
     }
 
 
@@ -41,7 +44,7 @@ public class LogoutCommandTests {
     @DisplayName(" cannot handle a requestType that is not logout")
     void testHandleInvalidRequest() {
         assertThrows(IllegalArgumentException.class,
-            () -> logoutCommand.handle(new Request(RequestType.LOGIN, user))
+            () -> logoutCommand.handle(new Request(RequestType.LOGIN, username))
         );
     }
 
@@ -54,12 +57,12 @@ public class LogoutCommandTests {
     }
 
     @Test
-    @DisplayName(" cannot logout a not registered user")
-    void testHandleNotRegisteredUser() {
+    @DisplayName(" cannot logout a not registered username")
+    void testHandleNotRegisteredusername() {
         when(authenticationService.getUserByUsername(any()))
                 .thenReturn(Optional.empty());
         assertThrows(IllegalStateException.class,
-            () -> logoutCommand.handle(new Request(RequestType.LOGOUT, user))
+            () -> logoutCommand.handle(new Request(RequestType.LOGOUT, username))
         );
     }
 
@@ -69,7 +72,7 @@ public class LogoutCommandTests {
         when(authenticationService.getUserByUsername(any()))
                 .thenReturn(Optional.of(user));
         assertEquals(
-                logoutCommand.handle(new Request(RequestType.LOGOUT, user)),
+                logoutCommand.handle(new Request(RequestType.LOGOUT, username)),
                 new Response(0, "Logout successful.")
         );
     }

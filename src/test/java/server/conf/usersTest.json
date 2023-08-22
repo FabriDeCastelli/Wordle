@@ -1,0 +1,14 @@
+{
+  "f": {
+    "username": "f",
+    "passwordHash": "JS8QyDYQ68oaBZwLroJV66L5W+TR17z6idckioLZ8RE\u003d",
+    "statistics": {
+      "gamesPlayed": 0,
+      "gamesWon": 0,
+      "gamesWonPercentage": 0.0,
+      "currentStreak": 0,
+      "longestStreak": 0,
+      "guessDistribution": []
+    }
+  }
+}

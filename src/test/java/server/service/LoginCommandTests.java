@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import server.service.command.LoginCommand;
 
 /**
  * LoginCommand tests.
@@ -26,6 +27,8 @@ public class LoginCommandTests {
     private final AuthenticationService authenticationService = mock(AuthenticationService.class);
     private LoginCommand loginCommand;
     private User user;
+    private String username;
+    private String password;
 
     /**
      * Sets up the test suite.
@@ -34,6 +37,9 @@ public class LoginCommandTests {
     void setUp() {
         loginCommand = new LoginCommand(authenticationService);
         user = new User("username", "password");
+        username = "username";
+        password = "password";
+
     }
 
 
@@ -41,15 +47,15 @@ public class LoginCommandTests {
     @DisplayName(" cannot handle a requestType that is not login")
     void testHandleInvalidRequest() {
         assertThrows(IllegalArgumentException.class,
-            () -> loginCommand.handle(new Request(RequestType.LOGOUT, user))
+            () -> loginCommand.handle(new Request(RequestType.LOGOUT, username, password))
         );
     }
 
     @Test
-    @DisplayName(" cannot login a null user")
+    @DisplayName(" cannot login a user with null username")
     void testHandleNullUser() {
         assertThrows(IllegalArgumentException.class,
-            () -> loginCommand.handle(new Request(RequestType.LOGIN, null))
+            () -> loginCommand.handle(new Request(RequestType.LOGIN, null, password))
         );
     }
 
@@ -60,7 +66,7 @@ public class LoginCommandTests {
                 .thenReturn(Optional.empty());
         assertEquals(
             new Response(-1, "User not registered."),
-            loginCommand.handle(new Request(RequestType.LOGIN, user))
+            loginCommand.handle(new Request(RequestType.LOGIN, username, password))
         );
     }
 
@@ -72,7 +78,7 @@ public class LoginCommandTests {
                 .thenReturn(Optional.of(new User("username", "wrong password")));
         assertEquals(
             new Response(-1, "Wrong username or password."),
-            loginCommand.handle(new Request(RequestType.LOGIN, user))
+            loginCommand.handle(new Request(RequestType.LOGIN, username, password))
         );
     }
 
@@ -83,7 +89,7 @@ public class LoginCommandTests {
                 .thenReturn(Optional.of(user));
         assertEquals(
             new Response(0, "Login successful."),
-            loginCommand.handle(new Request(RequestType.LOGIN, user))
+            loginCommand.handle(new Request(RequestType.LOGIN, username, password))
         );
     }
 

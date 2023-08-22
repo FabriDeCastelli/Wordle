@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import server.service.command.RegisterCommand;
 
 /**
  * RegisterCommand Tests.
@@ -26,6 +27,8 @@ public class RegisterCommandTests {
     private final AuthenticationService authenticationService = mock(AuthenticationService.class);
     private RegisterCommand registerCommand;
     private User user;
+    private String username;
+    private String password;
 
     /**
      * Sets up the test suite.
@@ -34,13 +37,16 @@ public class RegisterCommandTests {
     void setUp() {
         registerCommand = new RegisterCommand(authenticationService);
         user = new User("username", "password");
+        username = "username";
+        password = "password";
     }
+
 
     @Test
     @DisplayName(" cannot handle a requestType that is not register")
     void testHandleInvalidRequest() {
         assertThrows(IllegalArgumentException.class,
-            () -> registerCommand.handle(new Request(RequestType.LOGOUT, user))
+            () -> registerCommand.handle(new Request(RequestType.LOGOUT, username, password))
         );
     }
 
@@ -48,7 +54,7 @@ public class RegisterCommandTests {
     @DisplayName(" cannot register a null user")
     void testHandleNullUser() {
         assertThrows(IllegalArgumentException.class,
-            () -> registerCommand.handle(new Request(RequestType.REGISTER, null))
+            () -> registerCommand.handle(new Request(RequestType.REGISTER, null, null))
         );
     }
 
@@ -59,8 +65,7 @@ public class RegisterCommandTests {
         assertEquals(
                 new Response(-1, "Password cannot be empty."),
                 registerCommand.handle(
-                        new Request(RequestType.REGISTER,
-                                new User("username", "")))
+                        new Request(RequestType.REGISTER, username, ""))
         );
     }
 
@@ -71,7 +76,7 @@ public class RegisterCommandTests {
                 .thenReturn(Optional.of(user));
         assertEquals(
             new Response(-1, "User already registered."),
-            registerCommand.handle(new Request(RequestType.REGISTER, user))
+            registerCommand.handle(new Request(RequestType.REGISTER, username, password))
         );
     }
 
@@ -83,7 +88,7 @@ public class RegisterCommandTests {
         when(authenticationService.add(any()))
                 .thenReturn(true);
         assertEquals(
-            registerCommand.handle(new Request(RequestType.REGISTER, user)),
+            registerCommand.handle(new Request(RequestType.REGISTER, username, password)),
             new Response(0, "Registration successful.")
         );
     }
@@ -96,7 +101,7 @@ public class RegisterCommandTests {
         when(authenticationService.add(any()))
                 .thenReturn(false);
         assertEquals(
-            registerCommand.handle(new Request(RequestType.REGISTER, user)),
+            registerCommand.handle(new Request(RequestType.REGISTER, username, password)),
             new Response(-1, "Registration failed.")
         );
     }
