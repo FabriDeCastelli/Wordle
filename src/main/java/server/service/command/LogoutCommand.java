@@ -4,6 +4,7 @@ import model.Request;
 import model.Response;
 import model.User;
 import model.enums.RequestType;
+import model.enums.Status;
 import org.jetbrains.annotations.NotNull;
 import server.model.Command;
 import server.service.AuthenticationService;
@@ -42,7 +43,7 @@ public class LogoutCommand implements Command {
         if (authenticationService.getUserByUsername(user.getUsername()).isEmpty()) {
             throw new IllegalStateException("Cannot logout a not registered user");
         }
-        return new Response(0, "Logout successful.");
+        return new Response(Status.SUCCESS, "Logout successful.");
     }
 
 }

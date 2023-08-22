@@ -2,6 +2,7 @@ package model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import model.enums.Status;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,12 +12,12 @@ import org.junit.jupiter.api.Test;
 @DisplayName("The Response tests ")
 public class ResponseTests {
 
-    private final Response response = new Response(123, "testMessage");
+    private final Response response = new Response(Status.FAILURE, "testMessage");
 
     @Test
     @DisplayName(" can correctly get the status")
     public void testGetStatus() {
-        assertEquals(123, response.status());
+        assertEquals(Status.FAILURE, response.status());
     }
 
     @Test

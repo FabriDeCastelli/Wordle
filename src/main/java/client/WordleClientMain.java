@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import model.Request;
@@ -16,6 +15,7 @@ import model.Response;
 import model.StreamHandler;
 import model.WordAttempt;
 import model.enums.RequestType;
+import model.enums.Status;
 
 /**
  * WordleClientMain is the client for the Wordle game.
@@ -29,7 +29,7 @@ public class WordleClientMain {
     private static ObjectOutputStream out;
 
     private static final Response errorResponse =
-            new Response(-1, "Error sending requestType to server.");
+            new Response(Status.FAILURE, "Error sending requestType to server.");
 
 
     /**

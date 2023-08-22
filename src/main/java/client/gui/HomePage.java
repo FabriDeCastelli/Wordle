@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import model.Response;
+import model.enums.Status;
 
 /**
  * Interface for the home page.
@@ -47,7 +48,7 @@ public class HomePage extends JFrame implements ActionListener {
             final Optional<Response> response = WordleClientMain.play(username);
             if (response.isEmpty()) {
                 JOptionPane.showMessageDialog(HomePage.this, "Server could not respond.");
-            } else if (response.get().status() == 0) {
+            } else if (response.get().status() == Status.SUCCESS) {
                 new PlayPage(username).setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(HomePage.this, response.get().message());
@@ -64,7 +65,7 @@ public class HomePage extends JFrame implements ActionListener {
         final Optional<Response> response = WordleClientMain.logout(username);
         if (response.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Server could not respond.");
-        } else if (response.get().status() == 0) {
+        } else if (response.get().status() == Status.SUCCESS) {
             JOptionPane.showMessageDialog(this, "Successfully logged out.");
             this.dispose();
             new AuthenticationPage().setVisible(true);

@@ -10,6 +10,7 @@ import model.Request;
 import model.Response;
 import model.UserStatistics;
 import model.enums.RequestType;
+import model.enums.Status;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -62,7 +63,7 @@ public class PlayCommandTests {
         when(playWordleService.hasPlayed(username, WordExtractionService.getCurrentWord()))
                 .thenReturn(true);
         assertEquals(
-                new Response(-1, "You have already played the game for this word."),
+                new Response(Status.FAILURE, "You have already played the game for this word."),
                 playCommand.handle(new Request(RequestType.PLAY, username))
         );
     }
@@ -77,7 +78,7 @@ public class PlayCommandTests {
         when(userStatisticsService.getStatistics(any())).thenReturn(new UserStatistics());
         when(userStatisticsService.updateStatistics(any(), any())).thenReturn(true);
         assertEquals(
-                new Response(0, "The user can play the game."),
+                new Response(Status.SUCCESS, "The user can play the game."),
                 playCommand.handle(new Request(RequestType.PLAY, username))
         );
     }
@@ -90,7 +91,7 @@ public class PlayCommandTests {
         when(playWordleService.addPlayedGame(username, WordExtractionService.getCurrentWord()))
                 .thenReturn(false);
         assertEquals(
-                new Response(-1, "Error while saving the played game."),
+                new Response(Status.FAILURE, "Error while saving the played game."),
                 playCommand.handle(new Request(RequestType.PLAY, username))
         );
     }

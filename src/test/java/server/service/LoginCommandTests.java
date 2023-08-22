@@ -11,6 +11,7 @@ import model.Request;
 import model.Response;
 import model.User;
 import model.enums.RequestType;
+import model.enums.Status;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -65,7 +66,7 @@ public class LoginCommandTests {
         when(authenticationService.getUserByUsername(any()))
                 .thenReturn(Optional.empty());
         assertEquals(
-            new Response(-1, "User not registered."),
+            new Response(Status.FAILURE, "User not registered."),
             loginCommand.handle(new Request(RequestType.LOGIN, username, password))
         );
     }
@@ -77,7 +78,7 @@ public class LoginCommandTests {
         when(authenticationService.getUserByUsername(any()))
                 .thenReturn(Optional.of(new User("username", "wrong password")));
         assertEquals(
-            new Response(-1, "Wrong username or password."),
+            new Response(Status.FAILURE, "Wrong username or password."),
             loginCommand.handle(new Request(RequestType.LOGIN, username, password))
         );
     }
@@ -88,7 +89,7 @@ public class LoginCommandTests {
         when(authenticationService.getUserByUsername(any()))
                 .thenReturn(Optional.of(user));
         assertEquals(
-            new Response(0, "Login successful."),
+            new Response(Status.SUCCESS, "Login successful."),
             loginCommand.handle(new Request(RequestType.LOGIN, username, password))
         );
     }

@@ -4,6 +4,7 @@ import model.Request;
 import model.Response;
 import model.User;
 import model.enums.RequestType;
+import model.enums.Status;
 import org.jetbrains.annotations.NotNull;
 import server.model.Command;
 import server.service.AuthenticationService;
@@ -41,13 +42,13 @@ public class RegisterCommand implements Command {
         final User user = new User(request.username(), (String) request.data());
 
         if (user.getPasswordHash().isEmpty()) {
-            return new Response(-1, "Password cannot be empty.");
+            return new Response(Status.FAILURE, "Password cannot be empty.");
         } else if (authenticationService.getUserByUsername(user.getUsername()).isPresent()) {
-            return new Response(-1, "User already registered.");
+            return new Response(Status.FAILURE, "User already registered.");
         } else if (authenticationService.add(user)) {
-            return new Response(0, "Registration successful.");
+            return new Response(Status.SUCCESS, "Registration successful.");
         }
-        return new Response(-1, "Registration failed.");
+        return new Response(Status.FAILURE, "Registration failed.");
 
     }
 }

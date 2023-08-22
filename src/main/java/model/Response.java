@@ -1,11 +1,12 @@
 package model;
 
 import java.io.Serializable;
+import model.enums.Status;
 
 /**
  * Represents a response from the server.
  */
-public record Response(int status, String message, Object data) implements Serializable {
+public record Response(Status status, String message, Object data) implements Serializable {
 
     /**
      * Constructor for Response. Sets data to null.
@@ -13,7 +14,7 @@ public record Response(int status, String message, Object data) implements Seria
      * @param status the status of the response
      * @param message the message of the response
      */
-    public Response(int status, String message) {
+    public Response(Status status, String message) {
         this(status, message, null);
     }
 
@@ -23,7 +24,7 @@ public record Response(int status, String message, Object data) implements Seria
      * @param status the status of the response
      * @param data the data of the response
      */
-    public Response(int status, Object data) {
+    public Response(Status status, Object data) {
         this(status, "", data);
     }
 

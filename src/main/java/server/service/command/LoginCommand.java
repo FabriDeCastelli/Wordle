@@ -1,10 +1,10 @@
 package server.service.command;
 
-import java.util.Optional;
 import model.Request;
 import model.Response;
 import model.User;
 import model.enums.RequestType;
+import model.enums.Status;
 import org.jetbrains.annotations.NotNull;
 import server.model.Command;
 import server.service.AuthenticationService;
@@ -41,9 +41,9 @@ public class LoginCommand implements Command {
 
         return authenticationService.getUserByUsername(request.username())
                 .map(value -> value.equals(new User(request.username(), (String) request.data()))
-                ? new Response(0, "Login successful.")
-                : new Response(-1, "Wrong username or password.")
-                ).orElseGet(() -> new Response(-1, "User not registered."));
+                ? new Response(Status.SUCCESS, "Login successful.")
+                : new Response(Status.FAILURE, "Wrong username or password.")
+                ).orElseGet(() -> new Response(Status.FAILURE, "User not registered."));
 
     }
 

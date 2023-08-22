@@ -25,6 +25,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import model.Response;
 import model.WordHints;
+import model.enums.Status;
 
 /**
  * Interface to play Wordle.
@@ -124,7 +125,7 @@ public class PlayPage extends JFrame implements ActionListener {
         if (response.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Server could not respond.");
             dispose();
-        } else if (response.get().status() == 0) {
+        } else if (response.get().status() == Status.FAILURE) {
             Arrays.stream(inputFields[currentAttempt]).forEach(elem -> elem.setEditable(false));
             final WordHints wordHints = (WordHints) response.get().data();
             wordHints.correctPositions()

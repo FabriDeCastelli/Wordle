@@ -15,6 +15,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import model.Response;
 import model.enums.AuthType;
+import model.enums.Status;
 
 /**
  * Dialog to perform an authentication, that can be either login or register.
@@ -108,7 +109,7 @@ public class AuthenticationDialog extends JFrame implements ActionListener {
         }
         if (response.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Server could not respond.");
-        } else if (-1 == response.get().status()) {
+        } else if (response.get().status() == Status.FAILURE) {
             JOptionPane.showMessageDialog(this, response.get().message());
             usernameField.setText("");
             passwordField.setText("");

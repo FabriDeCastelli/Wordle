@@ -5,6 +5,7 @@ import model.Response;
 import model.UserStatistics;
 import model.WordAttempt;
 import model.enums.RequestType;
+import model.enums.Status;
 import org.jetbrains.annotations.NotNull;
 import server.model.Command;
 import server.service.PlayWordleService;
@@ -52,10 +53,10 @@ public class SendWordCommand implements Command {
                     wordAttempt,
                     request.username()
             );
-            return new Response(1, "You guessed the word!");
+            return new Response(Status.SUCCESS, "You guessed the word!");
         }
 
-        return new Response(0, playWordleService.guessWord(wordAttempt.word()));
+        return new Response(Status.FAILURE, playWordleService.guessWord(wordAttempt.word()));
 
     }
 

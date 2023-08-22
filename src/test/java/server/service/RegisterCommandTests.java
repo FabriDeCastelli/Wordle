@@ -11,6 +11,7 @@ import model.Request;
 import model.Response;
 import model.User;
 import model.enums.RequestType;
+import model.enums.Status;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -63,7 +64,7 @@ public class RegisterCommandTests {
     @DisplayName(" cannot register a user with an empty password")
     void testHandleEmptyPassword() {
         assertEquals(
-                new Response(-1, "Password cannot be empty."),
+                new Response(Status.FAILURE, "Password cannot be empty."),
                 registerCommand.handle(
                         new Request(RequestType.REGISTER, username, ""))
         );
@@ -75,7 +76,7 @@ public class RegisterCommandTests {
         when(authenticationService.getUserByUsername(any()))
                 .thenReturn(Optional.of(user));
         assertEquals(
-            new Response(-1, "User already registered."),
+            new Response(Status.FAILURE, "User already registered."),
             registerCommand.handle(new Request(RequestType.REGISTER, username, password))
         );
     }
@@ -89,7 +90,7 @@ public class RegisterCommandTests {
                 .thenReturn(true);
         assertEquals(
             registerCommand.handle(new Request(RequestType.REGISTER, username, password)),
-            new Response(0, "Registration successful.")
+            new Response(Status.SUCCESS, "Registration successful.")
         );
     }
 
@@ -102,7 +103,7 @@ public class RegisterCommandTests {
                 .thenReturn(false);
         assertEquals(
             registerCommand.handle(new Request(RequestType.REGISTER, username, password)),
-            new Response(-1, "Registration failed.")
+            new Response(Status.FAILURE, "Registration failed.")
         );
     }
 

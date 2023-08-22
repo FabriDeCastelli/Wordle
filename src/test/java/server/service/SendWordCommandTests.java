@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
 import model.Request;
-import model.User;
 import model.enums.RequestType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +22,6 @@ public class SendWordCommandTests {
     @Mock
     private final PlayWordleService playWordleService = mock(PlayWordleService.class);
     private PlayCommand playCommand;
-    private User user;
     private String username;
 
     /**

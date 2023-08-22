@@ -11,6 +11,7 @@ import model.Request;
 import model.Response;
 import model.User;
 import model.enums.RequestType;
+import model.enums.Status;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,7 +59,7 @@ public class LogoutCommandTests {
 
     @Test
     @DisplayName(" cannot logout a not registered username")
-    void testHandleNotRegisteredusername() {
+    void testHandleNotRegisteredUsername() {
         when(authenticationService.getUserByUsername(any()))
                 .thenReturn(Optional.empty());
         assertThrows(IllegalStateException.class,
@@ -73,7 +74,7 @@ public class LogoutCommandTests {
                 .thenReturn(Optional.of(user));
         assertEquals(
                 logoutCommand.handle(new Request(RequestType.LOGOUT, username)),
-                new Response(0, "Logout successful.")
+                new Response(Status.SUCCESS, "Logout successful.")
         );
     }
 

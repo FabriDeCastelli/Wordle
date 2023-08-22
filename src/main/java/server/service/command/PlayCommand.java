@@ -2,9 +2,9 @@ package server.service.command;
 
 import model.Request;
 import model.Response;
-import model.User;
 import model.UserStatistics;
 import model.enums.RequestType;
+import model.enums.Status;
 import org.jetbrains.annotations.NotNull;
 import server.model.Command;
 import server.service.PlayWordleService;
@@ -49,15 +49,15 @@ public class PlayCommand implements Command {
         final String username = request.username();
 
         if (playWordleService.hasPlayed(username, currentWord)) {
-            return new Response(-1, "You have already played the game for this word.");
+            return new Response(Status.FAILURE, "You have already played the game for this word.");
         } else if (playWordleService.addPlayedGame(username, currentWord)) {
             final UserStatistics userStatistics = userStatisticsService.getStatistics(username);
             userStatistics.incrementGamesPlayed();
             return userStatisticsService.updateStatistics(username, userStatistics)
-                ? new Response(0, "The user can play the game.")
-                : new Response(-1, "Error while updating the user statistics.");
+                ? new Response(Status.SUCCESS, "The user can play the game.")
+                : new Response(Status.FAILURE, "Error while updating the user statistics.");
         }
-        return new Response(-1, "Error while saving the played game.");
+        return new Response(Status.FAILURE, "Error while saving the played game.");
     }
 
 }
