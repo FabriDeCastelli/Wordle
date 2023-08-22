@@ -1,4 +1,4 @@
-package server.service;
+package server.service.command;
 
 import model.Request;
 import model.Response;
@@ -6,6 +6,7 @@ import model.User;
 import model.enums.RequestType;
 import org.jetbrains.annotations.NotNull;
 import server.model.Command;
+import server.service.AuthenticationService;
 
 /**
  * Register command.
@@ -33,11 +34,11 @@ public class RegisterCommand implements Command {
 
         if (request.requestType() != RequestType.REGISTER) {
             throw new IllegalArgumentException("Cannot handle a non-register requestType");
-        } else if (request.user() == null) {
+        } else if (request.username() == null) {
             throw new IllegalArgumentException("Cannot register a null user");
         }
 
-        final User user = request.user();
+        final User user = new User(request.username(), (String) request.data());
 
         if (user.getPasswordHash().isEmpty()) {
             return new Response(-1, "Password cannot be empty.");

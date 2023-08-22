@@ -1,25 +1,27 @@
-package server.service;
+package server.service.command;
 
+import java.util.Optional;
 import model.Request;
 import model.Response;
 import model.User;
 import model.enums.RequestType;
 import org.jetbrains.annotations.NotNull;
 import server.model.Command;
+import server.service.AuthenticationService;
 
 /**
- * Logout command.
+ * Login command.
  */
-public class LogoutCommand implements Command {
+public class LoginCommand implements Command {
 
     private final AuthenticationService authenticationService;
 
     /**
-     * Constructor for LogoutCommand.
+     * Constructor for LoginCommand.
      *
      * @param authenticationService the authentication service
      */
-    public LogoutCommand(AuthenticationService authenticationService) {
+    public LoginCommand(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
     }
 
@@ -31,17 +33,19 @@ public class LogoutCommand implements Command {
      */
     public Response handle(@NotNull Request request) {
 
-        if (request.requestType() != RequestType.LOGOUT) {
+        if (request.requestType() != RequestType.LOGIN) {
             throw new IllegalArgumentException("Cannot handle a non-logout requestType");
-        } else if (request.user() == null) {
+        } else if (request.username() == null) {
             throw new IllegalArgumentException("Cannot logout a null user");
         }
 
-        final User user = request.user();
-        if (authenticationService.getUserByUsername(user.getUsername()).isEmpty()) {
-            throw new IllegalStateException("Cannot logout a not registered user");
-        }
-        return new Response(0, "Logout successful.");
+        return authenticationService.getUserByUsername(request.username())
+                .map(value -> value.equals(new User(request.username(), (String) request.data()))
+                ? new Response(0, "Login successful.")
+                : new Response(-1, "Wrong username or password.")
+                ).orElseGet(() -> new Response(-1, "User not registered."));
+
     }
 
 }
+
