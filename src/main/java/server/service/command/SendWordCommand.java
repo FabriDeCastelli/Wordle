@@ -54,7 +54,7 @@ public class SendWordCommand implements Command {
             userStatistics.resetCurrentStreak();
             userStatisticsService.updateStatistics(request.username(), userStatistics);
             return new Response(Status.SUCCESS,
-                    "You have exceeded the maximum number of attempts.");
+                    "You have exceeded the maximum number of attempts.", userStatistics);
         }
 
         if (wordAttempt.word().equals(WordExtractionService.getCurrentWord())) {
@@ -64,7 +64,7 @@ public class SendWordCommand implements Command {
             userStatistics.incrementCurrentStreak();
             userStatistics.addTrials(wordAttempt.attemptNumber());
             userStatisticsService.updateStatistics(request.username(), userStatistics);
-            return new Response(Status.GUESS, "You guessed the word!");
+            return new Response(Status.GUESS, "You guessed the word!", userStatistics);
         }
 
         return new Response(Status.TRYAGAIN, playWordleService.guessWord(wordAttempt.word()));
