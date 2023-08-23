@@ -26,6 +26,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import model.Response;
+import model.UserStatistics;
 import model.WordHints;
 import model.enums.Status;
 
@@ -160,14 +161,11 @@ public class PlayPage extends JFrame implements ActionListener {
                     .forEach(i -> inputFields[currentAttempt][i].setBackground(Color.ORANGE));
             currentAttempt++;
             inputFields[currentAttempt][0].setEditable(true);
-        } else if (response.get().status() == Status.GUESS) {
-            JOptionPane.showMessageDialog(this, response.get().message());
-            new ShareDialog(username).setVisible(true);
-            dispose();
         } else {
+            final UserStatistics userStatistics = (UserStatistics) response.get().data();
             JOptionPane.showMessageDialog(this, response.get().message());
+            new ShareDialog(username, userStatistics).setVisible(true);
             dispose();
-            new ShareDialog(username).setVisible(true);
         }
 
     }
