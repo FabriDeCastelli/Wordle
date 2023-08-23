@@ -81,6 +81,13 @@ public class UserStatistics implements Serializable {
         }
     }
 
+    /**
+     * Resets the current streak.
+     */
+    public void resetCurrentStreak() {
+        this.currentStreak = 0;
+    }
+
     public int getLongestStreak() {
         return longestStreak;
     }
