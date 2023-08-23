@@ -23,6 +23,8 @@ import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import model.Response;
 import model.WordHints;
 import model.enums.Status;
@@ -79,6 +81,22 @@ public class PlayPage extends JFrame implements ActionListener {
                 inputFields[i][j] = new JTextField(1);
                 inputFields[i][j].setEditable(false);
                 inputFields[i][j].setBorder(roundedBorder);
+                inputFields[i][j].getDocument().addDocumentListener(new DocumentListener() {
+                    @Override
+                    public void insertUpdate(DocumentEvent e) {
+                        submitButton.setEnabled(checkFieldsFilled());
+                    }
+
+                    @Override
+                    public void removeUpdate(DocumentEvent e) {
+                        submitButton.setEnabled(checkFieldsFilled());
+                    }
+
+                    @Override
+                    public void changedUpdate(DocumentEvent e) {
+                        submitButton.setEnabled(checkFieldsFilled());
+                    }
+                });
                 inputFields[i][j].addKeyListener(new FieldFocusListener(j, inputFields[i]));
                 rowPanel.add(inputFields[i][j]);
             });
@@ -101,6 +119,16 @@ public class PlayPage extends JFrame implements ActionListener {
     }
 
     /**
+     * Checks if all the fields in the current attempt are filled.
+     *
+     * @return true if all fields are filled, false otherwise
+     */
+    public boolean checkFieldsFilled() {
+        return Arrays.stream(inputFields[currentAttempt])
+                .noneMatch(field -> field.getText().isEmpty());
+    }
+
+    /**
      * On a button click, send the user's guess to the server.
      *
      * @param e the event to be processed
@@ -108,10 +136,8 @@ public class PlayPage extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        if (currentAttempt - 12 >= 0) {
-            JOptionPane.showMessageDialog(this, "You have used all attempts.");
-            dispose();
-            new ShareDialog(username).setVisible(true);
+        if (!checkFieldsFilled()) {
+            JOptionPane.showMessageDialog(this, "Please complete the word to try.");
             return;
         }
 
@@ -125,7 +151,7 @@ public class PlayPage extends JFrame implements ActionListener {
         if (response.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Server could not respond.");
             dispose();
-        } else if (response.get().status() == Status.FAILURE) {
+        } else if (response.get().status() == Status.TRYAGAIN) {
             Arrays.stream(inputFields[currentAttempt]).forEach(elem -> elem.setEditable(false));
             final WordHints wordHints = (WordHints) response.get().data();
             wordHints.correctPositions()
@@ -134,13 +160,15 @@ public class PlayPage extends JFrame implements ActionListener {
                     .forEach(i -> inputFields[currentAttempt][i].setBackground(Color.ORANGE));
             currentAttempt++;
             inputFields[currentAttempt][0].setEditable(true);
-
-        } else {
+        } else if (response.get().status() == Status.GUESS) {
             JOptionPane.showMessageDialog(this, response.get().message());
             new ShareDialog(username).setVisible(true);
             dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, response.get().message());
+            dispose();
+            new ShareDialog(username).setVisible(true);
         }
-
 
     }
 

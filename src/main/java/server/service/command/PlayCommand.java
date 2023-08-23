@@ -23,6 +23,7 @@ public class PlayCommand implements Command {
      * Constructor for PlayCommand.
      *
      * @param playWordleService the play wordle service
+     * @param userStatisticsService the user statistics service
      */
     public PlayCommand(
             PlayWordleService playWordleService,

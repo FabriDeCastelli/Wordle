@@ -47,35 +47,30 @@ public class SendWordCommand implements Command {
 
         final WordAttempt wordAttempt = getWordAttempt(request);
 
-        if (wordAttempt.word().equals(WordExtractionService.getCurrentWord())) {
-            handleCorrectGuess(
-                    userStatisticsService.getStatistics(request.username()),
-                    wordAttempt,
-                    request.username()
-            );
-            return new Response(Status.SUCCESS, "You guessed the word!");
+
+        if (wordAttempt.attemptNumber() - 11 > 0) {
+            final UserStatistics userStatistics =
+                    userStatisticsService.getStatistics(request.username());
+            userStatistics.resetCurrentStreak();
+            userStatisticsService.updateStatistics(request.username(), userStatistics);
+            return new Response(Status.SUCCESS,
+                    "You have exceeded the maximum number of attempts.");
         }
 
-        return new Response(Status.FAILURE, playWordleService.guessWord(wordAttempt.word()));
+        if (wordAttempt.word().equals(WordExtractionService.getCurrentWord())) {
+            final UserStatistics userStatistics =
+                    userStatisticsService.getStatistics(request.username());
+            userStatistics.incrementGamesWon();
+            userStatistics.incrementCurrentStreak();
+            userStatistics.addTrials(wordAttempt.attemptNumber());
+            userStatisticsService.updateStatistics(request.username(), userStatistics);
+            return new Response(Status.GUESS, "You guessed the word!");
+        }
+
+        return new Response(Status.TRYAGAIN, playWordleService.guessWord(wordAttempt.word()));
 
     }
 
-    /**
-     * Handles a correct guess.
-     *
-     * @param userStatistics the existing statistics of the user
-     * @param wordAttempt the number of trials the user has taken for the current word
-     * @param username the username of the user
-     */
-    private void handleCorrectGuess(
-            UserStatistics userStatistics,
-            WordAttempt wordAttempt,
-            String username) {
-        userStatistics.incrementGamesWon();
-        userStatistics.incrementCurrentStreak();
-        userStatistics.addTrials(wordAttempt.attemptNumber());
-        userStatisticsService.updateStatistics(username, userStatistics);
-    }
 
     /**
      * Gets the word attempt from the request.
