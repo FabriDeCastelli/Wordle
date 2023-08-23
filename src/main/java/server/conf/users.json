@@ -3,21 +3,12 @@
     "username": "f",
     "passwordHash": "JS8QyDYQ68oaBZwLroJV66L5W+TR17z6idckioLZ8RE\u003d",
     "statistics": {
-      "gamesPlayed": 4,
-      "gamesWon": 8,
-      "gamesWonPercentage": 2.0,
-      "currentStreak": 8,
-      "longestStreak": 8,
-      "guessDistribution": [
-        2,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1
-      ]
+      "gamesPlayed": 1,
+      "gamesWon": 0,
+      "gamesWonPercentage": 0.0,
+      "currentStreak": 0,
+      "longestStreak": 0,
+      "guessDistribution": []
     }
   }
 }
