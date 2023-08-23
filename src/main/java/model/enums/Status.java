@@ -5,7 +5,9 @@ package model.enums;
  */
 public enum Status {
 
+    GUESS,
+    TRYAGAIN,
     SUCCESS,
-    FAILURE,
+    FAILURE
 
 }
