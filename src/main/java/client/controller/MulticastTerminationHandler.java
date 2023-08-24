@@ -1,0 +1,46 @@
+package client.controller;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.MulticastSocket;
+import java.net.NetworkInterface;
+
+/**
+ * Class responsible for handling the termination of the multicast.
+ */
+public class MulticastTerminationHandler extends Thread {
+
+    private final MulticastSocket multicastSocket;
+    private final InetSocketAddress inetSocketAddress;
+    private final NetworkInterface networkInterface;
+
+    /**
+     * Constructor for the MulticastTerminationHandler.
+     *
+     * @param multicastSocket the multicast socket to close
+     * @param inetSocketAddress the multicast socket address
+     * @param networkInterface the network interface
+     */
+    public MulticastTerminationHandler(
+            MulticastSocket multicastSocket,
+            InetSocketAddress inetSocketAddress,
+            NetworkInterface networkInterface) {
+        this.multicastSocket = multicastSocket;
+        this.inetSocketAddress = inetSocketAddress;
+        this.networkInterface = networkInterface;
+
+    }
+
+    @Override
+    public void run() {
+        try {
+            if (!multicastSocket.isClosed()) {
+                multicastSocket.leaveGroup(inetSocketAddress, networkInterface);
+                multicastSocket.close();
+                System.out.println("Multicast chiuso correttamente");
+            }
+        } catch (IOException e) {
+            System.out.println("Error closing multicast socket");
+        }
+    }
+}
