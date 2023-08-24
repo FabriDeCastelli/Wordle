@@ -69,12 +69,13 @@ public class WordleClientMain {
      *
      * @param username the username of the user sending the requestType
      * @param password the password of the user sending the requestType
+     * @return the response from the server
      */
     public static Optional<Response> login(String username, String password) {
         final String hashedPassword = PasswordHashingService.getInstance().hashPassword(password);
         final Request request = new Request(RequestType.LOGIN, username, hashedPassword);
         if (StreamHandler.sendData(out, request)) {
-            new NotificationController(multicastIP, multicastPort).start();
+            new NotificationController(username, multicastIP, multicastPort).start();
             return StreamHandler.getData(in, Response.class);
         }
         return Optional.of(errorResponse);
@@ -85,6 +86,7 @@ public class WordleClientMain {
      *
      * @param username the username of the user sending the requestType
      * @param password the password of the user sending the requestType
+     * @return the response from the server
      */
     public static Optional<Response> register(String username, String password) {
         final String hashedPassword = PasswordHashingService.getInstance().hashPassword(password);
@@ -98,6 +100,7 @@ public class WordleClientMain {
      * Sends a logout requestType to the server.
      *
      * @param username the username of the user sending the requestType
+     * @return the response from the server
      */
     public static Optional<Response> logout(String username) {
         final Request request = new Request(RequestType.LOGOUT, username);
@@ -110,6 +113,7 @@ public class WordleClientMain {
      * Sends a play requestType to the server.
      *
      * @param username the username of the user sending the requestType
+     * @return the response from the server
      */
     public static Optional<Response> play(String username) {
         final Request request = new Request(RequestType.PLAY, username);
@@ -138,12 +142,38 @@ public class WordleClientMain {
      *
      * @param username the username of the user sending the requestType
      * @param userStatistics the user statistics to send
+     * @return the response from the server
      */
     public static Optional<Response> share(String username, UserStatistics userStatistics) {
         final Request request = new Request(RequestType.SHARE, username, userStatistics);
         return StreamHandler.sendData(out, request)
                 ? StreamHandler.getData(in, Response.class)
                 : Optional.of(errorResponse);
+    }
+
+    /**
+     * Sends a showMyStatistics requestType to the server.
+     *
+     * @param username the username of the user sending the request
+     * @return the response from the server
+     */
+    public static Optional<Response> sendMeStatistics(String username) {
+        final Request request = new Request(RequestType.SENDMESTATISTICS, username);
+        return StreamHandler.sendData(out, request)
+                ? StreamHandler.getData(in, Response.class)
+                : Optional.of(errorResponse);
+    }
+
+    /**
+     * Retrieves all the notifications received so far.
+     *
+     * @return the response with all notifications
+     */
+    public static Optional<Response> showMeSharing(String username) {
+        return Optional.of(
+                new Response(
+                        Status.SUCCESS, "Success",
+                        NotificationController.notifications));
     }
 
 }
