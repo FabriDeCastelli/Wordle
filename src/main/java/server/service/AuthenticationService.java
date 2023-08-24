@@ -1,14 +1,7 @@
 package server.service;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 import model.User;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,10 +30,10 @@ public class AuthenticationService extends UserService {
      *
      * @param user the user to be added
      */
-    public synchronized boolean add(@NotNull User user) {
+    public synchronized boolean registerUser(@NotNull User user) {
 
-        if (getUserByUsername(user.getUsername()).isPresent()) {
-            throw new IllegalArgumentException("The user is already stored.");
+        if (getRegisteredUserByUsername(user.getUsername()).isPresent()) {
+            return false;
         }
 
         users.put(user.getUsername(), user);
@@ -58,8 +51,8 @@ public class AuthenticationService extends UserService {
      *
      * @param user the user to be deleted
      */
-    public synchronized boolean delete(@NotNull User user) {
-        if (getUserByUsername(user.getUsername()).isEmpty()) {
+    public synchronized boolean deleteRegistration(@NotNull User user) {
+        if (getRegisteredUserByUsername(user.getUsername()).isEmpty()) {
             throw new IllegalArgumentException("Cannot delete a user that is not registered.");
         }
 
@@ -72,5 +65,32 @@ public class AuthenticationService extends UserService {
         return true;
 
     }
+
+    /**
+     * Adds a user to the list of logged users.
+     *
+     * @param username the username of the user to be added
+     * @return true if it was added, false otherwise
+     */
+    public synchronized boolean addToLoggedUsers(@NotNull String username) {
+        if (getLoggedUserByUsername(username).isPresent()) {
+            return false;
+        }
+        return loggedUsers.add(username);
+    }
+
+    /**
+     * Removes a user from the list of logged users.
+     *
+     * @param username the username of the user to be added
+     * @return true if it was removed, false otherwise
+     */
+    public synchronized boolean removeFromLoggedUsers(@NotNull String username) {
+        if (getLoggedUserByUsername(username).isEmpty()) {
+            return false;
+        }
+        return loggedUsers.remove(username);
+    }
+
 
 }
