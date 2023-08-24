@@ -1,6 +1,7 @@
 package server.controller;
 
 import java.io.IOException;
+import java.net.MulticastSocket;
 import java.net.ServerSocket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -12,6 +13,7 @@ public class TerminationHandler extends Thread {
     private final int maximumDelay;
     private final ExecutorService executorService;
     private final ServerSocket serverSocket;
+    private final MulticastSocket multicastSocket;
 
     /**
      * Constructor for the TerminationHandler.
@@ -23,21 +25,30 @@ public class TerminationHandler extends Thread {
     public TerminationHandler(
             int maximumDelay,
             ExecutorService executorService,
-            ServerSocket serverSocket) {
+            ServerSocket serverSocket,
+            MulticastSocket multicastSocket) {
         this.maximumDelay = maximumDelay;
         this.executorService = executorService;
         this.serverSocket = serverSocket;
+        this.multicastSocket = multicastSocket;
     }
 
     @Override
     public void run() {
+        
         if (serverSocket != null && !serverSocket.isClosed()) {
             try {
                 serverSocket.close();
             } catch (IOException e) {
                 System.out.println("TerminationHandler error: failed to stop server.");
             }
+
         }
+
+        if (multicastSocket != null && !multicastSocket.isClosed()) {
+            multicastSocket.close();
+        }
+
         executorService.shutdown();
         try {
             if (!executorService.awaitTermination(maximumDelay, TimeUnit.MILLISECONDS)) {
