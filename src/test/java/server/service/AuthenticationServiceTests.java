@@ -30,11 +30,11 @@ public class AuthenticationServiceTests {
     @DisplayName(" can correctly add and delete a user to the registered users")
     public void testAddAndDeleteUser() {
         User user = new User("testUser", "testPassword");
-        authenticationService.add(user);
-        Optional<User> userOptional = authenticationService.getUserByUsername("testUser");
+        authenticationService.registerUser(user);
+        Optional<User> userOptional = authenticationService.getRegisteredUserByUsername("testUser");
         assertTrue(userOptional.isPresent());
-        assertTrue(authenticationService.delete(user));
-        userOptional = authenticationService.getUserByUsername(user.getUsername());
+        assertTrue(authenticationService.deleteRegistration(user));
+        userOptional = authenticationService.getRegisteredUserByUsername(user.getUsername());
         assertTrue(userOptional.isEmpty());
     }
 
@@ -47,25 +47,26 @@ public class AuthenticationServiceTests {
         @BeforeAll
         public static void setUp() {
             user = new User("fabry", "fabry");
-            authenticationService.add(user);
+            authenticationService.registerUser(user);
         }
 
         @AfterAll
         public static void tearDown() {
-            authenticationService.delete(user);
+            authenticationService.deleteRegistration(user);
         }
 
         @Test
         @DisplayName(" can correctly get a registered user by getUsername")
         public void testGetUserByUsername() {
-            final Optional<User> user = authenticationService.getUserByUsername("fabry");
+            final Optional<User> user = authenticationService.getRegisteredUserByUsername("fabry");
             assertTrue(user.isPresent());
         }
 
         @Test
         @DisplayName(" correctly return an empty optional when the user is not registered")
         public void testGetNotRegisteredUserByUsername() {
-            Optional<User> user = authenticationService.getUserByUsername("notRegisteredABC");
+            final Optional<User> user =
+                    authenticationService.getRegisteredUserByUsername("notRegisteredABC");
             assertTrue(user.isEmpty());
         }
 
@@ -80,24 +81,16 @@ public class AuthenticationServiceTests {
         @BeforeAll
         public static void setUp() throws IllegalArgumentException {
             user = new User("testUser", "testPassword");
-            authenticationService.add(user);
+            authenticationService.registerUser(user);
         }
 
         @AfterAll
         public static void tearDown() throws IllegalArgumentException {
-            authenticationService.delete(user);
+            authenticationService.deleteRegistration(user);
         }
 
 
 
-        @Test
-        @DisplayName(" should throw an IllegalArgumentException if the user is already registered")
-        public void testAddAlreadyRegisteredUser() {
-
-            assertThrows(
-                    IllegalArgumentException.class,
-                    () -> authenticationService.add(user));
-        }
 
 
     }
@@ -111,7 +104,7 @@ public class AuthenticationServiceTests {
         public void testDeleteNotRegisteredUser() {
             assertThrows(
                     IllegalArgumentException.class,
-                    () -> authenticationService.delete(
+                    () -> authenticationService.deleteRegistration(
                             new User("notregistered", "notregistered")));
         }
     }

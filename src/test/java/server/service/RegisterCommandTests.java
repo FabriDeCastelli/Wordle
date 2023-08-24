@@ -73,8 +73,8 @@ public class RegisterCommandTests {
     @Test
     @DisplayName(" cannot register a user that is already registered")
     void testHandleAlreadyRegisteredUser() {
-        when(authenticationService.getUserByUsername(any()))
-                .thenReturn(Optional.of(user));
+        when(authenticationService.registerUser(any()))
+                .thenReturn(false);
         assertEquals(
             new Response(Status.FAILURE, "User already registered."),
             registerCommand.handle(new Request(RequestType.REGISTER, username, password))
@@ -84,9 +84,9 @@ public class RegisterCommandTests {
     @Test
     @DisplayName(" can handle a correct register requestType")
     void testHandle() {
-        when(authenticationService.getUserByUsername(any()))
+        when(authenticationService.getRegisteredUserByUsername(any()))
                 .thenReturn(Optional.empty());
-        when(authenticationService.add(any()))
+        when(authenticationService.registerUser(any()))
                 .thenReturn(true);
         assertEquals(
             registerCommand.handle(new Request(RequestType.REGISTER, username, password)),
@@ -94,18 +94,6 @@ public class RegisterCommandTests {
         );
     }
 
-    @Test
-    @DisplayName(" can handle a correct reqister requestType that fails to add the user")
-    void testHandleFailedAdd() {
-        when(authenticationService.getUserByUsername(any()))
-                .thenReturn(Optional.empty());
-        when(authenticationService.add(any()))
-                .thenReturn(false);
-        assertEquals(
-            registerCommand.handle(new Request(RequestType.REGISTER, username, password)),
-            new Response(Status.FAILURE, "Registration failed.")
-        );
-    }
 
 
 

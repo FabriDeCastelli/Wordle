@@ -75,7 +75,7 @@ public class PlayCommandTests {
                 .thenReturn(false);
         when(playWordleService.addPlayedGame(any(), any()))
                 .thenReturn(true);
-        when(userStatisticsService.getStatistics(any())).thenReturn(new UserStatistics());
+        when(userStatisticsService.getStatisticsByUsername(any())).thenReturn(new UserStatistics());
         when(userStatisticsService.updateStatistics(any(), any())).thenReturn(true);
         assertEquals(
                 new Response(Status.SUCCESS, "The user can play the game."),

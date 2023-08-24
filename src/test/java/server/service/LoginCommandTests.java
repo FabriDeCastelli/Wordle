@@ -61,12 +61,14 @@ public class LoginCommandTests {
     }
 
     @Test
-    @DisplayName(" cannot login a not registered user")
+    @DisplayName(" cannot login a already logged in user")
     void testHandleNotRegisteredUser() {
-        when(authenticationService.getUserByUsername(any()))
-                .thenReturn(Optional.empty());
+        when(authenticationService.getRegisteredUserByUsername(any()))
+                .thenReturn(Optional.of(user));
+        when(authenticationService.addToLoggedUsers(any()))
+                .thenReturn(false);
         assertEquals(
-            new Response(Status.FAILURE, "User not registered."),
+            new Response(Status.FAILURE, "User already logged in."),
             loginCommand.handle(new Request(RequestType.LOGIN, username, password))
         );
     }
@@ -75,7 +77,7 @@ public class LoginCommandTests {
     @Test
     @DisplayName(" cannot login a user with wrong password")
     void testHandleWrongPassword() {
-        when(authenticationService.getUserByUsername(any()))
+        when(authenticationService.getRegisteredUserByUsername(any()))
                 .thenReturn(Optional.of(new User("username", "wrong password")));
         assertEquals(
             new Response(Status.FAILURE, "Wrong username or password."),
@@ -86,8 +88,10 @@ public class LoginCommandTests {
     @Test
     @DisplayName(" can handle a correct login requestType")
     void testHandle() {
-        when(authenticationService.getUserByUsername(any()))
+        when(authenticationService.getRegisteredUserByUsername(any()))
                 .thenReturn(Optional.of(user));
+        when(authenticationService.addToLoggedUsers(any()))
+                .thenReturn(true);
         assertEquals(
             new Response(Status.SUCCESS, "Login successful."),
             loginCommand.handle(new Request(RequestType.LOGIN, username, password))

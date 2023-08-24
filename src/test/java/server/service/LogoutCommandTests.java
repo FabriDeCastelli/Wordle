@@ -60,18 +60,20 @@ public class LogoutCommandTests {
     @Test
     @DisplayName(" cannot logout a not registered username")
     void testHandleNotRegisteredUsername() {
-        when(authenticationService.getUserByUsername(any()))
+        when(authenticationService.getLoggedUserByUsername(any()))
                 .thenReturn(Optional.empty());
-        assertThrows(IllegalStateException.class,
-            () -> logoutCommand.handle(new Request(RequestType.LOGOUT, username))
-        );
+        assertEquals(
+                logoutCommand.handle(new Request(RequestType.LOGOUT, username)),
+                new Response(Status.FAILURE, "User not logged in."));
     }
 
     @Test
     @DisplayName(" can handle a correct logout requestType")
     void testHandle() {
-        when(authenticationService.getUserByUsername(any()))
-                .thenReturn(Optional.of(user));
+        when(authenticationService.getLoggedUserByUsername(any()))
+                .thenReturn(Optional.of(user.getUsername()));
+        when(authenticationService.removeFromLoggedUsers(any()))
+                .thenReturn(true);
         assertEquals(
                 logoutCommand.handle(new Request(RequestType.LOGOUT, username)),
                 new Response(Status.SUCCESS, "Logout successful.")
