@@ -3,16 +3,19 @@
     "username": "ff",
     "passwordHash": "Bam/Ij/t+AqdDaX3P1wZGmZb9KCko+YI8vnn1f8jlZw\u003d",
     "statistics": {
-      "gamesPlayed": 4,
-      "gamesWon": 4,
+      "gamesPlayed": 7,
+      "gamesWon": 7,
       "gamesWonPercentage": 1.0,
-      "currentStreak": 4,
-      "longestStreak": 4,
+      "currentStreak": 7,
+      "longestStreak": 7,
       "guessDistribution": [
         1,
         1,
         1,
-        2
+        2,
+        1,
+        1,
+        1
       ]
     }
   },
@@ -50,11 +53,11 @@
     "username": "f",
     "passwordHash": "JS8QyDYQ68oaBZwLroJV66L5W+TR17z6idckioLZ8RE\u003d",
     "statistics": {
-      "gamesPlayed": 15,
-      "gamesWon": 14,
-      "gamesWonPercentage": 0.9333333333333333,
-      "currentStreak": 14,
-      "longestStreak": 14,
+      "gamesPlayed": 17,
+      "gamesWon": 15,
+      "gamesWonPercentage": 0.8823529411764706,
+      "currentStreak": 15,
+      "longestStreak": 15,
       "guessDistribution": [
         1,
         1,
@@ -69,7 +72,8 @@
         1,
         1,
         1,
-        2
+        2,
+        1
       ]
     }
   }
