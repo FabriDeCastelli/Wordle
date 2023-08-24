@@ -1,9 +1,15 @@
 package model;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.net.MulticastSocket;
 import java.util.Optional;
+import server.WordleServerMain;
+
 
 /**
  * StreamHandler is a utility class for read and writing objects to streams.
@@ -45,6 +51,34 @@ public class StreamHandler {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Sends an object to a multicast socket.
+     *
+     * @param multicastSocket the multicast socket
+     * @param data the object to be sent
+     * @return true if the object was sent successfully
+     */
+    public static <T> boolean sendMulticastData(MulticastSocket multicastSocket, T data) {
+        try {
+            final ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+            final ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteStream);
+            objectOutputStream.writeObject(data);
+            objectOutputStream.flush();
+            objectOutputStream.close();
+
+            byte[] dataBytes = byteStream.toByteArray();
+            final InetAddress inetAddress = InetAddress.getByName(WordleServerMain.multicastIp);
+            final DatagramPacket packet = new DatagramPacket(
+                    dataBytes, dataBytes.length,
+                    inetAddress,
+                    WordleServerMain.multicastPort);
+            multicastSocket.send(packet);
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
 
 
