@@ -10,4 +10,5 @@ public enum RequestType {
     LOGOUT,
     PLAY,
     SENDWORD,
+    SHARE,
 }

@@ -1,5 +1,6 @@
 package client.gui;
 
+import client.WordleClientMain;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -7,13 +8,16 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serial;
+import java.util.Optional;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import model.Response;
 import model.UserStatistics;
+import model.enums.Status;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -72,15 +76,19 @@ public class ShareDialog extends JFrame {
     }
 
     private void addActionEvent() {
-        shareButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(ShareDialog.this,
-                        "Your results have been shared!",
-                        "Share results",
-                        JOptionPane.INFORMATION_MESSAGE);
-                dispose();
+        shareButton.addActionListener(e -> {
+            final Optional<Response> response = WordleClientMain.share(username, userStatistics);
+            if (response.isEmpty()) {
+                JOptionPane.showMessageDialog(
+                        null, "Could not share statistics.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (response.get().status() == Status.FAILURE) {
+                JOptionPane.showMessageDialog(
+                        null, response.get().message(), "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(
+                        null, response.get().message(), "Success", JOptionPane.INFORMATION_MESSAGE);
             }
+            dispose();
         });
         backToHomePageButton.addActionListener(new ActionListener() {
             @Override

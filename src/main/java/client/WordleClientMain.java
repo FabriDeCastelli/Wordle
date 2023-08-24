@@ -1,5 +1,6 @@
 package client;
 
+import client.controller.NotificationController;
 import client.gui.AuthenticationPage;
 import client.service.PasswordHashingService;
 import java.io.FileInputStream;
@@ -13,6 +14,7 @@ import java.util.Properties;
 import model.Request;
 import model.Response;
 import model.StreamHandler;
+import model.UserStatistics;
 import model.WordAttempt;
 import model.enums.RequestType;
 import model.enums.Status;
@@ -27,6 +29,8 @@ public class WordleClientMain {
     private static Socket socket;
     private static ObjectInputStream in;
     private static ObjectOutputStream out;
+    private static String multicastIP;
+    private static int multicastPort;
 
     private static final Response errorResponse =
             new Response(Status.FAILURE, "Error sending requestType to server.");
@@ -45,6 +49,8 @@ public class WordleClientMain {
             properties.load(inputStream);
             server = properties.getProperty("SERVER");
             port = Integer.parseInt(properties.getProperty("PORT"));
+            multicastIP = properties.getProperty("MULTICAST_IP");
+            multicastPort = Integer.parseInt(properties.getProperty("MULTICAST_PORT"));
             socket = new Socket(server, port);
             out = new ObjectOutputStream(socket.getOutputStream());
             out.flush();
@@ -68,6 +74,7 @@ public class WordleClientMain {
         final String hashedPassword = PasswordHashingService.getInstance().hashPassword(password);
         final Request request = new Request(RequestType.LOGIN, username, hashedPassword);
         if (StreamHandler.sendData(out, request)) {
+            new NotificationController(multicastIP, multicastPort).start();
             return StreamHandler.getData(in, Response.class);
         }
         return Optional.of(errorResponse);
@@ -82,10 +89,9 @@ public class WordleClientMain {
     public static Optional<Response> register(String username, String password) {
         final String hashedPassword = PasswordHashingService.getInstance().hashPassword(password);
         final Request request = new Request(RequestType.REGISTER, username, hashedPassword);
-        if (StreamHandler.sendData(out, request)) {
-            return StreamHandler.getData(in, Response.class);
-        }
-        return Optional.of(errorResponse);
+        return StreamHandler.sendData(out, request)
+                ? StreamHandler.getData(in, Response.class)
+                : Optional.of(errorResponse);
     }
 
     /**
@@ -95,10 +101,9 @@ public class WordleClientMain {
      */
     public static Optional<Response> logout(String username) {
         final Request request = new Request(RequestType.LOGOUT, username);
-        if (StreamHandler.sendData(out, request)) {
-            return StreamHandler.getData(in, Response.class);
-        }
-        return Optional.of(errorResponse);
+        return StreamHandler.sendData(out, request)
+                ? StreamHandler.getData(in, Response.class)
+                : Optional.of(errorResponse);
     }
 
     /**
@@ -108,10 +113,9 @@ public class WordleClientMain {
      */
     public static Optional<Response> play(String username) {
         final Request request = new Request(RequestType.PLAY, username);
-        if (StreamHandler.sendData(out, request)) {
-            return StreamHandler.getData(in, Response.class);
-        }
-        return Optional.of(errorResponse);
+        return StreamHandler.sendData(out, request)
+                ? StreamHandler.getData(in, Response.class)
+                : Optional.of(errorResponse);
     }
 
     /**
@@ -124,10 +128,22 @@ public class WordleClientMain {
     public static Optional<Response> sendWord(String username, String word, int attemptNumber) {
         final Request request = new Request(
                 RequestType.SENDWORD, username, new WordAttempt(word, attemptNumber));
-        if (StreamHandler.sendData(out, request)) {
-            return StreamHandler.getData(in, Response.class);
-        }
-        return Optional.of(errorResponse);
+        return StreamHandler.sendData(out, request)
+                ? StreamHandler.getData(in, Response.class)
+                : Optional.of(errorResponse);
+    }
+
+    /**
+     * Sends a share requestType to the server.
+     *
+     * @param username the username of the user sending the requestType
+     * @param userStatistics the user statistics to send
+     */
+    public static Optional<Response> share(String username, UserStatistics userStatistics) {
+        final Request request = new Request(RequestType.SHARE, username, userStatistics);
+        return StreamHandler.sendData(out, request)
+                ? StreamHandler.getData(in, Response.class)
+                : Optional.of(errorResponse);
     }
 
 }
