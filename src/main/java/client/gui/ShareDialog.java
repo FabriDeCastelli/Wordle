@@ -61,7 +61,7 @@ public class ShareDialog extends JFrame {
     private void setLocationAndSize() {
         statisticsTextPane = new JTextPane();
         statisticsTextPane.setContentType("text/html");
-        statisticsTextPane.setText(getFormattedStatistics());
+        statisticsTextPane.setText(DialogUtils.getFormattedStatistics(username, userStatistics));
         statisticsTextPane.setEditable(false);
         shareButton.setPreferredSize(new Dimension(100, 50));
         backToHomePageButton.setPreferredSize(new Dimension(150, 50));
@@ -76,6 +76,7 @@ public class ShareDialog extends JFrame {
     }
 
     private void addActionEvent() {
+
         shareButton.addActionListener(e -> {
             final Optional<Response> response = WordleClientMain.share(username, userStatistics);
             if (response.isEmpty()) {
@@ -90,43 +91,11 @@ public class ShareDialog extends JFrame {
             }
             dispose();
         });
-        backToHomePageButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new HomePage(username).setVisible(true);
-                dispose();
-            }
+
+        backToHomePageButton.addActionListener(e -> {
+            new HomePage(username).setVisible(true);
+            dispose();
         });
-    }
-
-    /**
-     * Returns the formatted statistics as a String.
-     *
-     * @return the formatted statistics
-     */
-    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-    private String getFormattedStatistics() {
-        final String cssStyle = "<style>"
-                + "html, body { height: 100%; display: flex; justify-content: center; "
-                + "align-items: center; background-color: #f5f5f5; }"
-                + "div { text-align: center; background-color: white; padding: 20px; "
-                + "border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); }"
-                + "h1 { color: #333; font-size: 24px; margin-bottom: 10px; }"
-                + "p { font-size: 16px; margin-bottom: 5px; }"
-                + "</style>";
-
-        final String statisticsContent =
-                "<div>"
-                    + "<h1>Statistics for " + username + "</h1>"
-                    + "<p>Games Played: " + userStatistics.getGamesPlayed() + "</p>"
-                    + "<p>Games Won: " + userStatistics.getGamesWon() + "</p>"
-                    + "<p>Games Won Percentage: " + userStatistics.getGamesWonPercentage() + "</p>"
-                    + "<p>Current Streak: " + userStatistics.getCurrentStreak() + "</p>"
-                    + "<p>Longest Streak: " + userStatistics.getLongestStreak() + "</p>"
-                    + "<p>Guess Distribution: " + userStatistics.getGuessDistribution() + "</p>"
-                + "</div>";
-
-        return "<html>" + cssStyle + "<body>" + statisticsContent + "</body></html>";
     }
 
 }
