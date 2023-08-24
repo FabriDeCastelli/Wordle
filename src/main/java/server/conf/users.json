@@ -50,11 +50,11 @@
     "username": "f",
     "passwordHash": "JS8QyDYQ68oaBZwLroJV66L5W+TR17z6idckioLZ8RE\u003d",
     "statistics": {
-      "gamesPlayed": 9,
-      "gamesWon": 8,
-      "gamesWonPercentage": 0.8888888888888888,
-      "currentStreak": 8,
-      "longestStreak": 8,
+      "gamesPlayed": 15,
+      "gamesWon": 14,
+      "gamesWonPercentage": 0.9333333333333333,
+      "currentStreak": 14,
+      "longestStreak": 14,
       "guessDistribution": [
         1,
         1,
@@ -63,7 +63,13 @@
         1,
         1,
         1,
-        1
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        2
       ]
     }
   }
