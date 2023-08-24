@@ -39,11 +39,12 @@ public class LoginCommand implements Command {
             throw new IllegalArgumentException("Cannot logout a null user");
         }
 
-        return authenticationService.getUserByUsername(request.username())
-                .map(value -> value.equals(new User(request.username(), (String) request.data()))
+        return authenticationService.getRegisteredUserByUsername(request.username())
+                .filter(user -> user.getPasswordHash().equals(request.data()))
+                .map(user -> authenticationService.addToLoggedUsers(user.getUsername())
                 ? new Response(Status.SUCCESS, "Login successful.")
-                : new Response(Status.FAILURE, "Wrong username or password.")
-                ).orElseGet(() -> new Response(Status.FAILURE, "User not registered."));
+                : new Response(Status.FAILURE, "User already logged in.")
+                ).orElseGet(() -> new Response(Status.FAILURE, "Wrong username or password."));
 
     }
 

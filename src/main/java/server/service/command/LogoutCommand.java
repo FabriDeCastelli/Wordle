@@ -39,11 +39,10 @@ public class LogoutCommand implements Command {
             throw new IllegalArgumentException("Cannot logout a user with null username");
         }
 
-        final User user = new User(request.username(), (String) request.data());
-        if (authenticationService.getUserByUsername(user.getUsername()).isEmpty()) {
-            throw new IllegalStateException("Cannot logout a not registered user");
-        }
-        return new Response(Status.SUCCESS, "Logout successful.");
+        return authenticationService.getLoggedUserByUsername(request.username())
+                .filter(authenticationService::removeFromLoggedUsers)
+                .map(username -> new Response(Status.SUCCESS, "Logout successful."))
+                .orElseGet(() -> new Response(Status.FAILURE, "User not logged in."));
     }
 
 }
