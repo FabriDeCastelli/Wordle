@@ -37,7 +37,7 @@ public class UserStatisticsService extends UserService {
      */
     public synchronized boolean updateStatistics(
             @NotNull String username, UserStatistics userStatistics) {
-        final Optional<User> user = getUserByUsername(username);
+        final Optional<User> user = getRegisteredUserByUsername(username);
         if (user.isEmpty()) {
             throw new IllegalArgumentException("Cannot update statistics for a not stored user");
         }
@@ -58,9 +58,9 @@ public class UserStatisticsService extends UserService {
      * @param username the username
      * @return the user statistics for that user
      */
-    public synchronized UserStatistics getStatistics(@NotNull String username) {
+    public synchronized UserStatistics getStatisticsByUsername(@NotNull String username) {
 
-        final Optional<User> user = getUserByUsername(username);
+        final Optional<User> user = getRegisteredUserByUsername(username);
         if (user.isEmpty()) {
             throw new IllegalArgumentException("Cannot get statistics for a not stored user");
         }

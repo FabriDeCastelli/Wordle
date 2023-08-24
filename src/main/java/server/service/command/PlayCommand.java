@@ -52,7 +52,8 @@ public class PlayCommand implements Command {
         if (playWordleService.hasPlayed(username, currentWord)) {
             return new Response(Status.FAILURE, "You have already played the game for this word.");
         } else if (playWordleService.addPlayedGame(username, currentWord)) {
-            final UserStatistics userStatistics = userStatisticsService.getStatistics(username);
+            final UserStatistics userStatistics =
+                    userStatisticsService.getStatisticsByUsername(username);
             userStatistics.incrementGamesPlayed();
             return userStatisticsService.updateStatistics(username, userStatistics)
                 ? new Response(Status.SUCCESS, "The user can play the game.")

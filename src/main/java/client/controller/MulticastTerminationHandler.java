@@ -37,7 +37,7 @@ public class MulticastTerminationHandler extends Thread {
             if (!multicastSocket.isClosed()) {
                 multicastSocket.leaveGroup(inetSocketAddress, networkInterface);
                 multicastSocket.close();
-                System.out.println("Multicast chiuso correttamente");
+                System.out.println("Multicast correctly closed.");
             }
         } catch (IOException e) {
             System.out.println("Error closing multicast socket");

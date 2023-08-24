@@ -50,7 +50,7 @@ public class SendWordCommand implements Command {
 
         if (wordAttempt.attemptNumber() - 11 > 0) {
             final UserStatistics userStatistics =
-                    userStatisticsService.getStatistics(request.username());
+                    userStatisticsService.getStatisticsByUsername(request.username());
             userStatistics.resetCurrentStreak();
             userStatisticsService.updateStatistics(request.username(), userStatistics);
             return new Response(Status.SUCCESS,
@@ -59,7 +59,7 @@ public class SendWordCommand implements Command {
 
         if (wordAttempt.word().equals(WordExtractionService.getCurrentWord())) {
             final UserStatistics userStatistics =
-                    userStatisticsService.getStatistics(request.username());
+                    userStatisticsService.getStatisticsByUsername(request.username());
             userStatistics.incrementGamesWon();
             userStatistics.incrementCurrentStreak();
             userStatistics.addTrials(wordAttempt.attemptNumber());
