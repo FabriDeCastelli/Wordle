@@ -21,9 +21,9 @@ import server.service.command.LoginCommand;
 import server.service.command.LogoutCommand;
 import server.service.command.PlayCommand;
 import server.service.command.RegisterCommand;
+import server.service.command.SendMeStatisticsCommand;
 import server.service.command.SendWordCommand;
 import server.service.command.ShareCommand;
-
 
 /**
  * Handles a requestType from a client.
@@ -52,6 +52,8 @@ public class RequestHandler implements Runnable, AutoCloseable {
         commandMap.put(
                 RequestType.SENDWORD,
                 new SendWordCommand(playWordleService, userStatisticsService));
+        commandMap.put(RequestType.SENDMESTATISTICS, new SendMeStatisticsCommand(
+                userStatisticsService));
     }
 
 
