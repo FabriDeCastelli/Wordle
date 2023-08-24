@@ -1,6 +1,5 @@
 package client.controller;
 
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -14,7 +13,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import model.Notification;
 import model.StreamHandler;
 
-
 /**
  * Controller for the notifications.
  */
@@ -22,7 +20,8 @@ public class NotificationController extends Thread {
 
     public final String multicastIp;
     public final int multicastPort;
-    public final Queue<Notification> notifications = new ConcurrentLinkedQueue<>();
+    public final String username;
+    public static final Queue<Notification> notifications = new ConcurrentLinkedQueue<>();
 
     /**
      * Constructor for the NotificationController.
@@ -30,9 +29,10 @@ public class NotificationController extends Thread {
      * @param multicastIp   the multicast IP
      * @param multicastPort the multicast port
      */
-    public NotificationController(String multicastIp, int multicastPort) {
+    public NotificationController(String username, String multicastIp, int multicastPort) {
         this.multicastIp = multicastIp;
         this.multicastPort = multicastPort;
+        this.username = username;
     }
 
     @Override
@@ -59,13 +59,12 @@ public class NotificationController extends Thread {
                 final Optional<Notification> notification =
                         StreamHandler.getData(objectInputStream, Notification.class);
 
-                notification.ifPresent(notifications::add);
-                System.out.println("Received notification.");
+                notification.filter(n -> !n.senderUsername().equals(username))
+                        .ifPresent(notifications::add);
 
                 objectInputStream.close();
 
             }
-
 
         } catch (IOException e) {
             throw new RuntimeException(e);
