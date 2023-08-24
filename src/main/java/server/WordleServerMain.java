@@ -44,11 +44,12 @@ public class WordleServerMain {
             return;
         }
 
-        try (ServerSocket server = new ServerSocket(port)) {
+        try (ServerSocket server = new ServerSocket(port);
+             final MulticastSocket multicastSocket = new MulticastSocket()) {
 
             final ExecutorService executorService = Executors.newCachedThreadPool();
             Runtime.getRuntime().addShutdownHook(
-                    new TerminationHandler(2000, executorService, server)
+                    new TerminationHandler(2000, executorService, server, multicastSocket)
             );
 
             final ScheduledExecutorService wordExtractionService =
@@ -57,15 +58,10 @@ public class WordleServerMain {
                     new WordExtractionService(), 0, wordDuration, TimeUnit.MINUTES
             );
 
-            try (final MulticastSocket multicastSocket = new MulticastSocket()) {
-
-                while (true) {
-                    executorService.execute(new RequestHandler(server.accept(), multicastSocket));
-                }
-
-            } catch (IOException e) {
-                System.out.println("Error creating multicast socket.");
+            while (true) {
+                executorService.execute(new RequestHandler(server.accept(), multicastSocket));
             }
+
 
         } catch (IOException e) {
             System.out.println("Error creating socket.");
