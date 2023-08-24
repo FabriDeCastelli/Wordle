@@ -3,6 +3,7 @@ package server;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MulticastSocket;
 import java.net.ServerSocket;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
@@ -18,6 +19,8 @@ import server.service.WordExtractionService;
  */
 public class WordleServerMain {
 
+    public static String multicastIp;
+    public static int multicastPort;
 
     /**
      * Main method for the WordleServer.
@@ -33,6 +36,9 @@ public class WordleServerMain {
             properties.load(inputStream);
             port = Integer.parseInt(properties.getProperty("PORT"));
             wordDuration = Integer.parseInt(properties.getProperty("WORDDURATION"));
+            multicastIp = properties.getProperty("MULTICAST_IP");
+            multicastPort = Integer.parseInt(properties.getProperty("MULTICAST_PORT"));
+            System.out.println(multicastIp + " " + multicastPort);
         } catch (IOException e) {
             System.out.println("Error reading properties file.");
             return;
@@ -51,8 +57,14 @@ public class WordleServerMain {
                     new WordExtractionService(), 0, wordDuration, TimeUnit.MINUTES
             );
 
-            while (true) {
-                executorService.execute(new RequestHandler(server.accept()));
+            try (final MulticastSocket multicastSocket = new MulticastSocket()) {
+
+                while (true) {
+                    executorService.execute(new RequestHandler(server.accept(), multicastSocket));
+                }
+
+            } catch (IOException e) {
+                System.out.println("Error creating multicast socket.");
             }
 
         } catch (IOException e) {
@@ -60,7 +72,5 @@ public class WordleServerMain {
         }
 
     }
-
-
-
 }
+
