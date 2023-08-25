@@ -38,7 +38,6 @@ public class WordleServerMain {
             wordDuration = Integer.parseInt(properties.getProperty("WORDDURATION"));
             multicastIp = properties.getProperty("MULTICAST_IP");
             multicastPort = Integer.parseInt(properties.getProperty("MULTICAST_PORT"));
-            System.out.println(multicastIp + " " + multicastPort);
         } catch (IOException e) {
             System.out.println("Error reading properties file.");
             return;

@@ -3,16 +3,18 @@
     "username": "ff",
     "passwordHash": "Bam/Ij/t+AqdDaX3P1wZGmZb9KCko+YI8vnn1f8jlZw\u003d",
     "statistics": {
-      "gamesPlayed": 7,
-      "gamesWon": 7,
-      "gamesWonPercentage": 1.0,
-      "currentStreak": 7,
-      "longestStreak": 7,
+      "gamesPlayed": 10,
+      "gamesWon": 9,
+      "gamesWonPercentage": 0.9,
+      "currentStreak": 9,
+      "longestStreak": 9,
       "guessDistribution": [
         1,
         1,
         1,
         2,
+        1,
+        1,
         1,
         1,
         1
@@ -23,14 +25,15 @@
     "username": "rt",
     "passwordHash": "zf/V3YyoEmwEgrqZSBS5AUzJ6XNDXTmfHPH2lHnmuQc\u003d",
     "statistics": {
-      "gamesPlayed": 2,
-      "gamesWon": 2,
+      "gamesPlayed": 3,
+      "gamesWon": 3,
       "gamesWonPercentage": 1.0,
-      "currentStreak": 2,
-      "longestStreak": 2,
+      "currentStreak": 3,
+      "longestStreak": 3,
       "guessDistribution": [
         1,
-        1
+        1,
+        2
       ]
     }
   },
@@ -38,12 +41,21 @@
     "username": "c",
     "passwordHash": "Ln0sA6lQeuJl7PW1NWiFpTOTogKdJBOUmXJloaJa78Y\u003d",
     "statistics": {
-      "gamesPlayed": 2,
-      "gamesWon": 2,
-      "gamesWonPercentage": 1.0,
-      "currentStreak": 2,
-      "longestStreak": 2,
+      "gamesPlayed": 10,
+      "gamesWon": 11,
+      "gamesWonPercentage": 1.1,
+      "currentStreak": 11,
+      "longestStreak": 11,
       "guessDistribution": [
+        1,
+        1,
+        2,
+        1,
+        1,
+        1,
+        1,
+        3,
+        1,
         1,
         1
       ]
@@ -53,11 +65,11 @@
     "username": "f",
     "passwordHash": "JS8QyDYQ68oaBZwLroJV66L5W+TR17z6idckioLZ8RE\u003d",
     "statistics": {
-      "gamesPlayed": 17,
-      "gamesWon": 15,
-      "gamesWonPercentage": 0.8823529411764706,
-      "currentStreak": 15,
-      "longestStreak": 15,
+      "gamesPlayed": 40,
+      "gamesWon": 36,
+      "gamesWonPercentage": 0.9,
+      "currentStreak": 36,
+      "longestStreak": 36,
       "guessDistribution": [
         1,
         1,
@@ -73,6 +85,27 @@
         1,
         1,
         2,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        2,
+        4,
+        4,
+        3,
+        6,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
         1
       ]
     }
