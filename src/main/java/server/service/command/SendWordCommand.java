@@ -1,9 +1,13 @@
 package server.service.command;
 
+import java.util.ArrayList;
+import java.util.List;
+import model.GameResult;
 import model.Request;
 import model.Response;
 import model.UserStatistics;
 import model.WordAttempt;
+import model.WordHints;
 import model.enums.RequestType;
 import model.enums.Status;
 import org.jetbrains.annotations.NotNull;
@@ -12,7 +16,6 @@ import server.service.PlayWordleService;
 import server.service.UserStatisticsService;
 import server.service.WordExtractionService;
 
-
 /**
  * Guess word command.
  */
@@ -20,6 +23,7 @@ public class SendWordCommand implements Command {
 
     private final PlayWordleService playWordleService;
     private final UserStatisticsService userStatisticsService;
+    private final List<WordHints> wordHintsHistory = new ArrayList<>();
 
 
     /**
@@ -53,9 +57,15 @@ public class SendWordCommand implements Command {
                     userStatisticsService.getStatisticsByUsername(request.username());
             userStatistics.resetCurrentStreak();
             userStatisticsService.updateStatistics(request.username(), userStatistics);
+            final GameResult gameResult =
+                    new GameResult(request.username(), wordHintsHistory, userStatistics);
+            wordHintsHistory.clear();
             return new Response(Status.SUCCESS,
-                    "You have exceeded the maximum number of attempts.", userStatistics);
+                    "You have exceeded the maximum number of attempts.", gameResult);
         }
+
+        final WordHints wordHints = playWordleService.guessWord(wordAttempt.word());
+        wordHintsHistory.add(wordHints);
 
         if (wordAttempt.word().equals(WordExtractionService.getCurrentWord())) {
             final UserStatistics userStatistics =
@@ -64,10 +74,14 @@ public class SendWordCommand implements Command {
             userStatistics.incrementCurrentStreak();
             userStatistics.addTrials(wordAttempt.attemptNumber());
             userStatisticsService.updateStatistics(request.username(), userStatistics);
-            return new Response(Status.GUESS, "You guessed the word!", userStatistics);
+
+            final GameResult gameResult = new GameResult(
+                    request.username(), new ArrayList<>(wordHintsHistory), userStatistics);
+            wordHintsHistory.clear();
+            return new Response(Status.GUESS, "You guessed the word!", gameResult);
         }
 
-        return new Response(Status.TRYAGAIN, playWordleService.guessWord(wordAttempt.word()));
+        return new Response(Status.TRYAGAIN, wordHints);
 
     }
 
