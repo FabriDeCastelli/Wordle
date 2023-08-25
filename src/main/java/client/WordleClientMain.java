@@ -33,9 +33,6 @@ public class WordleClientMain {
     private static String multicastIP;
     private static int multicastPort;
 
-    private static final Response errorResponse =
-            new Response(Status.FAILURE, "Error sending the request to server.");
-
 
     /**
      * Main method for the WordleClientMain.
@@ -79,7 +76,7 @@ public class WordleClientMain {
             new NotificationController(username, multicastIP, multicastPort).start();
             return StreamHandler.getData(in, Response.class);
         }
-        return Optional.of(errorResponse);
+        return Optional.empty();
     }
 
     /**
@@ -94,7 +91,7 @@ public class WordleClientMain {
         final Request request = new Request(RequestType.REGISTER, username, hashedPassword);
         return StreamHandler.sendData(out, request)
                 ? StreamHandler.getData(in, Response.class)
-                : Optional.of(errorResponse);
+                : Optional.empty();
     }
 
     /**
@@ -107,7 +104,7 @@ public class WordleClientMain {
         final Request request = new Request(RequestType.LOGOUT, username);
         return StreamHandler.sendData(out, request)
                 ? StreamHandler.getData(in, Response.class)
-                : Optional.of(errorResponse);
+                : Optional.empty();
     }
 
     /**
@@ -120,7 +117,7 @@ public class WordleClientMain {
         final Request request = new Request(RequestType.PLAY, username);
         return StreamHandler.sendData(out, request)
                 ? StreamHandler.getData(in, Response.class)
-                : Optional.of(errorResponse);
+                : Optional.empty();
     }
 
     /**
@@ -135,7 +132,7 @@ public class WordleClientMain {
                 RequestType.SENDWORD, username, new WordAttempt(word, attemptNumber));
         return StreamHandler.sendData(out, request)
                 ? StreamHandler.getData(in, Response.class)
-                : Optional.of(errorResponse);
+                : Optional.empty();
     }
 
     /**
@@ -149,7 +146,7 @@ public class WordleClientMain {
         final Request request = new Request(RequestType.SHARE, username, wordHintsHistory);
         return StreamHandler.sendData(out, request)
                 ? StreamHandler.getData(in, Response.class)
-                : Optional.of(errorResponse);
+                : Optional.empty();
     }
 
     /**
@@ -162,7 +159,7 @@ public class WordleClientMain {
         final Request request = new Request(RequestType.SENDMESTATISTICS, username);
         return StreamHandler.sendData(out, request)
                 ? StreamHandler.getData(in, Response.class)
-                : Optional.of(errorResponse);
+                : Optional.empty();
     }
 
     /**
