@@ -19,6 +19,7 @@ import model.WordAttempt;
 import model.WordHints;
 import model.enums.RequestType;
 import model.enums.Status;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * WordleClientMain is the client for the Wordle game.
@@ -61,6 +62,18 @@ public class WordleClientMain {
 
     }
 
+    /**
+     * Sends a requestType to the server and returns the response.
+     *
+     * @param request the requestType to send
+     * @return the response from the server
+     */
+    public static Optional<Response> sendAndGetResponse(@NotNull Request request) {
+        return StreamHandler.sendData(out, request)
+                ? StreamHandler.getData(in, Response.class)
+                : Optional.empty();
+    }
+
 
     /**
      * Sends a login requestType to the server.
@@ -89,9 +102,7 @@ public class WordleClientMain {
     public static Optional<Response> register(String username, String password) {
         final String hashedPassword = PasswordHashingService.getInstance().hashPassword(password);
         final Request request = new Request(RequestType.REGISTER, username, hashedPassword);
-        return StreamHandler.sendData(out, request)
-                ? StreamHandler.getData(in, Response.class)
-                : Optional.empty();
+        return sendAndGetResponse(request);
     }
 
     /**
@@ -102,9 +113,7 @@ public class WordleClientMain {
      */
     public static Optional<Response> logout(String username) {
         final Request request = new Request(RequestType.LOGOUT, username);
-        return StreamHandler.sendData(out, request)
-                ? StreamHandler.getData(in, Response.class)
-                : Optional.empty();
+        return sendAndGetResponse(request);
     }
 
     /**
@@ -115,9 +124,7 @@ public class WordleClientMain {
      */
     public static Optional<Response> play(String username) {
         final Request request = new Request(RequestType.PLAY, username);
-        return StreamHandler.sendData(out, request)
-                ? StreamHandler.getData(in, Response.class)
-                : Optional.empty();
+        return sendAndGetResponse(request);
     }
 
     /**
@@ -130,9 +137,7 @@ public class WordleClientMain {
     public static Optional<Response> sendWord(String username, String word, int attemptNumber) {
         final Request request = new Request(
                 RequestType.SENDWORD, username, new WordAttempt(word, attemptNumber));
-        return StreamHandler.sendData(out, request)
-                ? StreamHandler.getData(in, Response.class)
-                : Optional.empty();
+        return sendAndGetResponse(request);
     }
 
     /**
@@ -144,9 +149,7 @@ public class WordleClientMain {
      */
     public static Optional<Response> share(String username, List<WordHints> wordHintsHistory) {
         final Request request = new Request(RequestType.SHARE, username, wordHintsHistory);
-        return StreamHandler.sendData(out, request)
-                ? StreamHandler.getData(in, Response.class)
-                : Optional.empty();
+        return sendAndGetResponse(request);
     }
 
     /**
@@ -157,9 +160,7 @@ public class WordleClientMain {
      */
     public static Optional<Response> sendMeStatistics(String username) {
         final Request request = new Request(RequestType.SENDMESTATISTICS, username);
-        return StreamHandler.sendData(out, request)
-                ? StreamHandler.getData(in, Response.class)
-                : Optional.empty();
+        return sendAndGetResponse(request);
     }
 
     /**
