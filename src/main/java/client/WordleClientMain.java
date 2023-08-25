@@ -9,13 +9,14 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import model.Request;
 import model.Response;
 import model.StreamHandler;
-import model.UserStatistics;
 import model.WordAttempt;
+import model.WordHints;
 import model.enums.RequestType;
 import model.enums.Status;
 
@@ -33,7 +34,7 @@ public class WordleClientMain {
     private static int multicastPort;
 
     private static final Response errorResponse =
-            new Response(Status.FAILURE, "Error sending requestType to server.");
+            new Response(Status.FAILURE, "Error sending the request to server.");
 
 
     /**
@@ -84,8 +85,8 @@ public class WordleClientMain {
     /**
      * Sends a register requestType to the server.
      *
-     * @param username the username of the user sending the requestType
-     * @param password the password of the user sending the requestType
+     * @param username the username of the user sending the request
+     * @param password the password of the user sending the request
      * @return the response from the server
      */
     public static Optional<Response> register(String username, String password) {
@@ -141,11 +142,11 @@ public class WordleClientMain {
      * Sends a share requestType to the server.
      *
      * @param username the username of the user sending the requestType
-     * @param userStatistics the user statistics to send
+     * @param wordHintsHistory the history of the game the user has played
      * @return the response from the server
      */
-    public static Optional<Response> share(String username, UserStatistics userStatistics) {
-        final Request request = new Request(RequestType.SHARE, username, userStatistics);
+    public static Optional<Response> share(String username, List<WordHints> wordHintsHistory) {
+        final Request request = new Request(RequestType.SHARE, username, wordHintsHistory);
         return StreamHandler.sendData(out, request)
                 ? StreamHandler.getData(in, Response.class)
                 : Optional.of(errorResponse);
@@ -169,7 +170,7 @@ public class WordleClientMain {
      *
      * @return the response with all notifications
      */
-    public static Optional<Response> showMeSharing(String username) {
+    public static Optional<Response> showMeSharing() {
         return Optional.of(
                 new Response(
                         Status.SUCCESS, "Success",

@@ -70,11 +70,10 @@ public class HomePage extends JFrame {
     }
 
     @NotNull
-    @SuppressWarnings("unchecked")
     private JButton getNotificationsButton(String username) {
         final JButton notificationsButton = new JButton("Notifications");
         notificationsButton.addActionListener(e -> {
-            final Optional<Response> response = WordleClientMain.showMeSharing(username);
+            final Optional<Response> response = WordleClientMain.showMeSharing();
             if (response.isEmpty()) {
                 JOptionPane.showMessageDialog(HomePage.this, "Server couldn't respond.");
             } else if (response.get().status() == Status.SUCCESS) {
