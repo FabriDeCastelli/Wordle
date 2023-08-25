@@ -4,6 +4,8 @@ import client.WordleClientMain;
 import client.gui.play.PlayPage;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.Serial;
 import java.util.Optional;
 import java.util.Queue;
@@ -31,7 +33,15 @@ public class HomePage extends JFrame {
      * @param username the name of the user in the session
      */
     public HomePage(String username) {
-        setTitle("Home");
+        setTitle("Home" + " - " + username);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                WordleClientMain.logout(username);
+            }
+        });
+
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(600, 400);
         setLocationRelativeTo(null);
@@ -58,7 +68,6 @@ public class HomePage extends JFrame {
         add(bodyPanel, BorderLayout.CENTER);
         add(headerPanel, BorderLayout.NORTH);
     }
-
 
     @NotNull
     @SuppressWarnings("unchecked")
@@ -95,11 +104,11 @@ public class HomePage extends JFrame {
             if (response.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Server could not respond.");
             } else if (response.get().status() == Status.SUCCESS) {
-                JOptionPane.showMessageDialog(this, "Successfully logged out.");
+                JOptionPane.showMessageDialog(this, response.get().message());
                 this.dispose();
                 new AuthenticationPage().setVisible(true);
             } else {
-                JOptionPane.showMessageDialog(this, "Error logging out.");
+                JOptionPane.showMessageDialog(this, response.get().message());
             }
         });
         return logoutButton;

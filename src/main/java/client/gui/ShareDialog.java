@@ -5,8 +5,6 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.Serial;
 import java.util.Optional;
 import javax.swing.JButton;
@@ -15,8 +13,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import model.GameResult;
 import model.Response;
-import model.UserStatistics;
 import model.enums.Status;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +26,7 @@ public class ShareDialog extends JFrame {
     @Serial
     private static final long serialVersionUID = 987654321L;
     private final String username;
-    private final UserStatistics userStatistics;
+    private final GameResult gameResult;
     private final Container container = getContentPane();
     private final JButton shareButton = new JButton("Share");
     private final JButton backToHomePageButton = new JButton("Back to home page");
@@ -38,11 +36,11 @@ public class ShareDialog extends JFrame {
      * Constructor for the ShareDialog.
      *
      * @param username the name of the user in the session, assumed to be unique
-     * @param userStatistics the user's statistics
+     * @param gameResult the game result
      */
-    public ShareDialog(@NotNull String username, @NotNull UserStatistics userStatistics) {
+    public ShareDialog(@NotNull String username, @NotNull GameResult gameResult) {
         this.username = username;
-        this.userStatistics = userStatistics;
+        this.gameResult = gameResult;
         setLayoutManager();
         setLocationAndSize();
         addActionEvent();
@@ -61,7 +59,8 @@ public class ShareDialog extends JFrame {
     private void setLocationAndSize() {
         statisticsTextPane = new JTextPane();
         statisticsTextPane.setContentType("text/html");
-        statisticsTextPane.setText(DialogUtils.getFormattedStatistics(username, userStatistics));
+        statisticsTextPane.setText(
+                DialogUtils.getFormattedStatistics(username, gameResult.userStatistics()));
         statisticsTextPane.setEditable(false);
         shareButton.setPreferredSize(new Dimension(100, 50));
         backToHomePageButton.setPreferredSize(new Dimension(150, 50));
@@ -78,7 +77,8 @@ public class ShareDialog extends JFrame {
     private void addActionEvent() {
 
         shareButton.addActionListener(e -> {
-            final Optional<Response> response = WordleClientMain.share(username, userStatistics);
+            final Optional<Response> response =
+                    WordleClientMain.share(username, gameResult.wordHintsHistory());
             if (response.isEmpty()) {
                 JOptionPane.showMessageDialog(
                         null, "Could not share statistics.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -96,6 +96,7 @@ public class ShareDialog extends JFrame {
             new HomePage(username).setVisible(true);
             dispose();
         });
+        
     }
 
 }

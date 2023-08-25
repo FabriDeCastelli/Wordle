@@ -25,8 +25,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import model.GameResult;
 import model.Response;
-import model.UserStatistics;
 import model.WordHints;
 import model.enums.Status;
 
@@ -162,9 +162,9 @@ public class PlayPage extends JFrame implements ActionListener {
             currentAttempt++;
             inputFields[currentAttempt][0].setEditable(true);
         } else {
-            final UserStatistics userStatistics = (UserStatistics) response.get().data();
+            final GameResult gameResult = (GameResult) response.get().data();
             JOptionPane.showMessageDialog(this, response.get().message());
-            new ShareDialog(username, userStatistics).setVisible(true);
+            new ShareDialog(username, gameResult).setVisible(true);
             dispose();
         }
 
