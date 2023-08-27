@@ -1,7 +1,7 @@
 package server.service;
 
-import static server.service.UserService.gson;
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import java.io.FileReader;
@@ -20,14 +20,15 @@ public class UserServiceManager {
     private final String filePath;
     private static UserServiceManager instance;
     private final ConcurrentHashMap<String, User> users;
-    private List<String> loggedUsers;
+    private final List<String> loggedUsers;
+    public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     /**
      * Constructor for UserServiceManager.
      */
     private UserServiceManager(String filePath) {
         this.filePath = filePath;
-        users = getUsersData();
+        this.users = getUsersData();
         this.loggedUsers = Collections.synchronizedList(new ArrayList<>());
     }
 
