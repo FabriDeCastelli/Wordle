@@ -73,7 +73,7 @@ public class RegisterCommandTests {
     @Test
     @DisplayName(" cannot register a user that is already registered")
     void testHandleAlreadyRegisteredUser() {
-        when(authenticationService.registerUser(any()))
+        when(authenticationService.register(any()))
                 .thenReturn(false);
         assertEquals(
             new Response(Status.FAILURE, "User already registered."),
@@ -86,7 +86,7 @@ public class RegisterCommandTests {
     void testHandle() {
         when(authenticationService.getRegisteredUserByUsername(any()))
                 .thenReturn(Optional.empty());
-        when(authenticationService.registerUser(any()))
+        when(authenticationService.register(any()))
                 .thenReturn(true);
         assertEquals(
             registerCommand.handle(new Request(RequestType.REGISTER, username, password)),

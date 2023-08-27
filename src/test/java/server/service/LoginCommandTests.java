@@ -65,7 +65,7 @@ public class LoginCommandTests {
     void testHandleNotRegisteredUser() {
         when(authenticationService.getRegisteredUserByUsername(any()))
                 .thenReturn(Optional.of(user));
-        when(authenticationService.addToLoggedUsers(any()))
+        when(authenticationService.login(any()))
                 .thenReturn(false);
         assertEquals(
             new Response(Status.FAILURE, "User already logged in."),
@@ -90,7 +90,7 @@ public class LoginCommandTests {
     void testHandle() {
         when(authenticationService.getRegisteredUserByUsername(any()))
                 .thenReturn(Optional.of(user));
-        when(authenticationService.addToLoggedUsers(any()))
+        when(authenticationService.login(any()))
                 .thenReturn(true);
         assertEquals(
             new Response(Status.SUCCESS, "Login successful."),

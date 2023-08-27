@@ -30,10 +30,10 @@ public class AuthenticationServiceTests {
     @DisplayName(" can correctly add and delete a user to the registered users")
     public void testAddAndDeleteUser() {
         User user = new User("testUser", "testPassword");
-        authenticationService.registerUser(user);
+        authenticationService.register(user);
         Optional<User> userOptional = authenticationService.getRegisteredUserByUsername("testUser");
         assertTrue(userOptional.isPresent());
-        assertTrue(authenticationService.deleteRegistration(user));
+        assertTrue(authenticationService.unregister(user));
         userOptional = authenticationService.getRegisteredUserByUsername(user.getUsername());
         assertTrue(userOptional.isEmpty());
     }
@@ -47,12 +47,12 @@ public class AuthenticationServiceTests {
         @BeforeAll
         public static void setUp() {
             user = new User("fabry", "fabry");
-            authenticationService.registerUser(user);
+            authenticationService.register(user);
         }
 
         @AfterAll
         public static void tearDown() {
-            authenticationService.deleteRegistration(user);
+            authenticationService.unregister(user);
         }
 
         @Test
@@ -81,12 +81,12 @@ public class AuthenticationServiceTests {
         @BeforeAll
         public static void setUp() throws IllegalArgumentException {
             user = new User("testUser", "testPassword");
-            authenticationService.registerUser(user);
+            authenticationService.register(user);
         }
 
         @AfterAll
         public static void tearDown() throws IllegalArgumentException {
-            authenticationService.deleteRegistration(user);
+            authenticationService.unregister(user);
         }
 
 
@@ -104,7 +104,7 @@ public class AuthenticationServiceTests {
         public void testDeleteNotRegisteredUser() {
             assertThrows(
                     IllegalArgumentException.class,
-                    () -> authenticationService.deleteRegistration(
+                    () -> authenticationService.unregister(
                             new User("notregistered", "notregistered")));
         }
     }

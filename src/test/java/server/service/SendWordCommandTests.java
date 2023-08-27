@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import server.service.command.PlayCommand;
+import server.service.command.SendWordCommand;
 
 /**
  * Tests for SendWordCommand.
@@ -20,8 +21,10 @@ public class SendWordCommandTests {
     @Mock
     private final UserStatisticsService userStatisticsService = mock(UserStatisticsService.class);
     @Mock
+    private final AuthenticationService authenticationService = mock(AuthenticationService.class);
+    @Mock
     private final PlayWordleService playWordleService = mock(PlayWordleService.class);
-    private PlayCommand playCommand;
+    private SendWordCommand sendWordCommand;
     private String username;
 
     /**
@@ -29,7 +32,8 @@ public class SendWordCommandTests {
      */
     @BeforeEach
     public void setUp() {
-        playCommand = new PlayCommand(playWordleService, userStatisticsService);
+        sendWordCommand = new SendWordCommand(
+                playWordleService, userStatisticsService, authenticationService);
         username = "username";
     }
 
@@ -37,7 +41,7 @@ public class SendWordCommandTests {
     @DisplayName(" cannot handle a requestType that is not send word")
     void testHandleInvalidRequest() {
         assertThrows(IllegalArgumentException.class,
-            () -> playCommand.handle(new Request(RequestType.LOGIN, username))
+            () -> sendWordCommand.handle(new Request(RequestType.LOGIN, username))
         );
     }
 
@@ -45,7 +49,7 @@ public class SendWordCommandTests {
     @DisplayName(" correctly throws exception when the word is null")
     void testHandleNullWord() {
         assertThrows(IllegalArgumentException.class,
-            () -> playCommand.handle(
+            () -> sendWordCommand.handle(
                     new Request(RequestType.SENDWORD, username, null))
         );
     }

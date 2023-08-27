@@ -6,8 +6,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.Optional;
 import model.Request;
 import model.Response;
+import model.User;
 import model.UserStatistics;
 import model.enums.RequestType;
 import model.enums.Status;
@@ -25,7 +27,8 @@ public class PlayCommandTests {
 
     @Mock
     private final PlayWordleService playWordleService = mock(PlayWordleService.class);
-
+    @Mock
+    private final AuthenticationService authenticationService = mock(AuthenticationService.class);
     @Mock
     private final UserStatisticsService userStatisticsService = mock(UserStatisticsService.class);
 
@@ -37,7 +40,8 @@ public class PlayCommandTests {
      */
     @BeforeEach
     public void setUp() {
-        playCommand = new PlayCommand(playWordleService, userStatisticsService);
+        playCommand =
+                new PlayCommand(playWordleService, userStatisticsService, authenticationService);
         username = "username";
     }
 
@@ -60,6 +64,8 @@ public class PlayCommandTests {
     @Test
     @DisplayName(" correctly handles a requestType if the user has already played the game")
     void testHandleUserAlreadyPlayed() {
+        when(authenticationService.getLoggedUser())
+                .thenReturn(Optional.of(new User(username, "")));
         when(playWordleService.hasPlayed(username, WordExtractionService.getCurrentWord()))
                 .thenReturn(true);
         assertEquals(
@@ -71,6 +77,8 @@ public class PlayCommandTests {
     @Test
     @DisplayName(" correctly handles a requestType if the user has not played the game")
     void testHandleUserNotPlayed() {
+        when(authenticationService.getLoggedUser())
+                .thenReturn(Optional.of(new User(username, "")));
         when(playWordleService.hasPlayed(any(), any()))
                 .thenReturn(false);
         when(playWordleService.addPlayedGame(any(), any()))
@@ -86,6 +94,8 @@ public class PlayCommandTests {
     @Test
     @DisplayName(" correctly handles a requestType if the user has not played the game")
     void testHandleUserNotPlayedError() {
+        when(authenticationService.getLoggedUser())
+                .thenReturn(Optional.of(new User(username, "")));
         when(playWordleService.hasPlayed(username, WordExtractionService.getCurrentWord()))
                 .thenReturn(false);
         when(playWordleService.addPlayedGame(username, WordExtractionService.getCurrentWord()))

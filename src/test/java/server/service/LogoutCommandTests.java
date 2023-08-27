@@ -58,10 +58,9 @@ public class LogoutCommandTests {
     }
 
     @Test
-    @DisplayName(" cannot logout a not registered username")
+    @DisplayName(" cannot logout a not logged user")
     void testHandleNotRegisteredUsername() {
-        when(authenticationService.getLoggedUserByUsername(any()))
-                .thenReturn(Optional.empty());
+        when(authenticationService.logout()).thenReturn(false);
         assertEquals(
                 logoutCommand.handle(new Request(RequestType.LOGOUT, username)),
                 new Response(Status.FAILURE, "User not logged in."));
@@ -70,10 +69,7 @@ public class LogoutCommandTests {
     @Test
     @DisplayName(" can handle a correct logout requestType")
     void testHandle() {
-        when(authenticationService.getLoggedUserByUsername(any()))
-                .thenReturn(Optional.of(user.getUsername()));
-        when(authenticationService.removeFromLoggedUsers(any()))
-                .thenReturn(true);
+        when(authenticationService.logout()).thenReturn(true);
         assertEquals(
                 logoutCommand.handle(new Request(RequestType.LOGOUT, username)),
                 new Response(Status.SUCCESS, "Logout successful.")
