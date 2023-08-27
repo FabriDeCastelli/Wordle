@@ -70,6 +70,7 @@ public class HomePage extends JFrame {
     }
 
     @NotNull
+    @SuppressWarnings("unchecked")
     private JButton getNotificationsButton(String username) {
         final JButton notificationsButton = new JButton("Notifications");
         notificationsButton.addActionListener(e -> {

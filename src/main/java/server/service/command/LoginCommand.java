@@ -2,7 +2,6 @@ package server.service.command;
 
 import model.Request;
 import model.Response;
-import model.User;
 import model.enums.RequestType;
 import model.enums.Status;
 import org.jetbrains.annotations.NotNull;
@@ -41,7 +40,7 @@ public class LoginCommand implements Command {
 
         return authenticationService.getRegisteredUserByUsername(request.username())
                 .filter(user -> user.getPasswordHash().equals(request.data()))
-                .map(user -> authenticationService.addToLoggedUsers(user.getUsername())
+                .map(user -> authenticationService.login(user)
                 ? new Response(Status.SUCCESS, "Login successful.")
                 : new Response(Status.FAILURE, "User already logged in.")
                 ).orElseGet(() -> new Response(Status.FAILURE, "Wrong username or password."));
