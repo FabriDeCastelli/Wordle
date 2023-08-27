@@ -43,7 +43,7 @@ public class RegisterCommand implements Command {
 
         return user.getPasswordHash().isEmpty()
                 ? new Response(Status.FAILURE, "Password cannot be empty.")
-                : authenticationService.registerUser(user)
+                : authenticationService.register(user)
                 ? new Response(Status.SUCCESS, "Registration successful.")
                 : new Response(Status.FAILURE, "User already registered.");
 

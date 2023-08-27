@@ -12,6 +12,7 @@ import model.enums.RequestType;
 import model.enums.Status;
 import org.jetbrains.annotations.NotNull;
 import server.model.Command;
+import server.service.AuthenticationService;
 import server.service.PlayWordleService;
 import server.service.UserStatisticsService;
 import server.service.WordExtractionService;
@@ -23,21 +24,25 @@ public class SendWordCommand implements Command {
 
     private final PlayWordleService playWordleService;
     private final UserStatisticsService userStatisticsService;
-    private final List<WordHints> wordHintsHistory = new ArrayList<>();
+    private final List<WordHints> wordHintsHistory;
+    private final AuthenticationService authenticationService;
 
 
     /**
      * Constructor for GuessWordCommand.
      *
-     * @param playWordleService the play wordle service
+     * @param playWordleService     the play wordle service
      * @param userStatisticsService the user statistics service
+     * @param authenticationService the authentication service
      */
     public SendWordCommand(
-            PlayWordleService playWordleService,
-            UserStatisticsService userStatisticsService) {
+            @NotNull PlayWordleService playWordleService,
+            @NotNull UserStatisticsService userStatisticsService,
+            @NotNull AuthenticationService authenticationService) {
         this.playWordleService = playWordleService;
         this.userStatisticsService = userStatisticsService;
-
+        this.wordHintsHistory = new ArrayList<>();
+        this.authenticationService = authenticationService;
     }
 
     @Override
@@ -49,16 +54,21 @@ public class SendWordCommand implements Command {
             throw new IllegalArgumentException("Cannot send a null word");
         }
 
+
         final WordAttempt wordAttempt = getWordAttempt(request);
 
 
         if (wordAttempt.attemptNumber() - 11 > 0) {
+            final String loggedUsername =
+                authenticationService.getLoggedUser()
+                        .orElseThrow(IllegalStateException::new)
+                        .getUsername();
             final UserStatistics userStatistics =
-                    userStatisticsService.getStatisticsByUsername(request.username());
+                    userStatisticsService.getStatisticsByUsername(loggedUsername);
             userStatistics.resetCurrentStreak();
-            userStatisticsService.updateStatistics(request.username(), userStatistics);
-            final GameResult gameResult =
-                    new GameResult(request.username(), wordHintsHistory, userStatistics);
+            userStatisticsService.updateStatistics(loggedUsername, userStatistics);
+            final GameResult gameResult = new GameResult(
+                    loggedUsername, new ArrayList<>(wordHintsHistory), userStatistics);
             wordHintsHistory.clear();
             return new Response(Status.SUCCESS,
                     "You have exceeded the maximum number of attempts.", gameResult);
@@ -68,15 +78,18 @@ public class SendWordCommand implements Command {
         wordHintsHistory.add(wordHints);
 
         if (wordAttempt.word().equals(WordExtractionService.getCurrentWord())) {
+            final String loggedUsername =
+                authenticationService.getLoggedUser()
+                        .orElseThrow(IllegalStateException::new)
+                        .getUsername();
             final UserStatistics userStatistics =
-                    userStatisticsService.getStatisticsByUsername(request.username());
+                    userStatisticsService.getStatisticsByUsername(loggedUsername);
             userStatistics.incrementGamesWon();
             userStatistics.incrementCurrentStreak();
             userStatistics.addTrials(wordAttempt.attemptNumber());
-            userStatisticsService.updateStatistics(request.username(), userStatistics);
-
+            userStatisticsService.updateStatistics(loggedUsername, userStatistics);
             final GameResult gameResult = new GameResult(
-                    request.username(), new ArrayList<>(wordHintsHistory), userStatistics);
+                    loggedUsername, new ArrayList<>(wordHintsHistory), userStatistics);
             wordHintsHistory.clear();
             return new Response(Status.GUESS, "You guessed the word!", gameResult);
         }
@@ -84,6 +97,7 @@ public class SendWordCommand implements Command {
         return new Response(Status.TRYAGAIN, wordHints);
 
     }
+
 
 
     /**
