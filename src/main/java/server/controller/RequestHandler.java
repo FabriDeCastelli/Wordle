@@ -34,27 +34,7 @@ public class RequestHandler implements Runnable, AutoCloseable {
     private final ObjectInputStream in;
     private final ObjectOutputStream out;
     private final MulticastSocket multicastSocket;
-    private static final Map<RequestType, Command> commandMap;
-    private final Command shareCommand;
-
-    /*
-      Static initializer for instance independent Commands.
-     */
-    static {
-        commandMap = new HashMap<>();
-        final AuthenticationService authenticationService = new AuthenticationService();
-        final UserStatisticsService userStatisticsService = new UserStatisticsService();
-        final PlayWordleService playWordleService = new PlayWordleService();
-        commandMap.put(RequestType.LOGIN, new LoginCommand(authenticationService));
-        commandMap.put(RequestType.LOGOUT, new LogoutCommand(authenticationService));
-        commandMap.put(RequestType.REGISTER, new RegisterCommand(authenticationService));
-        commandMap.put(RequestType.PLAY, new PlayCommand(playWordleService, userStatisticsService));
-        commandMap.put(
-                RequestType.SENDWORD,
-                new SendWordCommand(playWordleService, userStatisticsService));
-        commandMap.put(RequestType.SENDMESTATISTICS, new SendMeStatisticsCommand(
-                userStatisticsService));
-    }
+    private final Map<RequestType, Command> commandMap;
 
 
     /**
@@ -63,38 +43,50 @@ public class RequestHandler implements Runnable, AutoCloseable {
      * @param socket          the socket to accept
      * @param multicastSocket the multicast socket
      */
-    public RequestHandler(@NotNull Socket socket, MulticastSocket multicastSocket)
+    public RequestHandler(@NotNull Socket socket, @NotNull MulticastSocket multicastSocket)
             throws IOException {
         this.socket = socket;
         this.out = new ObjectOutputStream(socket.getOutputStream());
         this.in = new ObjectInputStream(socket.getInputStream());
         this.multicastSocket = multicastSocket;
-        this.shareCommand = new ShareCommand(multicastSocket);
+        final AuthenticationService authenticationService = new AuthenticationService();
+        final UserStatisticsService userStatisticsService = new UserStatisticsService();
+        final PlayWordleService playWordleService = new PlayWordleService();
+        commandMap = new HashMap<>();
+        commandMap.put(RequestType.LOGIN,
+                new LoginCommand(authenticationService));
+        commandMap.put(RequestType.LOGOUT,
+                new LogoutCommand(authenticationService));
+        commandMap.put(RequestType.REGISTER,
+                new RegisterCommand(authenticationService));
+        commandMap.put(RequestType.PLAY,
+                new PlayCommand(playWordleService, userStatisticsService, authenticationService));
+        commandMap.put(RequestType.SENDWORD, new SendWordCommand(
+                playWordleService, userStatisticsService, authenticationService));
+        commandMap.put(RequestType.SENDMESTATISTICS,
+                new SendMeStatisticsCommand(userStatisticsService, authenticationService));
+        commandMap.put(RequestType.SHARE,
+                new ShareCommand(multicastSocket));
     }
 
     @Override
     public void run() {
 
         while (true) {
-            final Optional<Request> userRequest = StreamHandler.getData(in, Request.class);
-            if (userRequest.isEmpty()) {
+            final Optional<Request> request = StreamHandler.getData(in, Request.class);
+            if (request.isEmpty()) {
                 break;
             }
 
-            final RequestType requestType = userRequest.get().requestType();
+            final RequestType requestType = request.get().requestType();
 
-            Command command;
-            if (RequestType.SHARE == requestType) {
-                command = shareCommand;
-            } else {
-                command = commandMap.get(requestType);
-            }
+            final Command command = commandMap.get(requestType);
 
             if (command == null) {
                 throw new IllegalStateException("Command not found.");
             }
 
-            final Response response = command.handle(userRequest.get());
+            final Response response = command.handle(request.get());
 
             if (!StreamHandler.sendData(out, response)) {
                 break;
