@@ -1,31 +1,40 @@
 package server.service;
 
+import static server.service.UserServiceManager.gson;
+
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import model.User;
 import model.UserStatistics;
 import org.jetbrains.annotations.NotNull;
 
+
 /**
  * User statistics service.
  */
-public class UserStatisticsService extends UserService {
+public class UserStatisticsService {
+
+    private final String filePath;
+    private final ConcurrentHashMap<String, User> userStore;
+
 
     /**
      * Constructor for the UserStatisticsService.
      */
     public UserStatisticsService() {
-        super("src/main/java/server/conf/users.json");
+        this.filePath = "src/main/java/server/conf/users.json";
+        this.userStore = UserServiceManager.getInstance(filePath).getUsersMap();
     }
 
     /**
      * Constructor for the UserStatisticsService.
      *
-     * @param filePath the file path
+     * @param filePath the file path of the store
      */
     public UserStatisticsService(String filePath) {
-        super(filePath);
+        this.filePath = filePath;
+        this.userStore = UserServiceManager.getInstance(filePath).getUsersMap();
     }
 
     /**
@@ -37,15 +46,14 @@ public class UserStatisticsService extends UserService {
      */
     public synchronized boolean updateStatistics(
             @NotNull String username, UserStatistics userStatistics) {
-        final Optional<User> user = getRegisteredUserByUsername(username);
-        if (user.isEmpty()) {
-            throw new IllegalArgumentException("Cannot update statistics for a not stored user");
+        final User user = userStore.get(username);
+        if (user == null) {
+            throw new IllegalStateException("User not found when updating statistics");
         }
-
-        user.get().setUserStatistics(userStatistics);
-        users.put(username, user.get());
+        user.setUserStatistics(userStatistics);
+        userStore.put(username, user);
         try (final FileWriter writer = new FileWriter(filePath)) {
-            gson.toJson(users, writer);
+            gson.toJson(userStore, writer);
         } catch (IOException e) {
             return false;
         }
@@ -59,12 +67,11 @@ public class UserStatisticsService extends UserService {
      * @return the user statistics for that user
      */
     public synchronized UserStatistics getStatisticsByUsername(@NotNull String username) {
-
-        final Optional<User> user = getRegisteredUserByUsername(username);
-        if (user.isEmpty()) {
-            throw new IllegalArgumentException("Cannot get statistics for a not stored user");
+        final User user = userStore.get(username);
+        if (user == null) {
+            throw new IllegalStateException("User not found when getting statistics");
         }
-        return user.get().getUserStatistics();
+        return user.getUserStatistics();
     }
 
 

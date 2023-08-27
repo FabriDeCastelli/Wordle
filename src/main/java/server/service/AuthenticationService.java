@@ -1,14 +1,24 @@
 package server.service;
 
+import static server.service.UserServiceManager.gson;
+
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import model.User;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Service for authenticating users.
  */
-public class AuthenticationService extends UserService {
+public class AuthenticationService {
+
+    private Optional<User> loggedUser;
+    private final List<String> loggedUsers;
+    private final ConcurrentHashMap<String, User> userStore;
+    private final String filePath;
 
 
     /**
@@ -17,33 +27,50 @@ public class AuthenticationService extends UserService {
      * @param filePath the file path of the json file
      */
     public AuthenticationService(String filePath) {
-        super(filePath);
+        this.filePath = filePath;
+        this.loggedUser = Optional.empty();
+        this.loggedUsers = UserServiceManager.getInstance(filePath).getLoggedUsers();
+        this.userStore = UserServiceManager.getInstance(filePath).getUsersMap();
     }
 
+    /**
+     * Constructor for the AuthenticationService.
+     */
     public AuthenticationService() {
-        super("src/main/java/server/conf/users.json");
+        this.filePath = "src/main/java/server/conf/users.json";
+        this.loggedUser = Optional.empty();
+        loggedUsers = UserServiceManager.getInstance(filePath).getLoggedUsers();
+        userStore = UserServiceManager.getInstance(filePath).getUsersMap();
     }
 
 
     /**
-     * Saves a new user the json file.
+     * Adds a user to the list of logged users.
      *
-     * @param user the user to be added
+     * @param user the user to be logged in
+     * @return true if it was added, false otherwise
      */
-    public synchronized boolean registerUser(@NotNull User user) {
-
-        if (getRegisteredUserByUsername(user.getUsername()).isPresent()) {
+    public synchronized boolean login(@NotNull User user) {
+        if (loggedUsers.contains(user.getUsername())) {
             return false;
         }
+        this.loggedUser = Optional.of(user);
+        return this.loggedUsers.add(user.getUsername());
+    }
 
-        users.put(user.getUsername(), user);
-        try (final FileWriter writer = new FileWriter(filePath)) {
-            gson.toJson(users, writer);
-        } catch (IOException e) {
-            return false;
-        }
-        return true;
+    /**
+     * Removes a user from the list of logged users.
+     *
+     * @return true if it was removed, false otherwise
+     */
+    public synchronized boolean logout() {
+        final User loggedUser = this.loggedUser
+                .orElseThrow(() -> new IllegalArgumentException("Cannot logout a not logged user"));
+        return loggedUsers.remove(loggedUser.getUsername());
+    }
 
+    public synchronized Optional<User> getLoggedUser() {
+        return loggedUser;
     }
 
     /**
@@ -51,14 +78,13 @@ public class AuthenticationService extends UserService {
      *
      * @param user the user to be deleted
      */
-    public synchronized boolean deleteRegistration(@NotNull User user) {
-        if (getRegisteredUserByUsername(user.getUsername()).isEmpty()) {
-            throw new IllegalArgumentException("Cannot delete a user that is not registered.");
-        }
+    public synchronized boolean unregister(@NotNull User user) {
 
-        users.remove(user.getUsername());
+        getRegisteredUserByUsername(user.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        userStore.remove(user.getUsername());
         try (final FileWriter writer = new FileWriter(filePath)) {
-            gson.toJson(users, writer);
+            gson.toJson(userStore, writer);
         } catch (IOException e) {
             return false;
         }
@@ -67,29 +93,33 @@ public class AuthenticationService extends UserService {
     }
 
     /**
-     * Adds a user to the list of logged users.
+     * Saves a new user the json file.
      *
-     * @param username the username of the user to be added
-     * @return true if it was added, false otherwise
+     * @param user the user to be added
      */
-    public synchronized boolean addToLoggedUsers(@NotNull String username) {
-        if (getLoggedUserByUsername(username).isPresent()) {
+    public synchronized boolean register(@NotNull User user) {
+
+        if (getRegisteredUserByUsername(user.getUsername()).isPresent()) {
             return false;
         }
-        return loggedUsers.add(username);
+
+        userStore.put(user.getUsername(), user);
+        try (final FileWriter writer = new FileWriter(filePath)) {
+            gson.toJson(userStore, writer);
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
+
     }
 
     /**
-     * Removes a user from the list of logged users.
+     * Gets the user with the given getUsername.
      *
-     * @param username the username of the user to be added
-     * @return true if it was removed, false otherwise
+     * @param username the username of the user.
      */
-    public synchronized boolean removeFromLoggedUsers(@NotNull String username) {
-        if (getLoggedUserByUsername(username).isEmpty()) {
-            return false;
-        }
-        return loggedUsers.remove(username);
+    public synchronized Optional<User> getRegisteredUserByUsername(@NotNull String username) {
+        return Optional.ofNullable(userStore.get(username));
     }
 
 
