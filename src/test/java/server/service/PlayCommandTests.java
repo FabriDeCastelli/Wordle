@@ -54,14 +54,6 @@ public class PlayCommandTests {
     }
 
     @Test
-    @DisplayName(" correctly throws exception when user is null")
-    void testHandleNullUser() {
-        assertThrows(IllegalArgumentException.class,
-            () -> playCommand.handle(new Request(RequestType.PLAY, null))
-        );
-    }
-
-    @Test
     @DisplayName(" correctly handles a requestType if the user has already played the game")
     void testHandleUserAlreadyPlayed() {
         when(authenticationService.getLoggedUser())

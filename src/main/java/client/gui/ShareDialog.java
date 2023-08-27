@@ -78,7 +78,7 @@ public class ShareDialog extends JFrame {
 
         shareButton.addActionListener(e -> {
             final Optional<Response> response =
-                    WordleClientMain.share(username, gameResult.wordHintsHistory());
+                    WordleClientMain.share(gameResult.wordHintsHistory());
             if (response.isEmpty()) {
                 JOptionPane.showMessageDialog(
                         null, "Could not share statistics.", "Error", JOptionPane.ERROR_MESSAGE);

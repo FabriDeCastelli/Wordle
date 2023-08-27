@@ -1,7 +1,9 @@
 package server.service.command;
 
+import model.AuthDTO;
 import model.Request;
 import model.Response;
+import model.User;
 import model.enums.RequestType;
 import model.enums.Status;
 import org.jetbrains.annotations.NotNull;
@@ -33,14 +35,15 @@ public class LoginCommand implements Command {
     public Response handle(@NotNull Request request) {
 
         if (request.requestType() != RequestType.LOGIN) {
-            throw new IllegalArgumentException("Cannot handle a non-logout requestType");
-        } else if (request.username() == null) {
-            throw new IllegalArgumentException("Cannot logout a null user");
+            throw new IllegalArgumentException("Cannot handle a non-LOGIN request");
         }
 
-        return authenticationService.getRegisteredUserByUsername(request.username())
-                .filter(user -> user.getPasswordHash().equals(request.data()))
-                .map(user -> authenticationService.login(user)
+        final User user = new User((AuthDTO) request.data());
+
+        return authenticationService.getRegisteredUserByUsername(user.getUsername())
+                .filter(u -> u.getPasswordHash().equals(user.getPasswordHash())
+                        && !user.getUsername().isEmpty())
+                .map(u -> authenticationService.login(user)
                 ? new Response(Status.SUCCESS, "Login successful.")
                 : new Response(Status.FAILURE, "User already logged in.")
                 ).orElseGet(() -> new Response(Status.FAILURE, "Wrong username or password."));

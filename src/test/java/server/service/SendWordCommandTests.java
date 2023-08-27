@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import server.service.command.PlayCommand;
 import server.service.command.SendWordCommand;
 
 /**
@@ -50,7 +49,7 @@ public class SendWordCommandTests {
     void testHandleNullWord() {
         assertThrows(IllegalArgumentException.class,
             () -> sendWordCommand.handle(
-                    new Request(RequestType.SENDWORD, username, null))
+                    new Request(RequestType.SENDWORD, null))
         );
     }
 

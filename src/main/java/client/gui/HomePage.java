@@ -118,7 +118,7 @@ public class HomePage extends JFrame {
     private JButton getShowMyStatisticsButton(String username) {
         final JButton showMyStatsButton = new JButton("Show my stats");
         showMyStatsButton.addActionListener(e -> {
-            final Optional<Response> response = WordleClientMain.sendMeStatistics(username);
+            final Optional<Response> response = WordleClientMain.sendMeStatistics();
             if (response.isEmpty()) {
                 JOptionPane.showMessageDialog(HomePage.this, "Server could not respond.");
             } else if (response.get().status() == Status.SUCCESS) {
@@ -138,7 +138,7 @@ public class HomePage extends JFrame {
         final JButton playButton = new JButton("Play");
 
         playButton.addActionListener(e -> {
-            final Optional<Response> response = WordleClientMain.play(username);
+            final Optional<Response> response = WordleClientMain.play();
             if (response.isEmpty()) {
                 JOptionPane.showMessageDialog(HomePage.this, "Server could not respond.");
             } else if (response.get().status() == Status.SUCCESS) {

@@ -46,9 +46,7 @@ public class PlayCommand implements Command {
     public Response handle(@NotNull Request request) {
 
         if (request.requestType() != RequestType.PLAY) {
-            throw new IllegalArgumentException("Cannot handle a non-play request");
-        } else if (request.username() == null) {
-            throw new IllegalArgumentException("Cannot play a null user");
+            throw new IllegalArgumentException("Cannot handle a non-PLAY request");
         }
 
         final String currentWord = WordExtractionService.getCurrentWord();

@@ -29,6 +29,17 @@ public final class User implements Serializable {
         this.statistics = new UserStatistics();
     }
 
+    /**
+     * Constructor for the User, used for authentication.
+     *
+     * @param authDTO the authDTO
+     */
+    public User(@NotNull AuthDTO authDTO) {
+        this.username = authDTO.username();
+        this.passwordHash = authDTO.password();
+        this.statistics = new UserStatistics();
+    }
+
 
     /**
      * Getter for the getUsername.

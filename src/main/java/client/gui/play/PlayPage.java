@@ -147,7 +147,7 @@ public class PlayPage extends JFrame implements ActionListener {
                 .forEach(field -> guess.append(field.getText()));
 
         final Optional<Response> response =
-                WordleClientMain.sendWord(username, guess.toString(), currentAttempt + 1);
+                WordleClientMain.sendWord(guess.toString(), currentAttempt + 1);
 
         if (response.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Server could not respond.");

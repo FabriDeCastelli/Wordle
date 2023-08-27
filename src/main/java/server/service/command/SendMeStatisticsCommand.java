@@ -4,6 +4,7 @@ import model.Request;
 import model.Response;
 import model.User;
 import model.UserStatistics;
+import model.enums.RequestType;
 import model.enums.Status;
 import org.jetbrains.annotations.NotNull;
 import server.model.Command;
@@ -33,6 +34,11 @@ public class SendMeStatisticsCommand implements Command {
 
     @Override
     public Response handle(@NotNull Request request) {
+
+        if (request.requestType() != RequestType.SENDMESTATISTICS) {
+            throw new IllegalArgumentException("Cannot handle a non-SENDMESTATISTICS request");
+        }
+
         final User loggedUser =
                 authenticationService.getLoggedUser().orElseThrow(IllegalStateException::new);
         final UserStatistics userStatistics =

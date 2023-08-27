@@ -1,5 +1,6 @@
 package server.service.command;
 
+import model.AuthDTO;
 import model.Request;
 import model.Response;
 import model.User;
@@ -34,15 +35,15 @@ public class RegisterCommand implements Command {
     public Response handle(@NotNull Request request) {
 
         if (request.requestType() != RequestType.REGISTER) {
-            throw new IllegalArgumentException("Cannot handle a non-register requestType");
-        } else if (request.username() == null) {
-            throw new IllegalArgumentException("Cannot register a null user");
+            throw new IllegalArgumentException("Cannot handle a non-REGISTER requestType");
+        } else if (request.data() == null) {
+            throw new IllegalArgumentException("Cannot register a null AuthDTO");
         }
 
-        final User user = new User(request.username(), (String) request.data());
+        final User user = new User((AuthDTO) request.data());
 
         return user.getPasswordHash().isEmpty()
-                ? new Response(Status.FAILURE, "Password cannot be empty.")
+                ? new Response(Status.FAILURE, "Username or password cannot be empty.")
                 : authenticationService.register(user)
                 ? new Response(Status.SUCCESS, "Registration successful.")
                 : new Response(Status.FAILURE, "User already registered.");

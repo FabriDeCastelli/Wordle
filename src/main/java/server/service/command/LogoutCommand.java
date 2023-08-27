@@ -2,7 +2,6 @@ package server.service.command;
 
 import model.Request;
 import model.Response;
-import model.User;
 import model.enums.RequestType;
 import model.enums.Status;
 import org.jetbrains.annotations.NotNull;
@@ -34,8 +33,8 @@ public class LogoutCommand implements Command {
     public Response handle(@NotNull Request request) {
 
         if (request.requestType() != RequestType.LOGOUT) {
-            throw new IllegalArgumentException("Cannot handle a non-logout requestType");
-        } else if (request.username() == null) {
+            throw new IllegalArgumentException("Cannot handle a non-LOGIN requestType");
+        } else if (request.data() == null) {
             throw new IllegalArgumentException("Cannot logout a user with null username");
         }
 

@@ -12,6 +12,7 @@ import java.net.Socket;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
+import model.AuthDTO;
 import model.Request;
 import model.Response;
 import model.StreamHandler;
@@ -84,7 +85,8 @@ public class WordleClientMain {
      */
     public static Optional<Response> login(String username, String password) {
         final String hashedPassword = PasswordHashingService.getInstance().hashPassword(password);
-        final Request request = new Request(RequestType.LOGIN, username, hashedPassword);
+        final AuthDTO authDTO = new AuthDTO(username, hashedPassword);
+        final Request request = new Request(RequestType.LOGIN, authDTO);
         if (StreamHandler.sendData(out, request)) {
             new NotificationController(username, multicastIP, multicastPort).start();
             return StreamHandler.getData(in, Response.class);
@@ -101,7 +103,8 @@ public class WordleClientMain {
      */
     public static Optional<Response> register(String username, String password) {
         final String hashedPassword = PasswordHashingService.getInstance().hashPassword(password);
-        final Request request = new Request(RequestType.REGISTER, username, hashedPassword);
+        final AuthDTO authDTO = new AuthDTO(username, hashedPassword);
+        final Request request = new Request(RequestType.REGISTER, authDTO);
         return sendAndGetResponse(request);
     }
 
@@ -119,47 +122,43 @@ public class WordleClientMain {
     /**
      * Sends a play requestType to the server.
      *
-     * @param username the username of the user sending the requestType
      * @return the response from the server
      */
-    public static Optional<Response> play(String username) {
-        final Request request = new Request(RequestType.PLAY, username);
+    public static Optional<Response> play() {
+        final Request request = new Request(RequestType.PLAY);
         return sendAndGetResponse(request);
     }
 
     /**
      * Sends a word to the server.
      *
-     * @param username the username of the user sending the requestType
      * @param word the word to send
      * @return the response from the server
      */
-    public static Optional<Response> sendWord(String username, String word, int attemptNumber) {
+    public static Optional<Response> sendWord(String word, int attemptNumber) {
         final Request request = new Request(
-                RequestType.SENDWORD, username, new WordAttempt(word, attemptNumber));
+                RequestType.SENDWORD, new WordAttempt(word, attemptNumber));
         return sendAndGetResponse(request);
     }
 
     /**
      * Sends a share requestType to the server.
      *
-     * @param username the username of the user sending the requestType
      * @param wordHintsHistory the history of the game the user has played
      * @return the response from the server
      */
-    public static Optional<Response> share(String username, List<WordHints> wordHintsHistory) {
-        final Request request = new Request(RequestType.SHARE, username, wordHintsHistory);
+    public static Optional<Response> share(List<WordHints> wordHintsHistory) {
+        final Request request = new Request(RequestType.SHARE, wordHintsHistory);
         return sendAndGetResponse(request);
     }
 
     /**
      * Sends a showMyStatistics requestType to the server.
      *
-     * @param username the username of the user sending the request
      * @return the response from the server
      */
-    public static Optional<Response> sendMeStatistics(String username) {
-        final Request request = new Request(RequestType.SENDMESTATISTICS, username);
+    public static Optional<Response> sendMeStatistics() {
+        final Request request = new Request(RequestType.SENDMESTATISTICS);
         return sendAndGetResponse(request);
     }
 

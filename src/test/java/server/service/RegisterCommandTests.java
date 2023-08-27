@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
+import model.AuthDTO;
 import model.Request;
 import model.Response;
 import model.User;
@@ -47,15 +48,15 @@ public class RegisterCommandTests {
     @DisplayName(" cannot handle a requestType that is not register")
     void testHandleInvalidRequest() {
         assertThrows(IllegalArgumentException.class,
-            () -> registerCommand.handle(new Request(RequestType.LOGOUT, username, password))
+            () -> registerCommand.handle(new Request(RequestType.LOGOUT, password))
         );
     }
 
     @Test
-    @DisplayName(" cannot register a null user")
+    @DisplayName(" cannot register a null AuthDTO")
     void testHandleNullUser() {
         assertThrows(IllegalArgumentException.class,
-            () -> registerCommand.handle(new Request(RequestType.REGISTER, null, null))
+            () -> registerCommand.handle(new Request(RequestType.REGISTER, null))
         );
     }
 
@@ -64,9 +65,9 @@ public class RegisterCommandTests {
     @DisplayName(" cannot register a user with an empty password")
     void testHandleEmptyPassword() {
         assertEquals(
-                new Response(Status.FAILURE, "Password cannot be empty."),
+                new Response(Status.FAILURE, "Username or password cannot be empty."),
                 registerCommand.handle(
-                        new Request(RequestType.REGISTER, username, ""))
+                        new Request(RequestType.REGISTER, new AuthDTO(username, "")))
         );
     }
 
@@ -77,7 +78,8 @@ public class RegisterCommandTests {
                 .thenReturn(false);
         assertEquals(
             new Response(Status.FAILURE, "User already registered."),
-            registerCommand.handle(new Request(RequestType.REGISTER, username, password))
+            registerCommand.handle(
+                    new Request(RequestType.REGISTER, new AuthDTO(username, password)))
         );
     }
 
@@ -89,7 +91,8 @@ public class RegisterCommandTests {
         when(authenticationService.register(any()))
                 .thenReturn(true);
         assertEquals(
-            registerCommand.handle(new Request(RequestType.REGISTER, username, password)),
+            registerCommand.handle(
+                    new Request(RequestType.REGISTER, new AuthDTO(username, password))),
             new Response(Status.SUCCESS, "Registration successful.")
         );
     }

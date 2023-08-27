@@ -49,9 +49,7 @@ public class SendWordCommand implements Command {
     public Response handle(@NotNull Request request) {
 
         if (request.requestType() != RequestType.SENDWORD) {
-            throw new IllegalArgumentException("Cannot handle a non-sendword requestType");
-        } else if (request.data() == null) {
-            throw new IllegalArgumentException("Cannot send a null word");
+            throw new IllegalArgumentException("Cannot handle a non-SENDWORD request");
         }
 
 

@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
+import model.AuthDTO;
 import model.Request;
 import model.Response;
 import model.User;
@@ -48,15 +49,7 @@ public class LoginCommandTests {
     @DisplayName(" cannot handle a requestType that is not login")
     void testHandleInvalidRequest() {
         assertThrows(IllegalArgumentException.class,
-            () -> loginCommand.handle(new Request(RequestType.LOGOUT, username, password))
-        );
-    }
-
-    @Test
-    @DisplayName(" cannot login a user with null username")
-    void testHandleNullUser() {
-        assertThrows(IllegalArgumentException.class,
-            () -> loginCommand.handle(new Request(RequestType.LOGIN, null, password))
+            () -> loginCommand.handle(new Request(RequestType.LOGOUT, password))
         );
     }
 
@@ -69,7 +62,8 @@ public class LoginCommandTests {
                 .thenReturn(false);
         assertEquals(
             new Response(Status.FAILURE, "User already logged in."),
-            loginCommand.handle(new Request(RequestType.LOGIN, username, password))
+            loginCommand.handle(
+                    new Request(RequestType.LOGIN, new AuthDTO(username, password)))
         );
     }
 
@@ -81,7 +75,9 @@ public class LoginCommandTests {
                 .thenReturn(Optional.of(new User("username", "wrong password")));
         assertEquals(
             new Response(Status.FAILURE, "Wrong username or password."),
-            loginCommand.handle(new Request(RequestType.LOGIN, username, password))
+            loginCommand.handle(
+                    new Request(RequestType.LOGIN, new AuthDTO(username, password)))
+
         );
     }
 
@@ -94,7 +90,8 @@ public class LoginCommandTests {
                 .thenReturn(true);
         assertEquals(
             new Response(Status.SUCCESS, "Login successful."),
-            loginCommand.handle(new Request(RequestType.LOGIN, username, password))
+            loginCommand.handle(
+                    new Request(RequestType.LOGIN, new AuthDTO(username, password)))
         );
     }
 

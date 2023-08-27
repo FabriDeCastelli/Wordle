@@ -66,7 +66,7 @@ public class RequestHandler implements Runnable, AutoCloseable {
         commandMap.put(RequestType.SENDMESTATISTICS,
                 new SendMeStatisticsCommand(userStatisticsService, authenticationService));
         commandMap.put(RequestType.SHARE,
-                new ShareCommand(multicastSocket));
+                new ShareCommand(multicastSocket, authenticationService));
     }
 
     @Override

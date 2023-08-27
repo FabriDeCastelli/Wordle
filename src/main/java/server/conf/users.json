@@ -42,11 +42,11 @@
     "username": "c",
     "passwordHash": "Ln0sA6lQeuJl7PW1NWiFpTOTogKdJBOUmXJloaJa78Y\u003d",
     "statistics": {
-      "gamesPlayed": 10,
-      "gamesWon": 11,
-      "gamesWonPercentage": 1.1,
-      "currentStreak": 11,
-      "longestStreak": 11,
+      "gamesPlayed": 11,
+      "gamesWon": 12,
+      "gamesWonPercentage": 1.0909090909090908,
+      "currentStreak": 12,
+      "longestStreak": 12,
       "guessDistribution": [
         1,
         1,
@@ -58,6 +58,7 @@
         3,
         1,
         1,
+        1,
         1
       ]
     }
@@ -66,11 +67,11 @@
     "username": "f",
     "passwordHash": "JS8QyDYQ68oaBZwLroJV66L5W+TR17z6idckioLZ8RE\u003d",
     "statistics": {
-      "gamesPlayed": 46,
-      "gamesWon": 42,
-      "gamesWonPercentage": 0.9130434782608695,
-      "currentStreak": 42,
-      "longestStreak": 42,
+      "gamesPlayed": 47,
+      "gamesWon": 43,
+      "gamesWonPercentage": 0.9148936170212766,
+      "currentStreak": 43,
+      "longestStreak": 43,
       "guessDistribution": [
         1,
         1,
@@ -101,6 +102,7 @@
         4,
         3,
         6,
+        1,
         1,
         1,
         1,

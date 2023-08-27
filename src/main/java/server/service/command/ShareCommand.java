@@ -9,6 +9,7 @@ import model.enums.RequestType;
 import model.enums.Status;
 import org.jetbrains.annotations.NotNull;
 import server.model.Command;
+import server.service.AuthenticationService;
 
 /**
  * Represents a share command.
@@ -16,23 +17,30 @@ import server.model.Command;
 public class ShareCommand implements Command {
 
     private final MulticastSocket multicastSocket;
+    private final AuthenticationService authenticationService;
 
-    public ShareCommand(MulticastSocket multicastSocket) {
+    public ShareCommand(
+            @NotNull MulticastSocket multicastSocket,
+            @NotNull AuthenticationService authenticationService) {
         this.multicastSocket = multicastSocket;
+        this.authenticationService = authenticationService;
     }
 
     @Override
     public Response handle(@NotNull Request request) {
 
         if (request.requestType() != RequestType.SHARE) {
-            throw new IllegalArgumentException("Cannot handle a non-share requestType");
+            throw new IllegalArgumentException("Cannot handle a non-SHARE request");
         } else if (request.data() == null) {
-            throw new IllegalArgumentException("Cannot share a null statistics");
+            throw new IllegalArgumentException("Cannot share a null result");
         }
 
-        final Notification notification = new Notification(
-                request.username() + " shared a result!",
-                request.username(),  request.data());
+        final String username = authenticationService.getLoggedUser()
+                .orElseThrow(IllegalStateException::new)
+                .getUsername();
+
+        final Notification notification =
+                new Notification(username + " shared a result!", username,  request.data());
 
         return StreamHandler.sendMulticastData(multicastSocket, notification)
                 ? new Response(Status.SUCCESS, "Statistics shared successfully.")
