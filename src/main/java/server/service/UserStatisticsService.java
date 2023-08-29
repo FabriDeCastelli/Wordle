@@ -45,12 +45,13 @@ public class UserStatisticsService {
      * @return true for success and false for failure
      */
     public synchronized boolean updateStatistics(
-            @NotNull String username, UserStatistics userStatistics) {
+            @NotNull String username,
+            @NotNull UserStatistics userStatistics) {
         final User user = userStore.get(username);
         if (user == null) {
             throw new IllegalStateException("User not found when updating statistics");
         }
-        user.setUserStatistics(userStatistics);
+        user.setStatistics(userStatistics);
         userStore.put(username, user);
         try (final FileWriter writer = new FileWriter(filePath)) {
             gson.toJson(userStore, writer);
@@ -71,7 +72,7 @@ public class UserStatisticsService {
         if (user == null) {
             throw new IllegalStateException("User not found when getting statistics");
         }
-        return user.getUserStatistics();
+        return user.getStatistics();
     }
 
 

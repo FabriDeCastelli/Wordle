@@ -21,11 +21,23 @@ import org.jetbrains.annotations.NotNull;
 public class PlayWordleService {
 
     private final ConcurrentHashMap<String, List<String>> playedGames;
+    private final String filePath;
 
     /**
      * Constructor for PlayWordleService.
      */
     public PlayWordleService() {
+        this.filePath = "src/main/java/server/conf/playedGames.json";
+        this.playedGames = getPlayedGames();
+    }
+
+    /**
+     * Constructor for PlayWordleService.
+     *
+     * @param filePath the file path of the store
+     */
+    public PlayWordleService(String filePath) {
+        this.filePath = filePath;
         this.playedGames = getPlayedGames();
     }
 
@@ -36,7 +48,7 @@ public class PlayWordleService {
      */
     private synchronized ConcurrentHashMap<String, List<String>> getPlayedGames() {
         try (final JsonReader reader = new JsonReader(
-                new FileReader("src/main/java/server/conf/playedGames.json"))) {
+                new FileReader(filePath))) {
             final ConcurrentHashMap<String, List<String>> games = gson.fromJson(
                     reader, new TypeToken<ConcurrentHashMap<String, List<String>>>() {
                     }.getType());
@@ -100,14 +112,20 @@ public class PlayWordleService {
             playedGames.put(username, new ArrayList<>());
         }
         playedGames.get(username).add(word);
-        try (final FileWriter writer =
-                     new FileWriter("src/main/java/server/conf/playedGames.json")) {
+        try (final FileWriter writer = new FileWriter(filePath)) {
             gson.toJson(playedGames, writer);
         } catch (IOException e) {
             return false;
         }
         return true;
 
+    }
+
+    /**
+     * Gets the list of all already played games.
+     */
+    synchronized void clearPlayedGames(String username) {
+        playedGames.get(username).clear();
     }
 
 

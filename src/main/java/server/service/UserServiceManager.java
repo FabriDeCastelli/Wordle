@@ -56,9 +56,8 @@ public class UserServiceManager {
                     }.getType());
             return users == null ? new ConcurrentHashMap<>() : users;
         } catch (IOException e) {
-            System.out.println("Error getting all users.");
+            throw new RuntimeException("Error getting all registered users.");
         }
-        return new ConcurrentHashMap<>();
     }
 
     public ConcurrentHashMap<String, User> getUsersMap() {

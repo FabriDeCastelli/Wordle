@@ -50,11 +50,11 @@ public final class User implements Serializable {
         return username;
     }
 
-    public UserStatistics getUserStatistics() {
+    public UserStatistics getStatistics() {
         return statistics;
     }
 
-    public void setUserStatistics(UserStatistics userStatistics) {
+    public void setStatistics(UserStatistics userStatistics) {
         this.statistics = userStatistics;
     }
 
