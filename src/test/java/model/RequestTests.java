@@ -26,8 +26,9 @@ public class RequestTests {
         final Request request =
                 new Request(RequestType.LOGIN, username);
         assertEquals(RequestType.LOGIN, request.requestType());
+        final Request anotherRequest =
+                new Request(RequestType.LOGOUT);
+        assertEquals(RequestType.LOGOUT, anotherRequest.requestType());
     }
-
-
 
 }

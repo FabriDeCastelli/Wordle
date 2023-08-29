@@ -1,6 +1,7 @@
 package model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import model.enums.Status;
 import org.junit.jupiter.api.DisplayName;
@@ -24,6 +25,13 @@ public class ResponseTests {
     @DisplayName(" can correctly get the message")
     public void testGetMessage() {
         assertEquals("testMessage", response.message());
+    }
+
+    @Test
+    @DisplayName(" can correctly get the data")
+    public void testGetData() {
+        final Response anotherResponse = new Response(Status.FAILURE, (Object) null);
+        assertNull(anotherResponse.data());
     }
 
 }
