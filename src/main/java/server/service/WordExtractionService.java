@@ -49,6 +49,15 @@ public class WordExtractionService extends Thread {
         return currentWord;
     }
 
+    /**
+     * Gets the list of already extracted words.
+     *
+     * @return the extracted words list
+     */
+    public static List<String> getExtractedWords() {
+        return extractedWords;
+    }
+
 
     /**
      * Runs the service.
@@ -67,12 +76,14 @@ public class WordExtractionService extends Thread {
         final Random random = new Random();
         final List<String> notExtractedWords =
                 dictionary.stream().filter(word -> !extractedWords.contains(word)).toList();
-        final String word = dictionary.get(random.nextInt(notExtractedWords.size()));
+        final String word = notExtractedWords.get(random.nextInt(notExtractedWords.size()));
         extractedWords.add(word);
         currentWord = word;
         System.out.println("Extracted new word: " + word);
 
     }
+
+
 
 
 }
