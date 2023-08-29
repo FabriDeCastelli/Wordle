@@ -12,7 +12,7 @@ import server.model.Command;
 import server.service.AuthenticationService;
 
 /**
- * Represents a share command.
+ * Shares a result with the other users in the multicast socket.
  */
 public class ShareCommand implements Command {
 

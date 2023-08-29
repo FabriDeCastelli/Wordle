@@ -1,7 +1,7 @@
 package model.enums;
 
 /**
- * Represents a requestType.
+ * Represents a request that can be sent to the server.
  */
 public enum RequestType {
 

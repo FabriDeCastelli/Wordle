@@ -7,7 +7,9 @@ public enum Status {
 
     GUESS,
     TRYAGAIN,
+
     SUCCESS,
+
     FAILURE
 
 }

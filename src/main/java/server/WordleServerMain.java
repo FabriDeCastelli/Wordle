@@ -24,6 +24,8 @@ public class WordleServerMain {
 
     /**
      * Main method for the WordleServer.
+     * Loads the properties file, opens a ServerSocket and a MulticastSocket.
+     * Creates a thread pool to handle the requests and a thread pool to extract a new word.
      */
     @SuppressWarnings("PMD")
     public static void main(String[] args) {

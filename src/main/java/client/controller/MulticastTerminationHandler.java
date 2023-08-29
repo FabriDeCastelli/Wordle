@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
 import java.net.NetworkInterface;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Class responsible for handling the termination of the multicast.
@@ -22,9 +23,9 @@ public class MulticastTerminationHandler extends Thread {
      * @param networkInterface the network interface
      */
     public MulticastTerminationHandler(
-            MulticastSocket multicastSocket,
-            InetSocketAddress inetSocketAddress,
-            NetworkInterface networkInterface) {
+            @NotNull MulticastSocket multicastSocket,
+            @NotNull InetSocketAddress inetSocketAddress,
+            @NotNull NetworkInterface networkInterface) {
         this.multicastSocket = multicastSocket;
         this.inetSocketAddress = inetSocketAddress;
         this.networkInterface = networkInterface;

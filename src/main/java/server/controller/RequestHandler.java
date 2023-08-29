@@ -26,7 +26,7 @@ import server.service.command.SendWordCommand;
 import server.service.command.ShareCommand;
 
 /**
- * Handles a requestType from a client.
+ * Handles a request from a client.
  */
 public class RequestHandler implements Runnable, AutoCloseable {
 
@@ -40,8 +40,8 @@ public class RequestHandler implements Runnable, AutoCloseable {
     /**
      * Constructor for RequestHandler.
      *
-     * @param socket          the socket to accept
-     * @param multicastSocket the multicast socket
+     * @param socket          the socket of the server, already accepted
+     * @param multicastSocket the multicast socket on which to send notifications
      */
     public RequestHandler(@NotNull Socket socket, @NotNull MulticastSocket multicastSocket)
             throws IOException {
@@ -49,10 +49,10 @@ public class RequestHandler implements Runnable, AutoCloseable {
         this.out = new ObjectOutputStream(socket.getOutputStream());
         this.in = new ObjectInputStream(socket.getInputStream());
         this.multicastSocket = multicastSocket;
+        this.commandMap = new HashMap<>();
         final AuthenticationService authenticationService = new AuthenticationService();
         final UserStatisticsService userStatisticsService = new UserStatisticsService();
         final PlayWordleService playWordleService = new PlayWordleService();
-        commandMap = new HashMap<>();
         commandMap.put(RequestType.LOGIN,
                 new LoginCommand(authenticationService));
         commandMap.put(RequestType.LOGOUT,
@@ -96,7 +96,7 @@ public class RequestHandler implements Runnable, AutoCloseable {
     }
 
     /**
-     * Closes the socket.
+     * Closes resources.
      *
      * @throws IOException if an I/O error occurs when closing this socket.
      */

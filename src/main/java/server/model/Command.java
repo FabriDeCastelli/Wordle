@@ -12,8 +12,8 @@ public interface Command {
     /**
      * Handles a user requestType.
      *
-     * @param request the user requestType
-     * @return the server response
+     * @param request the request the client sent
+     * @return the response provided by the server
      */
     Response handle(@NotNull Request request);
 

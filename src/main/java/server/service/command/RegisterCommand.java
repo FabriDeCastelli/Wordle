@@ -11,7 +11,7 @@ import server.model.Command;
 import server.service.AuthenticationService;
 
 /**
- * Register command.
+ * Handles a register request.
  */
 public class RegisterCommand implements Command {
 
@@ -22,7 +22,7 @@ public class RegisterCommand implements Command {
      *
      * @param authenticationService the authentication service
      */
-    public RegisterCommand(AuthenticationService authenticationService) {
+    public RegisterCommand(@NotNull AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
     }
 

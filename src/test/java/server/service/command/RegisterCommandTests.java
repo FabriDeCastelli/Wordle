@@ -1,4 +1,4 @@
-package server.service;
+package server.service.command;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -10,14 +10,13 @@ import java.util.Optional;
 import model.AuthDTO;
 import model.Request;
 import model.Response;
-import model.User;
 import model.enums.RequestType;
 import model.enums.Status;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import server.service.command.RegisterCommand;
+import server.service.AuthenticationService;
 
 /**
  * RegisterCommand Tests.
@@ -28,7 +27,6 @@ public class RegisterCommandTests {
     @Mock
     private final AuthenticationService authenticationService = mock(AuthenticationService.class);
     private RegisterCommand registerCommand;
-    private User user;
     private String username;
     private String password;
 
@@ -38,7 +36,6 @@ public class RegisterCommandTests {
     @BeforeEach
     void setUp() {
         registerCommand = new RegisterCommand(authenticationService);
-        user = new User("username", "password");
         username = "username";
         password = "password";
     }

@@ -12,7 +12,7 @@ import server.service.AuthenticationService;
 import server.service.UserStatisticsService;
 
 /**
- * Command to show the user its statistics.
+ * Sends the statistics of the logged user to the client.
  */
 public class SendMeStatisticsCommand implements Command {
 

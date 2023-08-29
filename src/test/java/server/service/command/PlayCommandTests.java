@@ -1,4 +1,4 @@
-package server.service;
+package server.service.command;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -17,7 +17,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import server.service.command.PlayCommand;
+import server.service.AuthenticationService;
+import server.service.PlayWordleService;
+import server.service.UserStatisticsService;
+import server.service.WordExtractionService;
 
 /**
  * Tests for PlayCommand.

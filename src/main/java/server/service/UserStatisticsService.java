@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 
 /**
- * User statistics service.
+ * Services to manage the statistics of a user.
  */
 public class UserStatisticsService {
 
@@ -38,7 +38,7 @@ public class UserStatisticsService {
     }
 
     /**
-     * Gets the user statistics with the given username.
+     * Gets the user statistics for a given username.
      *
      * @param username the username
      * @param userStatistics the user statistics
@@ -61,7 +61,7 @@ public class UserStatisticsService {
     }
 
     /**
-     * Gets the user statistics with the given username.
+     * Gets the user statistics for a given username.
      *
      * @param username the username
      * @return the user statistics for that user

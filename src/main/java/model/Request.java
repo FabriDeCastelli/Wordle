@@ -5,7 +5,7 @@ import model.enums.RequestType;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Represents a user requestType.
+ * Represents a request from client to server.
  */
 public record Request(
         @NotNull RequestType requestType,

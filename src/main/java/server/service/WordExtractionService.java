@@ -15,6 +15,9 @@ public class WordExtractionService extends Thread {
     private static final List<String> dictionary;
     private static final List<String> extractedWords;
 
+    /*
+     * Static block to initialize the dictionary, as instance-independent.
+     */
     static {
         extractedWords = new ArrayList<>();
         dictionary = new ArrayList<>();

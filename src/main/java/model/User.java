@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a user.
- * A user has a getUsername and a getPasswordHash, with the getUsername assumed to be unique.
+ * A user has a username (assumed to be unique), a hashed password and its statistics.
  */
 public final class User implements Serializable {
 

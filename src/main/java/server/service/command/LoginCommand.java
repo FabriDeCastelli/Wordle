@@ -11,7 +11,7 @@ import server.model.Command;
 import server.service.AuthenticationService;
 
 /**
- * Login command.
+ * Handles a login request.
  */
 public class LoginCommand implements Command {
 
@@ -22,7 +22,7 @@ public class LoginCommand implements Command {
      *
      * @param authenticationService the authentication service
      */
-    public LoginCommand(AuthenticationService authenticationService) {
+    public LoginCommand(@NotNull AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
     }
 

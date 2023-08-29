@@ -1,4 +1,4 @@
-package server.service;
+package server.service.command;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -7,14 +7,13 @@ import static org.mockito.Mockito.when;
 
 import model.Request;
 import model.Response;
-import model.User;
 import model.enums.RequestType;
 import model.enums.Status;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import server.service.command.LogoutCommand;
+import server.service.AuthenticationService;
 
 /**
  * LogoutCommand Tests.
@@ -25,7 +24,6 @@ public class LogoutCommandTests {
     @Mock
     private final AuthenticationService authenticationService = mock(AuthenticationService.class);
     private LogoutCommand logoutCommand;
-    private User user;
     private String username;
 
     /**
@@ -34,7 +32,6 @@ public class LogoutCommandTests {
     @BeforeEach
     void setUp() {
         logoutCommand = new LogoutCommand(authenticationService);
-        user = new User("username", "password");
         username = "username";
     }
 

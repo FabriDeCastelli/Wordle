@@ -13,7 +13,7 @@ import server.service.UserStatisticsService;
 import server.service.WordExtractionService;
 
 /**
- * Play command.
+ * Checks if the requesting user can play the game and manages statistics.
  */
 public class PlayCommand implements Command {
 

@@ -1,26 +1,26 @@
 package model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for GameResult.
+ * Tests for GameResult record.
  */
 @DisplayName("The GameResult tests")
 public class GameResultTests {
 
-    private final GameResult gameResult =
-            new GameResult("username", null, null);
-
     @Test
-    @DisplayName("can construct an object with a username, wordHintsHistory and userStatistics")
-    void canConstructObjectWithAllArguments() {
-        assertEquals("username", gameResult.username());
-        assertNull(gameResult.wordHintsHistory());
-        assertNull(gameResult.userStatistics());
+    @DisplayName("can correctly construct an instance of GameResult")
+    void testConstructor() {
+        final UserStatistics userStatistics = new UserStatistics();
+        final WordHints wordHints = new WordHints(List.of(1, 2, 3), List.of(4, 5, 6));
+        final List<WordHints> wordHintsHistory = List.of(wordHints, wordHints);
+        final GameResult gameResult = new GameResult(wordHintsHistory, userStatistics);
+        assertEquals(userStatistics, gameResult.userStatistics());
+        assertEquals(wordHintsHistory, gameResult.wordHintsHistory());
     }
 
 }

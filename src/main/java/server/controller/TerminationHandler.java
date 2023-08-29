@@ -21,6 +21,7 @@ public class TerminationHandler extends Thread {
      * @param maximumDelay    the maximum delay
      * @param executorService the executor service
      * @param serverSocket    the server socket
+     * @param multicastSocket the multicast socket
      */
     public TerminationHandler(
             int maximumDelay,

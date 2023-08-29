@@ -11,7 +11,8 @@ import model.User;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Service for authenticating users.
+ * Service that manages the authentication of the users.
+ * Stores the logged user for the current session
  */
 public class AuthenticationService {
 
@@ -45,7 +46,7 @@ public class AuthenticationService {
 
 
     /**
-     * Adds a user to the list of logged users.
+     * Adds a user to the list of logged users and sets it as the logged user.
      *
      * @param user the user to be logged in
      * @return true if it was added, false otherwise
@@ -65,7 +66,7 @@ public class AuthenticationService {
      */
     public synchronized boolean logout() {
         final User loggedUser = this.loggedUser
-                .orElseThrow(() -> new IllegalArgumentException("Cannot logout a not logged user"));
+                .orElseThrow(IllegalArgumentException::new);
         return loggedUsers.remove(loggedUser.getUsername());
     }
 
@@ -75,13 +76,16 @@ public class AuthenticationService {
 
     /**
      * Removes a user from the list of registered users.
+     * Used for testing purposes.
      *
      * @param user the user to be deleted
      */
-    public synchronized boolean unregister(@NotNull User user) {
+    synchronized boolean unregister(@NotNull User user) {
 
-        getRegisteredUserByUsername(user.getUsername())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        if (!isRegistered(user.getUsername())) {
+            return false;
+        }
+
         userStore.remove(user.getUsername());
         try (final FileWriter writer = new FileWriter(filePath)) {
             gson.toJson(userStore, writer);
@@ -99,7 +103,7 @@ public class AuthenticationService {
      */
     public synchronized boolean register(@NotNull User user) {
 
-        if (getRegisteredUserByUsername(user.getUsername()).isPresent()) {
+        if (isRegistered(user.getUsername())) {
             return false;
         }
 
@@ -120,6 +124,15 @@ public class AuthenticationService {
      */
     public synchronized Optional<User> getRegisteredUserByUsername(@NotNull String username) {
         return Optional.ofNullable(userStore.get(username));
+    }
+
+    /**
+     * Checks if a user with the given username is registered.
+     *
+     * @param username the username of the user.
+     */
+    public boolean isRegistered(@NotNull String username) {
+        return getRegisteredUserByUsername(username).isPresent();
     }
 
 

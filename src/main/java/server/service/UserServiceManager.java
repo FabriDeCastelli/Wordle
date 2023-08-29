@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import model.User;
 
 /**
- * Singleton class to share users' data.
+ * Singleton class to share users' across services.
  */
 public class UserServiceManager {
 

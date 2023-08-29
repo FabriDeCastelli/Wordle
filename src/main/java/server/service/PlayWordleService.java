@@ -1,7 +1,7 @@
 package server.service;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import static server.service.UserServiceManager.gson;
+
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import java.io.FileReader;
@@ -16,11 +16,10 @@ import model.WordHints;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Play Wordle service.
+ * Service that manages the game logic.
  */
 public class PlayWordleService {
 
-    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private final ConcurrentHashMap<String, List<String>> playedGames;
 
     /**
@@ -54,7 +53,7 @@ public class PlayWordleService {
      *
      * @param username the username of the user that wants to play the game
      * @param word the word of the current game
-     * @return true if the user has played the game for that word
+     * @return true if the user has played the game for that word, false otherwise
      */
     public synchronized boolean hasPlayed(@NotNull String username, @NotNull String word) {
         if (!playedGames.containsKey(username)) {
@@ -67,8 +66,8 @@ public class PlayWordleService {
     /**
      * Guesses the word.
      *
-     * @param word the word to guess
-     * @return the hints
+     * @param word the word to be guessed
+     * @return the hints for the word as two lists of integers
      */
     public WordHints guessWord(@NotNull String word) {
         final String currentWord = WordExtractionService.getCurrentWord();
@@ -91,9 +90,9 @@ public class PlayWordleService {
     }
 
     /**
-     * Adds a played game to the list of played games.
+     * Adds a played game to the list of played games and save it to the store.
      *
-     * @param username the username of the user
+     * @param username the username of the user that played the game
      * @param word the word to be added
      */
     public synchronized boolean addPlayedGame(@NotNull String username,  @NotNull String word) {

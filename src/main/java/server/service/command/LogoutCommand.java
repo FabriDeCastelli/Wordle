@@ -9,7 +9,7 @@ import server.model.Command;
 import server.service.AuthenticationService;
 
 /**
- * Logout command.
+ * Handles a logout request.
  */
 public class LogoutCommand implements Command {
 
@@ -20,7 +20,7 @@ public class LogoutCommand implements Command {
      *
      * @param authenticationService the authentication service
      */
-    public LogoutCommand(AuthenticationService authenticationService) {
+    public LogoutCommand(@NotNull AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
     }
 

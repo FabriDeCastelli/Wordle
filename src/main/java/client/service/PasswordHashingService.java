@@ -8,14 +8,14 @@ import java.util.Base64;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Service to hash passwords.
+ * Singleton service to handle password hashing.
  */
 public class PasswordHashingService {
 
     private static PasswordHashingService instance = null;
 
     /**
-     * Private constructor to prevent initialization getInstance() singleton.
+     * Private constructor.
      */
     private PasswordHashingService() {
     }
@@ -56,7 +56,7 @@ public class PasswordHashingService {
      * @param hashedPassword    the hashed password
      * @return                  true if the password matches the hashed password
      */
-    public boolean passwordMatches(String password, String hashedPassword) {
+    public boolean passwordMatches(@NotNull String password, String hashedPassword) {
         final String hashedInputPassword = hashPassword(password);
         return hashedInputPassword.equals(hashedPassword);
     }

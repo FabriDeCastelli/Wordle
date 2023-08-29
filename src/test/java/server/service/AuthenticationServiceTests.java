@@ -1,6 +1,6 @@
 package server.service;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
@@ -29,9 +29,10 @@ public class AuthenticationServiceTests {
     @Test
     @DisplayName(" can correctly add and delete a user to the registered users")
     public void testAddAndDeleteUser() {
-        User user = new User("testUser", "testPassword");
+        final User user = new User("testUser", "testPassword");
         authenticationService.register(user);
-        Optional<User> userOptional = authenticationService.getRegisteredUserByUsername("testUser");
+        Optional<User> userOptional =
+                authenticationService.getRegisteredUserByUsername(user.getUsername());
         assertTrue(userOptional.isPresent());
         assertTrue(authenticationService.unregister(user));
         userOptional = authenticationService.getRegisteredUserByUsername(user.getUsername());
@@ -73,40 +74,58 @@ public class AuthenticationServiceTests {
     }
 
     @Nested
-    @DisplayName(" when adding a user ")
-    class WhenAddingUser {
+    @DisplayName(" when registering a user ")
+    class WhenRegisteringUser {
 
         private static User user;
 
         @BeforeAll
-        public static void setUp() throws IllegalArgumentException {
+        public static void setUp() {
             user = new User("testUser", "testPassword");
             authenticationService.register(user);
         }
 
-        @AfterAll
-        public static void tearDown() throws IllegalArgumentException {
-            authenticationService.unregister(user);
+        @Test
+        @DisplayName(" should return false if the user is already registered")
+        public void testIsRegisteredUSer() {
+            assertTrue(authenticationService.isRegistered(user.getUsername()));
         }
 
-
-
-
+        @AfterAll
+        public static void tearDown() {
+            authenticationService.unregister(user);
+        }
 
     }
 
     @Nested
-    @DisplayName(" when deleting a user ")
-    class WhenDeletingUser {
+    @DisplayName(" when unregistering a user ")
+    class WhenUnregisteringUser {
+
+        private static User user;
+
+        @BeforeAll
+        public static void setUp() {
+            user = new User("testUser", "testPassword");
+            authenticationService.register(user);
+        }
+
 
         @Test
-        @DisplayName(" should throw an IllegalArgumentException if the user is not registered")
+        @DisplayName(" should return false if the user is not registered")
         public void testDeleteNotRegisteredUser() {
-            assertThrows(
-                    IllegalArgumentException.class,
-                    () -> authenticationService.unregister(
-                            new User("notregistered", "notregistered")));
+            assertFalse(authenticationService.unregister(
+                    new User("notRegistered", "notRegistered")));
         }
+
+        @Test
+        @DisplayName(" should return true if the user is registered")
+        public void testDeleteRegisteredUser() {
+            assertTrue(authenticationService.isRegistered(user.getUsername()));
+            assertTrue(authenticationService.unregister(user));
+            assertFalse(authenticationService.isRegistered(user.getUsername()));
+        }
+
     }
 
 }

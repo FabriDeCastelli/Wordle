@@ -1,5 +1,6 @@
-package client.controller;
+package client.service;
 
+import client.controller.MulticastTerminationHandler;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -16,7 +17,7 @@ import model.StreamHandler;
 /**
  * Controller for the notifications.
  */
-public class NotificationController extends Thread {
+public class NotificationService extends Thread {
 
     public final String multicastIp;
     public final int multicastPort;
@@ -24,12 +25,13 @@ public class NotificationController extends Thread {
     public static final Queue<Notification> notifications = new ConcurrentLinkedQueue<>();
 
     /**
-     * Constructor for the NotificationController.
+     * Constructor for the NotificationService.
      *
+     * @param username      the username of the owner of the notifications
      * @param multicastIp   the multicast IP
      * @param multicastPort the multicast port
      */
-    public NotificationController(String username, String multicastIp, int multicastPort) {
+    public NotificationService(String username, String multicastIp, int multicastPort) {
         this.multicastIp = multicastIp;
         this.multicastPort = multicastPort;
         this.username = username;

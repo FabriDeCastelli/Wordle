@@ -8,7 +8,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public record Notification(
         @NotNull String message,
-        @NotNull String senderUsername, Object data) implements Serializable {
+        @NotNull String senderUsername,
+        Object data) implements Serializable {
 
     /**
      * Constructor for the Notification.

@@ -54,7 +54,7 @@ public class StreamHandler {
     }
 
     /**
-     * Sends an object to a multicast socket.
+     * Sends an object of generic type to a multicast socket.
      *
      * @param multicastSocket the multicast socket
      * @param data the object to be sent
@@ -80,6 +80,5 @@ public class StreamHandler {
             return false;
         }
     }
-
 
 }

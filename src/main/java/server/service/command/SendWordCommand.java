@@ -18,7 +18,7 @@ import server.service.UserStatisticsService;
 import server.service.WordExtractionService;
 
 /**
- * Guess word command.
+ * Handles the logic of the game when guessing a certain word.
  */
 public class SendWordCommand implements Command {
 
@@ -65,8 +65,8 @@ public class SendWordCommand implements Command {
                     userStatisticsService.getStatisticsByUsername(loggedUsername);
             userStatistics.resetCurrentStreak();
             userStatisticsService.updateStatistics(loggedUsername, userStatistics);
-            final GameResult gameResult = new GameResult(
-                    loggedUsername, new ArrayList<>(wordHintsHistory), userStatistics);
+            final GameResult gameResult =
+                    new GameResult(new ArrayList<>(wordHintsHistory), userStatistics);
             wordHintsHistory.clear();
             return new Response(Status.SUCCESS,
                     "You have exceeded the maximum number of attempts.", gameResult);
@@ -86,8 +86,8 @@ public class SendWordCommand implements Command {
             userStatistics.incrementCurrentStreak();
             userStatistics.addTrials(wordAttempt.attemptNumber());
             userStatisticsService.updateStatistics(loggedUsername, userStatistics);
-            final GameResult gameResult = new GameResult(
-                    loggedUsername, new ArrayList<>(wordHintsHistory), userStatistics);
+            final GameResult gameResult =
+                    new GameResult(new ArrayList<>(wordHintsHistory), userStatistics);
             wordHintsHistory.clear();
             return new Response(Status.GUESS, "You guessed the word!", gameResult);
         }

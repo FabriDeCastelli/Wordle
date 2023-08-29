@@ -1,7 +1,7 @@
 package client;
 
-import client.controller.NotificationController;
 import client.gui.AuthenticationPage;
+import client.service.NotificationService;
 import client.service.PasswordHashingService;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -64,7 +64,7 @@ public class WordleClientMain {
     }
 
     /**
-     * Sends a requestType to the server and returns the response.
+     * Sends a Request to the server and returns the Response through streams.
      *
      * @param request the requestType to send
      * @return the response from the server
@@ -77,7 +77,7 @@ public class WordleClientMain {
 
 
     /**
-     * Sends a login requestType to the server.
+     * Sends a LOGIN request to the server.
      *
      * @param username the username of the user sending the requestType
      * @param password the password of the user sending the requestType
@@ -88,14 +88,14 @@ public class WordleClientMain {
         final AuthDTO authDTO = new AuthDTO(username, hashedPassword);
         final Request request = new Request(RequestType.LOGIN, authDTO);
         if (StreamHandler.sendData(out, request)) {
-            new NotificationController(username, multicastIP, multicastPort).start();
+            new NotificationService(username, multicastIP, multicastPort).start();
             return StreamHandler.getData(in, Response.class);
         }
         return Optional.empty();
     }
 
     /**
-     * Sends a register requestType to the server.
+     * Sends a REGISTER request to the server.
      *
      * @param username the username of the user sending the request
      * @param password the password of the user sending the request
@@ -109,7 +109,7 @@ public class WordleClientMain {
     }
 
     /**
-     * Sends a logout requestType to the server.
+     * Sends a LOGOUT request to the server.
      *
      * @param username the username of the user sending the requestType
      * @return the response from the server
@@ -120,7 +120,7 @@ public class WordleClientMain {
     }
 
     /**
-     * Sends a play requestType to the server.
+     * Sends a PLAY request to the server.
      *
      * @return the response from the server
      */
@@ -132,7 +132,7 @@ public class WordleClientMain {
     /**
      * Sends a word to the server.
      *
-     * @param word the word to send
+     * @param word the word to be sent
      * @return the response from the server
      */
     public static Optional<Response> sendWord(String word, int attemptNumber) {
@@ -171,7 +171,7 @@ public class WordleClientMain {
         return Optional.of(
                 new Response(
                         Status.SUCCESS, "Success",
-                        NotificationController.notifications));
+                        NotificationService.notifications));
     }
 
 }

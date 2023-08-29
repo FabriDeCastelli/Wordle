@@ -1,10 +1,9 @@
-package server;
+package server.model;
 
 import static org.mockito.Mockito.mock;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import server.model.Command;
 
 /**
  * Tests for the Command interface.
