@@ -21,17 +21,10 @@ public class WordleServerMain {
 
     public static String multicastIp;
     public static int multicastPort;
+    public static int port;
+    public static int wordDuration;
 
-    /**
-     * Main method for the WordleServer.
-     * Loads the properties file, opens a ServerSocket and a MulticastSocket.
-     * Creates a thread pool to handle the requests and a thread pool to extract a new word.
-     */
-    @SuppressWarnings("PMD")
-    public static void main(String[] args) {
-
-        final int port;
-        final int wordDuration;
+    static {
         try (final InputStream inputStream =
                      new FileInputStream("src/main/java/server/conf/server.properties")) {
             final Properties properties = new Properties();
@@ -42,8 +35,18 @@ public class WordleServerMain {
             multicastPort = Integer.parseInt(properties.getProperty("MULTICAST_PORT"));
         } catch (IOException e) {
             System.out.println("Error reading properties file.");
-            return;
         }
+
+    }
+
+    /**
+     * Main method for the WordleServer.
+     * Loads the properties file, opens a ServerSocket and a MulticastSocket.
+     * Creates a thread pool to handle the requests and a thread pool to extract a new word.
+     */
+    @SuppressWarnings("PMD")
+    public static void main(String[] args) {
+
 
         try (ServerSocket server = new ServerSocket(port);
              final MulticastSocket multicastSocket = new MulticastSocket()) {
