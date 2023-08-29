@@ -1,13 +1,134 @@
 {
+  "ff": {
+    "username": "ff",
+    "passwordHash": "Bam/Ij/t+AqdDaX3P1wZGmZb9KCko+YI8vnn1f8jlZw\u003d",
+    "statistics": {
+      "gamesPlayed": 11,
+      "gamesWon": 10,
+      "gamesWonPercentage": 0.9090909090909091,
+      "currentStreak": 10,
+      "longestStreak": 10,
+      "guessDistribution": [
+        1,
+        1,
+        1,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    }
+  },
+  "rt": {
+    "username": "rt",
+    "passwordHash": "zf/V3YyoEmwEgrqZSBS5AUzJ6XNDXTmfHPH2lHnmuQc\u003d",
+    "statistics": {
+      "gamesPlayed": 3,
+      "gamesWon": 3,
+      "gamesWonPercentage": 1.0,
+      "currentStreak": 3,
+      "longestStreak": 3,
+      "guessDistribution": [
+        1,
+        1,
+        2
+      ]
+    }
+  },
+  "c": {
+    "username": "c",
+    "passwordHash": "Ln0sA6lQeuJl7PW1NWiFpTOTogKdJBOUmXJloaJa78Y\u003d",
+    "statistics": {
+      "gamesPlayed": 11,
+      "gamesWon": 12,
+      "gamesWonPercentage": 1.0909090909090908,
+      "currentStreak": 12,
+      "longestStreak": 12,
+      "guessDistribution": [
+        1,
+        1,
+        2,
+        1,
+        1,
+        1,
+        1,
+        3,
+        1,
+        1,
+        1,
+        1
+      ]
+    }
+  },
   "f": {
     "username": "f",
     "passwordHash": "JS8QyDYQ68oaBZwLroJV66L5W+TR17z6idckioLZ8RE\u003d",
     "statistics": {
+      "gamesPlayed": 48,
+      "gamesWon": 44,
+      "gamesWonPercentage": 0.9166666666666666,
+      "currentStreak": 44,
+      "longestStreak": 44,
+      "guessDistribution": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        2,
+        4,
+        4,
+        3,
+        6,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        5
+      ]
+    }
+  },
+  "testUser": {
+    "username": "testUser",
+    "passwordHash": "testPassword",
+    "statistics": {
       "gamesPlayed": 0,
-      "gamesWon": 0,
+      "gamesWon": 1,
       "gamesWonPercentage": 0.0,
-      "currentStreak": 0,
-      "longestStreak": 0,
+      "currentStreak": 1,
+      "longestStreak": 1,
       "guessDistribution": []
     }
   }
