@@ -1,18 +1,24 @@
-package client.gui;
+package client.gui.authentication;
 
 import client.WordleClientMain;
+import client.gui.HomePage;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.Serial;
 import java.util.Optional;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import model.Response;
 import model.enums.AuthType;
 import model.enums.Status;
@@ -20,13 +26,8 @@ import model.enums.Status;
 /**
  * Dialog to perform an authentication, that can be either login or register.
  */
+@SuppressWarnings("serial")
 public class AuthenticationDialog extends JFrame implements ActionListener {
-
-    /**
-     * Required by the PMD.
-     */
-    @Serial
-    private static final long serialVersionUID = 4328743;
 
     /**
      * Interface for the AuthenticationDialogListener.
@@ -41,6 +42,7 @@ public class AuthenticationDialog extends JFrame implements ActionListener {
     private final JLabel passwordLabel = new JLabel("Password:");
     private final JTextField usernameField = new JTextField();
     private final JPasswordField passwordField = new JPasswordField();
+    private final JCheckBox showPassword = new JCheckBox("Show Password");
     private final JButton authButton;
     private final AuthType authType;
 
@@ -58,6 +60,7 @@ public class AuthenticationDialog extends JFrame implements ActionListener {
 
         setLayoutManager();
         setLocationAndSize();
+        setBorders();
         addComponentsToContainer();
         addActionEvent();
 
@@ -79,7 +82,17 @@ public class AuthenticationDialog extends JFrame implements ActionListener {
         passwordLabel.setBounds(50, 120, 100, 30);
         usernameField.setBounds(150, 50, 150, 30);
         passwordField.setBounds(150, 120, 150, 30);
+        showPassword.setBounds(150, 160, 150, 30);
         authButton.setBounds(150, 200, 120, 30);
+    }
+
+    private void setBorders() {
+        final Border roundedBorder =
+                new CompoundBorder(
+                        new LineBorder(Color.GRAY), new EmptyBorder(5, 10, 5, 10));
+        usernameField.setBorder(roundedBorder);
+        passwordField.setBorder(roundedBorder);
+
     }
 
     private void addComponentsToContainer() {
@@ -87,11 +100,19 @@ public class AuthenticationDialog extends JFrame implements ActionListener {
         container.add(passwordLabel);
         container.add(usernameField);
         container.add(passwordField);
+        container.add(showPassword);
         container.add(authButton);
     }
 
     private void addActionEvent() {
         authButton.addActionListener(this);
+        showPassword.addActionListener(e -> {
+            if (showPassword.isSelected()) {
+                passwordField.setEchoChar((char) 0);
+            } else {
+                passwordField.setEchoChar('•');
+            }
+        });
     }
 
 
@@ -108,12 +129,11 @@ public class AuthenticationDialog extends JFrame implements ActionListener {
             usernameField.setText("");
             passwordField.setText("");
         } else {
-            resultListener.onAuthDialogClose();
             new HomePage(usernameField.getText()).setVisible(true);
+            resultListener.onAuthDialogClose();
             dispose();
         }
     }
-
 
 
 }

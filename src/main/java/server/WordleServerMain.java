@@ -47,7 +47,7 @@ public class WordleServerMain {
     public static void main(String[] args) {
 
 
-        try (ServerSocket server = new ServerSocket(port);
+        try (final ServerSocket server = new ServerSocket(port);
              final MulticastSocket multicastSocket = new MulticastSocket()) {
 
             final ExecutorService executorService = Executors.newCachedThreadPool();

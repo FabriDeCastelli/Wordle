@@ -1,6 +1,6 @@
 package client;
 
-import client.gui.AuthenticationPage;
+import client.gui.authentication.AuthenticationPage;
 import client.service.AuthenticationService;
 import client.service.NotificationService;
 import client.service.PasswordHashingService;
@@ -62,6 +62,12 @@ public class WordleClientMain {
      * Main method for the WordleClientMain.
      */
     public static void main(String[] args) {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            System.out.println("Shutting down...");
+            AuthenticationService.getInstance().getLoggedUser()
+                    .ifPresent(WordleClientMain::logout);
+            WordleClientMain.closeResources();
+        }));
         new AuthenticationPage().setVisible(true);
     }
 
