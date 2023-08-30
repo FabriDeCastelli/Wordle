@@ -85,13 +85,7 @@ public class AuthenticationService {
         }
 
         userStore.remove(user.getUsername());
-        try (final FileWriter writer = new FileWriter(filePath)) {
-            gson.toJson(userStore, writer);
-        } catch (IOException e) {
-            return false;
-        }
-        return true;
-
+        return updateStore();
     }
 
     /**
@@ -106,12 +100,7 @@ public class AuthenticationService {
         }
         userStore.put(user.getUsername(), user);
         loggedUsers.add(user.getUsername());
-        try (final FileWriter writer = new FileWriter(filePath)) {
-            gson.toJson(userStore, writer);
-        } catch (IOException e) {
-            return false;
-        }
-        return true;
+        return updateStore();
 
     }
 
@@ -133,5 +122,41 @@ public class AuthenticationService {
         return getRegisteredUserByUsername(username).isPresent();
     }
 
+    /**
+     * Changes the password of the user.
+     *
+     * @param username    the username of the user changing the password
+     * @param newPassword the new password
+     * @return true if the password was changed, false otherwise
+     */
+    public synchronized boolean changePassword(
+            @NotNull String username,
+            @NotNull String newPassword) {
 
+        final User user = getRegisteredUserByUsername(username)
+                .orElseThrow(IllegalStateException::new);
+
+        if (user.getPasswordHash().equals(newPassword)) {
+            return false;
+        }
+
+        user.setPasswordHash(newPassword);
+        userStore.put(username, user);
+        return updateStore();
+
+    }
+
+    /**
+     * Updates the json file.
+     *
+     * @return true if the update was successful, false otherwise
+     */
+    private synchronized boolean updateStore() {
+        try (final FileWriter writer = new FileWriter(filePath)) {
+            gson.toJson(userStore, writer);
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
+    }
 }

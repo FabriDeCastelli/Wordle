@@ -13,7 +13,7 @@ public final class User implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
     private final String username;
-    private final String passwordHash;
+    private String passwordHash;
     private UserStatistics statistics;
 
 
@@ -66,6 +66,10 @@ public final class User implements Serializable {
      */
     public String getPasswordHash() {
         return passwordHash;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
     @Override

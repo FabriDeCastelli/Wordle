@@ -13,5 +13,6 @@ public enum RequestType {
     SHARE,
     SENDMESTATISTICS,
     SHOWMESHARING,
+    CHANGEPASSWORD,
 
 }
