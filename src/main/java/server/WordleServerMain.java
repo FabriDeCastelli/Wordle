@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MulticastSocket;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -66,13 +65,7 @@ public class WordleServerMain {
             );
 
             while (true) {
-                final Socket client = server.accept();
-                try (final RequestHandler requestHandler =
-                             new RequestHandler(client, multicastSocket)) {
-                    executorService.execute(requestHandler);
-                } catch (IOException e) {
-                    System.out.println(e.getMessage());
-                }
+                executorService.execute(new RequestHandler(server.accept(), multicastSocket));
             }
 
         } catch (IOException e) {
