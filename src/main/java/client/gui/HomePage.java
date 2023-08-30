@@ -39,6 +39,7 @@ public class HomePage extends JFrame {
             public void windowClosing(WindowEvent e) {
                 super.windowClosing(e);
                 WordleClientMain.logout(username);
+                WordleClientMain.closeResources();
             }
         });
 
@@ -50,7 +51,7 @@ public class HomePage extends JFrame {
         final JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         final JPanel bodyPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-        final JButton settingsButton = getSettingsButton(username);
+        final JButton settingsButton = getSettingsButton();
         headerPanel.add(settingsButton);
 
         final JButton notificationsButton = getNotificationsButton(username);
@@ -70,7 +71,6 @@ public class HomePage extends JFrame {
     }
 
     @NotNull
-    @SuppressWarnings("unchecked")
     private JButton getNotificationsButton(String username) {
         final JButton notificationsButton = new JButton("Notifications");
         notificationsButton.addActionListener(e -> {
@@ -92,7 +92,7 @@ public class HomePage extends JFrame {
     }
 
     @NotNull
-    private JButton getSettingsButton(String username) {
+    private JButton getSettingsButton() {
         return new JButton("Settings");
     }
 

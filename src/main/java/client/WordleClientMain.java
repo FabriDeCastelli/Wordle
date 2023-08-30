@@ -162,4 +162,17 @@ public class WordleClientMain {
                         NotificationService.notifications));
     }
 
+    /**
+     * Closes the resources used by the client.
+     */
+    public static void closeResources() {
+        try {
+            in.close();
+            out.close();
+            socket.close();
+        } catch (IOException e) {
+            System.out.println("Client: error closing resources.");
+        }
+    }
+
 }
