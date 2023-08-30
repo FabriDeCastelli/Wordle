@@ -4,13 +4,14 @@ package model.enums;
  * AuthType is an enum that represents the type of authentication.
  */
 public enum AuthType {
+
     /**
      * LOGIN represents the login authentication type.
      */
-    Login,
+    LOGIN,
 
     /**
      * REGISTER represents the register authentication type.
      */
-    Register,
+    REGISTER,
 }

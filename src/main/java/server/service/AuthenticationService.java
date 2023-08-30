@@ -1,59 +1,97 @@
 package server.service;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
-import java.io.FileReader;
+import static server.service.UserServiceManager.gson;
+
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import model.User;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Service for authenticating users.
+ * Service that manages the authentication of the users.
+ * Stores the logged user for the current session
  */
 public class AuthenticationService {
 
-    private final String filePath = "src/main/java/server/conf/users.json";
-    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    private final ConcurrentHashMap<String, User> registeredUsers;
+    private static AuthenticationService instance;
+    private final List<String> loggedUsers;
+    private final ConcurrentHashMap<String, User> userStore;
+    private final String filePath;
 
 
     /**
      * Constructor for the AuthenticationService.
+     *
+     * @param filePath the file path of the json file
      */
-    public AuthenticationService() {
-        this.registeredUsers = getRegisteredUsers();
+    private AuthenticationService(String filePath) {
+        this.filePath = filePath;
+        this.loggedUsers = Collections.synchronizedList(new ArrayList<>());
+        this.userStore = UserServiceManager.getInstance(filePath).getUsersMap();
     }
 
 
     /**
-     * Gets the list of all already registered users.
+     * Gets the instance of the AuthenticationService.
      *
-     * @return the map of all already registered users
+     * @param filePath the file path of the store
+     * @return the instance of the AuthenticationService
      */
-    private synchronized ConcurrentHashMap<String, User> getRegisteredUsers() {
-        try (final JsonReader reader = new JsonReader(new FileReader(filePath))) {
-            ConcurrentHashMap<String, User> users;
-            users = gson.fromJson(
-                    reader, new TypeToken<ConcurrentHashMap<String, User>>() {}.getType());
-            return users == null ? new ConcurrentHashMap<>() : users;
-        } catch (IOException e) {
-            System.out.println("Error getting all users.");
+    public static AuthenticationService getInstance(@NotNull String filePath) {
+        if (instance == null) {
+            instance = new AuthenticationService(filePath);
         }
-        return new ConcurrentHashMap<>();
+        return instance;
     }
 
     /**
-     * Gets the user with the given getUsername.
+     * Adds a user to the list of logged users and sets it as the logged user.
      *
-     * @param username the getUsername.
+     * @param user the user to be logged in
+     * @return true if it was added, false otherwise
      */
-    public synchronized Optional<User> getUserByUsername(@NotNull String username) {
-        return Optional.ofNullable(getRegisteredUsers().get(username));
+    public synchronized boolean login(@NotNull User user) {
+        if (loggedUsers.contains(user.getUsername())) {
+            return false;
+        }
+        return this.loggedUsers.add(user.getUsername());
+    }
+
+    /**
+     * Removes a user from the list of logged users.
+     *
+     * @return true if it was removed, false otherwise
+     */
+    public synchronized boolean logout(@NotNull String username) {
+        return loggedUsers.remove(username);
+    }
+
+
+    /**
+     * Removes a user from the list of registered users.
+     * Used for testing purposes.
+     *
+     * @param user the user to be deleted
+     */
+    synchronized boolean unregister(@NotNull User user) {
+
+        if (!isRegistered(user.getUsername())) {
+            return false;
+        }
+
+        userStore.remove(user.getUsername());
+        try (final FileWriter writer = new FileWriter(filePath)) {
+            gson.toJson(userStore, writer);
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
+
     }
 
     /**
@@ -61,17 +99,15 @@ public class AuthenticationService {
      *
      * @param user the user to be added
      */
-    public synchronized boolean add(User user) {
+    public synchronized boolean register(@NotNull User user) {
 
-        if (user == null) {
-            throw new IllegalArgumentException("The user cannot be null.");
-        } else if (getUserByUsername(user.getUsername()).isPresent()) {
-            throw new IllegalArgumentException("The user is already stored.");
+        if (isRegistered(user.getUsername())) {
+            return false;
         }
-
-        this.registeredUsers.put(user.getUsername(), user);
+        userStore.put(user.getUsername(), user);
+        loggedUsers.add(user.getUsername());
         try (final FileWriter writer = new FileWriter(filePath)) {
-            gson.toJson(registeredUsers, writer);
+            gson.toJson(userStore, writer);
         } catch (IOException e) {
             return false;
         }
@@ -80,28 +116,22 @@ public class AuthenticationService {
     }
 
     /**
-     * Removes a user from the list of registered users.
+     * Gets the user with the given getUsername.
      *
-     * @param user the user to be deleted
+     * @param username the username of the user.
      */
-    public synchronized boolean delete(@NotNull User user) {
-        if (getUserByUsername(user.getUsername()).isEmpty()) {
-            throw new IllegalArgumentException("Cannot delete a user that is not registered.");
-        }
-
-        this.registeredUsers.remove(user.getUsername());
-        try (final FileWriter writer = new FileWriter(filePath)) {
-            gson.toJson(registeredUsers, writer);
-        } catch (IOException e) {
-            return false;
-        }
-        return true;
-
+    public synchronized Optional<User> getRegisteredUserByUsername(@NotNull String username) {
+        return Optional.ofNullable(userStore.get(username));
     }
 
-
-
-
+    /**
+     * Checks if a user with the given username is registered.
+     *
+     * @param username the username of the user.
+     */
+    public boolean isRegistered(@NotNull String username) {
+        return getRegisteredUserByUsername(username).isPresent();
+    }
 
 
 }

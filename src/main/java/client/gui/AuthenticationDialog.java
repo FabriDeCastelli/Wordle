@@ -13,8 +13,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import model.ServerResponse;
+import model.Response;
 import model.enums.AuthType;
+import model.enums.Status;
 
 /**
  * Dialog to perform an authentication, that can be either login or register.
@@ -97,25 +98,19 @@ public class AuthenticationDialog extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        final Optional<ServerResponse> response;
+        final Optional<Response> response = WordleClientMain.authenticate(
+                authType, usernameField.getText(), new String(passwordField.getPassword()));
 
-        if (this.authType == AuthType.Login) {
-            response = WordleClientMain.login(usernameField.getText(),
-                            new String(passwordField.getPassword()));
-        } else {
-            response = WordleClientMain.register(usernameField.getText(),
-                            new String(passwordField.getPassword()));
-        }
         if (response.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Server could not respond.");
-        } else if (-1 == response.get().status()) {
+        } else if (response.get().status() == Status.FAILURE) {
             JOptionPane.showMessageDialog(this, response.get().message());
             usernameField.setText("");
             passwordField.setText("");
         } else {
-            dispose();
             resultListener.onAuthDialogClose();
             new HomePage(usernameField.getText()).setVisible(true);
+            dispose();
         }
     }
 

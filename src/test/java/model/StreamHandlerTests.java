@@ -10,6 +10,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.MulticastSocket;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,7 @@ public class StreamHandlerTests {
 
 
     @Test
-    @DisplayName(" can correctly send data")
+    @DisplayName(" can correctly send data through a stream")
     void testSendData() {
         try (ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteOutputStream)) {
@@ -35,7 +36,7 @@ public class StreamHandlerTests {
     }
 
     @Test
-    @DisplayName(" can correctly get data")
+    @DisplayName(" can correctly get data from a stream")
     void testGetDataSuccess() {
         try (ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteOutputStream)) {
@@ -55,7 +56,7 @@ public class StreamHandlerTests {
     }
 
     @Test
-    @DisplayName(" correctly rejects data of wrong type")
+    @DisplayName(" correctly rejects data of wrong type in streams")
     void testGetDataFailure() {
         try (ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteOutputStream)) {
@@ -69,10 +70,18 @@ public class StreamHandlerTests {
             final Optional<Integer> data = StreamHandler.getData(objectInputStream, Integer.class);
             assertFalse(data.isPresent());
         } catch (IOException e) {
-            fail("Exception thrown: " + e.getMessage());
+            fail("Exception:" + e.getMessage());
         }
     }
 
-
+    @Test
+    @DisplayName(" can correctly send data through a multicast socket")
+    void testSendMulticastData() {
+        try (final MulticastSocket multicastSocket = new MulticastSocket()) {
+            assertTrue(StreamHandler.sendMulticastData(multicastSocket, "Hi"));
+        } catch (IOException e) {
+            fail("Exception: " + e.getMessage());
+        }
+    }
 
 }

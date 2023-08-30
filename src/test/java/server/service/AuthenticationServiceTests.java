@@ -1,11 +1,11 @@
 package server.service;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import client.service.PasswordHashingService;
 import java.util.Optional;
 import model.User;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -21,19 +21,21 @@ public class AuthenticationServiceTests {
 
     @BeforeAll
     public static void setUp() {
-        authenticationService = new AuthenticationService();
+        authenticationService =
+                AuthenticationService.getInstance("src/test/java/server/conf/usersTest.json");
     }
 
 
     @Test
     @DisplayName(" can correctly add and delete a user to the registered users")
     public void testAddAndDeleteUser() {
-        User user = new User("testUser", "testPassword");
-        authenticationService.add(user);
-        Optional<User> userOptional = authenticationService.getUserByUsername("testUser");
+        final User user = new User("testUser", "testPassword");
+        authenticationService.register(user);
+        Optional<User> userOptional =
+                authenticationService.getRegisteredUserByUsername(user.getUsername());
         assertTrue(userOptional.isPresent());
-        assertTrue(authenticationService.delete(user));
-        userOptional = authenticationService.getUserByUsername("testUser");
+        assertTrue(authenticationService.unregister(user));
+        userOptional = authenticationService.getRegisteredUserByUsername(user.getUsername());
         assertTrue(userOptional.isEmpty());
     }
 
@@ -41,64 +43,89 @@ public class AuthenticationServiceTests {
     @Nested
     class WhenGettingUser {
 
+        private static User user;
+
+        @BeforeAll
+        public static void setUp() {
+            user = new User("fabry", "fabry");
+            authenticationService.register(user);
+        }
+
+        @AfterAll
+        public static void tearDown() {
+            authenticationService.unregister(user);
+        }
+
         @Test
         @DisplayName(" can correctly get a registered user by getUsername")
         public void testGetUserByUsername() {
-            Optional<User> user = authenticationService.getUserByUsername("fabry");
+            final Optional<User> user = authenticationService.getRegisteredUserByUsername("fabry");
             assertTrue(user.isPresent());
         }
 
         @Test
         @DisplayName(" correctly return an empty optional when the user is not registered")
         public void testGetNotRegisteredUserByUsername() {
-            Optional<User> user = authenticationService.getUserByUsername("notRegisteredABC");
+            final Optional<User> user =
+                    authenticationService.getRegisteredUserByUsername("notRegisteredABC");
             assertTrue(user.isEmpty());
         }
 
     }
 
     @Nested
-    @DisplayName(" when adding a user ")
-    class WhenAddingUser {
-        @Test
-        @DisplayName(" should throw an IllegalArgumentException if the user is null")
-        public void testAddNullUser() {
-            assertThrows(
-                    IllegalArgumentException.class,
-                    () -> authenticationService.add(null));
+    @DisplayName(" when registering a user ")
+    class WhenRegisteringUser {
+
+        private static User user;
+
+        @BeforeAll
+        public static void setUp() {
+            user = new User("testUser", "testPassword");
+            authenticationService.register(user);
         }
 
         @Test
-        @DisplayName(" should throw an IllegalArgumentException if the user is already registered")
-        public void testAddAlreadyRegisteredUser() {
-            assertThrows(
-                    IllegalArgumentException.class,
-                    () -> authenticationService.add(
-                            new User("f", PasswordHashingService.getInstance().hashPassword("f"))));
+        @DisplayName(" should return false if the user is already registered")
+        public void testIsRegisteredUSer() {
+            assertTrue(authenticationService.isRegistered(user.getUsername()));
         }
+
+        @AfterAll
+        public static void tearDown() {
+            authenticationService.unregister(user);
+        }
+
     }
 
     @Nested
-    @DisplayName(" when deleting a user ")
-    class WhenDeletingUser {
+    @DisplayName(" when unregistering a user ")
+    class WhenUnregisteringUser {
+
+        private static User user;
+
+        @BeforeAll
+        public static void setUp() {
+            user = new User("testUser", "testPassword");
+            authenticationService.register(user);
+        }
+
 
         @Test
-        @DisplayName(" should throw an IllegalArgumentException if the user is not registered")
+        @DisplayName(" should return false if the user is not registered")
         public void testDeleteNotRegisteredUser() {
-
-            assertThrows(
-                    IllegalArgumentException.class,
-                    () -> authenticationService.delete(
-                            new User("notregistered", "notregistered")));
+            assertFalse(authenticationService.unregister(
+                    new User("notRegistered", "notRegistered")));
         }
 
         @Test
-        public void testExceptionWhenWritingOnFile() {
-            // TODO: mock the file writer and throw an IOException when writing on the file
+        @DisplayName(" should return true if the user is registered")
+        public void testDeleteRegisteredUser() {
+            assertTrue(authenticationService.isRegistered(user.getUsername()));
+            assertTrue(authenticationService.unregister(user));
+            assertFalse(authenticationService.isRegistered(user.getUsername()));
         }
 
     }
-
-
 
 }

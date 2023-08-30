@@ -3,53 +3,73 @@ package server;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MulticastSocket;
 import java.net.ServerSocket;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import server.controller.RequestHandler;
 import server.controller.TerminationHandler;
+import server.service.WordExtractionService;
 
 /**
  * Communicates with WordleClientMain through a Persistent TCP connection.
  */
 public class WordleServerMain {
 
-    private static int PORT;
+    public static String multicastIp;
+    public static int multicastPort;
+    public static int port;
+    public static int wordDuration;
 
-    /**
-     * Main method for the WordleServer.
-     */
-    @SuppressWarnings("PMD")
-    public static void main(String[] args) {
-
+    static {
         try (final InputStream inputStream =
                      new FileInputStream("src/main/java/server/conf/server.properties")) {
             final Properties properties = new Properties();
             properties.load(inputStream);
-            PORT = Integer.parseInt(properties.getProperty("PORT"));
+            port = Integer.parseInt(properties.getProperty("PORT"));
+            wordDuration = Integer.parseInt(properties.getProperty("WORDDURATION"));
+            multicastIp = properties.getProperty("MULTICAST_IP");
+            multicastPort = Integer.parseInt(properties.getProperty("MULTICAST_PORT"));
         } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        try (ServerSocket server = new ServerSocket(PORT)) {
-
-            final ExecutorService executorService = Executors.newCachedThreadPool();
-            Runtime.getRuntime().addShutdownHook(
-                    new TerminationHandler(2000, executorService, server)
-            );
-
-            while (true) {
-                executorService.execute(new RequestHandler(server.accept()));
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error reading properties file.");
         }
 
     }
 
+    /**
+     * Main method for the WordleServer.
+     * Loads the properties file, opens a ServerSocket and a MulticastSocket.
+     * Creates a thread pool to handle the requests and a thread pool to extract a new word.
+     */
+    public static void main(String[] args) {
 
 
+        try (ServerSocket server = new ServerSocket(port);
+             final MulticastSocket multicastSocket = new MulticastSocket()) {
+
+            final ExecutorService executorService = Executors.newCachedThreadPool();
+            Runtime.getRuntime().addShutdownHook(
+                    new TerminationHandler(2000, executorService, server, multicastSocket)
+            );
+
+            final ScheduledExecutorService wordExtractionService =
+                    Executors.newSingleThreadScheduledExecutor();
+            wordExtractionService.scheduleAtFixedRate(
+                    new WordExtractionService(), 0, wordDuration, TimeUnit.MINUTES
+            );
+
+            while (true) {
+                executorService.execute(new RequestHandler(server.accept(), multicastSocket));
+            }
+
+
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
 }
+

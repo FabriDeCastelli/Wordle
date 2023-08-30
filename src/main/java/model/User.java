@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a user.
- * A user has a getUsername and a getPasswordHash, with the getUsername assumed to be unique.
+ * A user has a username (assumed to be unique), a hashed password and its statistics.
  */
 public final class User implements Serializable {
 
@@ -14,18 +14,32 @@ public final class User implements Serializable {
     private static final long serialVersionUID = 1L;
     private final String username;
     private final String passwordHash;
+    private UserStatistics statistics;
 
 
     /**
      * Constructor for the User.
      *
-     * @param username     the getUsername
-     * @param passwordHash the getPasswordHash
+     * @param username     the username
+     * @param passwordHash the hashed password
      */
     public User(@NotNull String username, @NotNull String passwordHash) {
         this.username = username;
         this.passwordHash = passwordHash;
+        this.statistics = new UserStatistics();
     }
+
+    /**
+     * Constructor for the User, used for authentication.
+     *
+     * @param authDTO the authDTO
+     */
+    public User(@NotNull AuthDTO authDTO) {
+        this.username = authDTO.username();
+        this.passwordHash = authDTO.password();
+        this.statistics = new UserStatistics();
+    }
+
 
     /**
      * Getter for the getUsername.
@@ -34,6 +48,14 @@ public final class User implements Serializable {
      */
     public String getUsername() {
         return username;
+    }
+
+    public UserStatistics getStatistics() {
+        return statistics;
+    }
+
+    public void setStatistics(UserStatistics userStatistics) {
+        this.statistics = userStatistics;
     }
 
 

@@ -5,6 +5,10 @@ builds/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+src/main/java/server/conf/users.json
+src/main/java/server/conf/playedGames.json
+src/test/java/server/conf/usersTest.json
+src/test/java/server/conf/playedGamesTest.json
 
 ### STS ###
 .apt_generated

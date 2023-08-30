@@ -1,10 +1,13 @@
 package client.gui;
 
+import client.WordleClientMain;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.Serial;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -33,15 +36,21 @@ public class AuthenticationPage
     public AuthenticationPage() {
 
         setTitle("Wordle");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                WordleClientMain.closeResources();
+            }
+        });
         setSize(600, 400);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
         final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 170));
 
-        final JButton button1 = new JButton("Login");
-        final JButton button2 = new JButton("Register");
+        final JButton button1 = new JButton("LOGIN");
+        final JButton button2 = new JButton("REGISTER");
 
         final Dimension buttonSize = new Dimension(100, 50);
         button1.setPreferredSize(buttonSize);
