@@ -1,4 +1,4 @@
-package client.gui;
+package client.gui.authentication;
 
 import client.WordleClientMain;
 import java.awt.BorderLayout;
@@ -10,7 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.Serial;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -21,15 +20,11 @@ import model.enums.AuthType;
  * The authentication can be done by either logging in or registering.
  * The server can handle both of these requests.
  */
+@SuppressWarnings("serial")
 public class AuthenticationPage
         extends JFrame
         implements ActionListener, AuthenticationDialog.AuthDialogListener {
 
-    /**
-     * Required by the PMD.
-     */
-    @Serial
-    private static final long serialVersionUID = 4328743;
 
 
     /**

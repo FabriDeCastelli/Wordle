@@ -1,12 +1,14 @@
 package client.gui;
 
 import client.WordleClientMain;
+import client.gui.authentication.AuthenticationPage;
 import client.gui.play.PlayPage;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.io.Serial;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Optional;
 import java.util.Queue;
 import javax.swing.JButton;
@@ -22,10 +24,8 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Interface for the home page.
  */
+@SuppressWarnings("serial")
 public class HomePage extends JFrame {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
 
     /**
      * Constructor for the HomePage.
@@ -35,6 +35,14 @@ public class HomePage extends JFrame {
     public HomePage(String username) {
         setTitle("Home" + " - " + username);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                WordleClientMain.logout(username);
+                WordleClientMain.closeResources();
+            }
+        });
         setSize(600, 400);
         setLocationRelativeTo(null);
 
@@ -50,7 +58,7 @@ public class HomePage extends JFrame {
         settingsButton.setPreferredSize(buttonSize);
         contentPanel.add(settingsButton, gbc);
 
-        final JButton notificationsButton = getNotificationsButton(username);
+        final JButton notificationsButton = getNotificationsButton();
         gbc.gridx = 1;
         notificationsButton.setPreferredSize(buttonSize);
         contentPanel.add(notificationsButton, gbc);
@@ -78,7 +86,7 @@ public class HomePage extends JFrame {
 
     @NotNull
     @SuppressWarnings("unchecked")
-    private JButton getNotificationsButton(String username) {
+    private JButton getNotificationsButton() {
         final JButton notificationsButton = new JButton("Notifications");
         notificationsButton.addActionListener(e -> {
             final Optional<Response> response = WordleClientMain.showMeSharing();
@@ -86,7 +94,7 @@ public class HomePage extends JFrame {
                 JOptionPane.showMessageDialog(HomePage.this, "Server couldn't respond.");
             } else if (response.get().status() == Status.SUCCESS) {
                 if (response.get().data() instanceof Queue<?>) {
-                    new NotificationDialog(this, username,
+                    new NotificationDialog(this,
                             (Queue<Notification>) response.get().data())
                             .setVisible(true);
                 }

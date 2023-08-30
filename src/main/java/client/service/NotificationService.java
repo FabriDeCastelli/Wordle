@@ -69,7 +69,7 @@ public class NotificationService extends Thread {
             }
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Could not receive multicast packet");
         }
     }
 

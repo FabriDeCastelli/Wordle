@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.io.Serial;
 import java.util.List;
 import java.util.Queue;
 import java.util.stream.IntStream;
@@ -28,20 +27,17 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Allows the user to see their notifications.
  */
+@SuppressWarnings("serial")
 public class NotificationDialog extends JDialog {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
 
     /**
      * Constructor for the Notification.
      *
      * @param parent the parent frame
-     * @param username the name of the user in the session
      */
     public NotificationDialog(
             @NotNull JFrame parent,
-            @NotNull String username,
             @NotNull Queue<Notification> notifications) {
 
         super(parent, "Incoming notifications... ", true);

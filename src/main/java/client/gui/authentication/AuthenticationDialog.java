@@ -1,12 +1,12 @@
-package client.gui;
+package client.gui.authentication;
 
 import client.WordleClientMain;
+import client.gui.HomePage;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.Serial;
 import java.util.Optional;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -26,13 +26,8 @@ import model.enums.Status;
 /**
  * Dialog to perform an authentication, that can be either login or register.
  */
+@SuppressWarnings("serial")
 public class AuthenticationDialog extends JFrame implements ActionListener {
-
-    /**
-     * Required by the PMD.
-     */
-    @Serial
-    private static final long serialVersionUID = 4328743;
 
     /**
      * Interface for the AuthenticationDialogListener.
@@ -134,8 +129,8 @@ public class AuthenticationDialog extends JFrame implements ActionListener {
             usernameField.setText("");
             passwordField.setText("");
         } else {
-            resultListener.onAuthDialogClose();
             new HomePage(usernameField.getText()).setVisible(true);
+            resultListener.onAuthDialogClose();
             dispose();
         }
     }
