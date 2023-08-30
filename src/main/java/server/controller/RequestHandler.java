@@ -18,6 +18,7 @@ import server.model.Command;
 import server.service.AuthenticationService;
 import server.service.PlayWordleService;
 import server.service.UserStatisticsService;
+import server.service.command.ChangePasswordCommand;
 import server.service.command.LoginCommand;
 import server.service.command.LogoutCommand;
 import server.service.command.PlayCommand;
@@ -69,6 +70,8 @@ public class RequestHandler implements Runnable, AutoCloseable {
                 new SendMeStatisticsCommand(userStatisticsService));
         commandMap.put(RequestType.SHARE,
                 new ShareCommand(multicastSocket));
+        commandMap.put(RequestType.CHANGEPASSWORD,
+                new ChangePasswordCommand(authenticationService));
 
     }
 
