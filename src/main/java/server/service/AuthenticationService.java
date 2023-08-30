@@ -13,8 +13,8 @@ import model.User;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Service that manages the authentication of the users.
- * Stores the logged user for the current session
+ * Singleton service that manages the authentication of the users.
+ * Stores the logged user for the current session.
  */
 public class AuthenticationService {
 
@@ -25,7 +25,7 @@ public class AuthenticationService {
 
 
     /**
-     * Constructor for the AuthenticationService.
+     * Private constructor for the AuthenticationService.
      *
      * @param filePath the file path of the json file
      */
@@ -118,7 +118,7 @@ public class AuthenticationService {
      *
      * @param username the username of the user.
      */
-    public boolean isRegistered(@NotNull String username) {
+    public synchronized boolean isRegistered(@NotNull String username) {
         return getRegisteredUserByUsername(username).isPresent();
     }
 

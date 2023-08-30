@@ -4,7 +4,7 @@ import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Services to manage the client-side authentication of a user.
+ * Singleton service to manage the client-side authentication of a user.
  */
 public class AuthenticationService {
 

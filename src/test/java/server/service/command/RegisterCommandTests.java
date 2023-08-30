@@ -19,7 +19,7 @@ import org.mockito.Mock;
 import server.service.AuthenticationService;
 
 /**
- * RegisterCommand Tests.
+ * Tests for the RegisterCommand class.
  */
 @DisplayName("The RegisterCommand Tests ")
 public class RegisterCommandTests {

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for WordExtractionService.
+ * Tests for WordExtractionService class.
  */
 @DisplayName("The WordExtractionService tests ")
 public class WordExtractionServiceTests {

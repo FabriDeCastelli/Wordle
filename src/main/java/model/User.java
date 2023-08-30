@@ -1,6 +1,5 @@
 package model;
 
-import java.io.Serial;
 import java.io.Serializable;
 import org.jetbrains.annotations.NotNull;
 
@@ -8,14 +7,12 @@ import org.jetbrains.annotations.NotNull;
  * Represents a user.
  * A user has a username (assumed to be unique), a hashed password and its statistics.
  */
+@SuppressWarnings("serial")
 public final class User implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
     private final String username;
     private String passwordHash;
     private UserStatistics statistics;
-
 
     /**
      * Constructor for the User.

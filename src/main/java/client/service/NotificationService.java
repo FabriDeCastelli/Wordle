@@ -16,6 +16,7 @@ import model.StreamHandler;
 
 /**
  * Controller for the notifications.
+ * Collects the notification received from the multicast socket and filters them.
  */
 public class NotificationService extends Thread {
 

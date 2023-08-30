@@ -11,7 +11,7 @@ import model.User;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Singleton class to share users' across services.
+ * Singleton class to share users' data across services.
  */
 public class UserServiceManager {
 

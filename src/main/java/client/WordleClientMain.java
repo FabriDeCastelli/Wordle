@@ -138,7 +138,7 @@ public class WordleClientMain {
     }
 
     /**
-     * Sends a word to the server.
+     * Sends a SENDWORD to the server.
      *
      * @param word the word to be sent
      * @return the response from the server
@@ -150,7 +150,7 @@ public class WordleClientMain {
     }
 
     /**
-     * Sends a share requestType to the server.
+     * Sends a share request to the server.
      *
      * @param wordHintsHistory the history of the game the user has played
      * @return the response from the server
@@ -161,7 +161,7 @@ public class WordleClientMain {
     }
 
     /**
-     * Sends a showMyStatistics requestType to the server.
+     * Sends a SENDMESTATISTICS request to the server.
      *
      * @return the response from the server
      */

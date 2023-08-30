@@ -12,7 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for UserStatistics.
+ * Tests for UserStatistics class.
  */
 @DisplayName("The UserStatistics tests ")
 public class UserStatisticsServiceTests {

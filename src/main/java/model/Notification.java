@@ -5,6 +5,10 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a notification.
+ *
+ * @param message the message of the notification
+ * @param senderUsername the username of the sender of the notification
+ * @param data the data of the notification, if any
  */
 public record Notification(
         @NotNull String message,

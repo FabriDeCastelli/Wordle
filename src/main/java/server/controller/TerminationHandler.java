@@ -7,7 +7,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Handles the termination of the server.
+ * Handles the termination of the server, closing its owned resources.
  */
 public class TerminationHandler extends Thread {
     private final int maximumDelay;
@@ -18,7 +18,7 @@ public class TerminationHandler extends Thread {
     /**
      * Constructor for the TerminationHandler.
      *
-     * @param maximumDelay    the maximum delay
+     * @param maximumDelay    the maximum delay to wait the pool to terminate
      * @param executorService the executor service
      * @param serverSocket    the server socket
      * @param multicastSocket the multicast socket

@@ -13,7 +13,7 @@ import server.service.PlayWordleService;
 import server.service.UserStatisticsService;
 
 /**
- * Tests for SendWordCommand.
+ * Tests for the SendWordCommand class.
  */
 @DisplayName("The SendWordCommand tests")
 public class SendWordCommandTests {

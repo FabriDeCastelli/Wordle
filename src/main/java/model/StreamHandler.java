@@ -13,7 +13,7 @@ import server.WordleServerMain;
 
 
 /**
- * StreamHandler is a utility class for read and writing objects to streams.
+ * Utility class used to read and write objects to streams.
  */
 public class StreamHandler {
 

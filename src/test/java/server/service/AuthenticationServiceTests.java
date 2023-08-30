@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for the AuthenticationService.
+ * Tests for the AuthenticationService class.
  */
 @DisplayName("The AuthenticationService tests ")
 public class AuthenticationServiceTests {

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MulticastSocket;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,6 +25,9 @@ public class WordleServerMain {
     public static int port;
     public static int wordDuration;
 
+    /*
+     * Static block to initialize the properties, as instance-independent.
+     */
     static {
         try (final InputStream inputStream =
                      new FileInputStream("src/main/java/server/conf/server.properties")) {
@@ -41,7 +45,7 @@ public class WordleServerMain {
 
     /**
      * Main method for the WordleServer.
-     * Loads the properties file, opens a ServerSocket and a MulticastSocket.
+     * Opens a ServerSocket and a MulticastSocket.
      * Creates a thread pool to handle the requests and a thread pool to extract a new word.
      */
     public static void main(String[] args) {
@@ -62,9 +66,14 @@ public class WordleServerMain {
             );
 
             while (true) {
-                executorService.execute(new RequestHandler(server.accept(), multicastSocket));
+                final Socket client = server.accept();
+                try (final RequestHandler requestHandler =
+                             new RequestHandler(client, multicastSocket)) {
+                    executorService.execute(requestHandler);
+                } catch (IOException e) {
+                    System.out.println(e.getMessage());
+                }
             }
-
 
         } catch (IOException e) {
             System.out.println(e.getMessage());

@@ -5,7 +5,6 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.io.Serial;
 import java.util.Optional;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -21,16 +20,13 @@ import org.jetbrains.annotations.NotNull;
 /**
  * ShareDialog is a dialog that allows the user to share their statistics.
  */
+@SuppressWarnings("serial")
 public class ShareDialog extends JFrame {
-
-    @Serial
-    private static final long serialVersionUID = 987654321L;
     private final String username;
     private final GameResult gameResult;
     private final Container container = getContentPane();
     private final JButton shareButton = new JButton("Share");
     private final JButton backToHomePageButton = new JButton("Back to home page");
-    private JTextPane statisticsTextPane;
 
     /**
      * Constructor for the ShareDialog.
@@ -57,7 +53,7 @@ public class ShareDialog extends JFrame {
     }
 
     private void setLocationAndSize() {
-        statisticsTextPane = new JTextPane();
+        JTextPane statisticsTextPane = new JTextPane();
         statisticsTextPane.setContentType("text/html");
         statisticsTextPane.setText(
                 DialogUtils.getFormattedStatistics(username, gameResult.userStatistics()));

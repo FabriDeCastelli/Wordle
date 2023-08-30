@@ -10,7 +10,6 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.Serial;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -33,6 +32,7 @@ import model.enums.Status;
 /**
  * Interface to play Wordle.
  */
+@SuppressWarnings("serial")
 public class PlayPage extends JFrame implements ActionListener {
 
     private final String username;
@@ -42,12 +42,6 @@ public class PlayPage extends JFrame implements ActionListener {
             new JPanel(new GridLayout(12, 10, 5, 5));
     private JButton submitButton;
     private int currentAttempt = 0;
-
-    /**
-     * Required by the PMD.
-     */
-    @Serial
-    private static final long serialVersionUID = 987654321L;
 
     /**
      * Constructor for the PlayPage.

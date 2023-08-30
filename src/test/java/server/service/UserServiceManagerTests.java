@@ -7,7 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for UserServiceManager.
+ * Tests for UserServiceManager class.
  */
 @DisplayName("The UserServiceManager tests ")
 public class UserServiceManagerTests {

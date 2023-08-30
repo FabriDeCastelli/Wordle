@@ -59,9 +59,6 @@ public class WordExtractionService extends Thread {
     }
 
 
-    /**
-     * Runs the service.
-     */
     @Override
     public void run() {
         this.extractWord();
@@ -82,8 +79,5 @@ public class WordExtractionService extends Thread {
         System.out.println("Extracted new word: " + word);
 
     }
-
-
-
 
 }
