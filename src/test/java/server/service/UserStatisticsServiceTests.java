@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 public class UserStatisticsServiceTests {
 
     private static final AuthenticationService authenticationService =
-            new AuthenticationService();
+            AuthenticationService.getInstance("src/test/java/server/conf/usersTest.json");
     private static final User user = new User("testUser", "testPassword");
     private static final UserStatisticsService userStatisticsService =
             new UserStatisticsService("src/test/java/server/conf/usersTest.json");

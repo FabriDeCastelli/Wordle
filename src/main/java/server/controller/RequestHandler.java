@@ -51,7 +51,8 @@ public class RequestHandler implements Runnable, AutoCloseable {
         this.in = new ObjectInputStream(socket.getInputStream());
         this.multicastSocket = multicastSocket;
         this.commandMap = new HashMap<>();
-        final AuthenticationService authenticationService = new AuthenticationService();
+        final AuthenticationService authenticationService =
+                AuthenticationService.getInstance("src/main/java/server/conf/users.json");
         final UserStatisticsService userStatisticsService = new UserStatisticsService();
         final PlayWordleService playWordleService = new PlayWordleService();
         commandMap.put(RequestType.LOGIN,

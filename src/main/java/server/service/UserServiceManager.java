@@ -6,11 +6,9 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import model.User;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Singleton class to share users' across services.
@@ -20,16 +18,15 @@ public class UserServiceManager {
     private final String filePath;
     private static UserServiceManager instance;
     private final ConcurrentHashMap<String, User> users;
-    private final List<String> loggedUsers;
     public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     /**
      * Constructor for UserServiceManager.
      */
-    private UserServiceManager(String filePath) {
+    private UserServiceManager(@NotNull String filePath) {
         this.filePath = filePath;
         this.users = getUsersData();
-        this.loggedUsers = Collections.synchronizedList(new ArrayList<>());
+
     }
 
     /**
@@ -64,8 +61,5 @@ public class UserServiceManager {
         return users;
     }
 
-    public List<String> getLoggedUsers() {
-        return loggedUsers;
-    }
 
 }

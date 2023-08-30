@@ -22,7 +22,7 @@ public class AuthenticationServiceTests {
     @BeforeAll
     public static void setUp() {
         authenticationService =
-                new AuthenticationService("src/test/java/server/conf/usersTest.json");
+                AuthenticationService.getInstance("src/test/java/server/conf/usersTest.json");
     }
 
 

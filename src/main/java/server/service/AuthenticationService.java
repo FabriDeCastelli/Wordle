@@ -4,6 +4,8 @@ import static server.service.UserServiceManager.gson;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class AuthenticationService {
 
+    private static AuthenticationService instance;
     private final List<String> loggedUsers;
     private final ConcurrentHashMap<String, User> userStore;
     private final String filePath;
@@ -26,21 +29,25 @@ public class AuthenticationService {
      *
      * @param filePath the file path of the json file
      */
-    public AuthenticationService(String filePath) {
+    private AuthenticationService(String filePath) {
         this.filePath = filePath;
-        this.loggedUsers = UserServiceManager.getInstance(filePath).getLoggedUsers();
+        this.loggedUsers = Collections.synchronizedList(new ArrayList<>());
         this.userStore = UserServiceManager.getInstance(filePath).getUsersMap();
     }
 
-    /**
-     * Constructor for the AuthenticationService.
-     */
-    public AuthenticationService() {
-        this.filePath = "src/main/java/server/conf/users.json";
-        loggedUsers = UserServiceManager.getInstance(filePath).getLoggedUsers();
-        userStore = UserServiceManager.getInstance(filePath).getUsersMap();
-    }
 
+    /**
+     * Gets the instance of the AuthenticationService.
+     *
+     * @param filePath the file path of the store
+     * @return the instance of the AuthenticationService
+     */
+    public static AuthenticationService getInstance(@NotNull String filePath) {
+        if (instance == null) {
+            instance = new AuthenticationService(filePath);
+        }
+        return instance;
+    }
 
     /**
      * Adds a user to the list of logged users and sets it as the logged user.

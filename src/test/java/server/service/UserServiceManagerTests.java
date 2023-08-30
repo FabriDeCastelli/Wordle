@@ -33,8 +33,6 @@ public class UserServiceManagerTests {
     @DisplayName(" has data consistent among instances")
     public void testGetUsersDataConsistency() {
         assertEquals(userServiceManager.getUsersMap(), anotherUserServiceManager.getUsersMap());
-        assertEquals(userServiceManager.getLoggedUsers(),
-                anotherUserServiceManager.getLoggedUsers());
     }
 
 
