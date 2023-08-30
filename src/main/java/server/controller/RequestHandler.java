@@ -33,7 +33,7 @@ import server.service.command.ShareCommand;
  * Uses the command pattern to handle requests.
  * See <a href="https://refactoring.guru/design-patterns/command"> Command Pattern </a>.
  */
-public class RequestHandler implements Runnable, AutoCloseable {
+public class RequestHandler implements Runnable {
 
     private final ObjectInputStream in;
     private final ObjectOutputStream out;
@@ -79,6 +79,8 @@ public class RequestHandler implements Runnable, AutoCloseable {
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public void run() {
 
+        Runtime.getRuntime().addShutdownHook(new Thread(this::close));
+
         while (true) {
 
             final Optional<Request> request = StreamHandler.getData(in, Request.class);
@@ -106,7 +108,6 @@ public class RequestHandler implements Runnable, AutoCloseable {
                 break;
             }
 
-
         }
 
     }
@@ -115,13 +116,14 @@ public class RequestHandler implements Runnable, AutoCloseable {
      * Closes resources owned by this class.
      * Socket and MulticastSocket are not closed here,
      * but in the {@link server.controller.TerminationHandler}.
-     *
-     * @throws IOException if an I/O error occurs when closing this socket.
      */
-    @Override
-    public void close() throws IOException {
-        this.in.close();
-        this.out.close();
+    public void close()  {
+        try {
+            this.in.close();
+            this.out.close();
+        } catch (IOException e) {
+            System.out.println("RequestHandler: error closing streams.");
+        }
     }
 
 }
