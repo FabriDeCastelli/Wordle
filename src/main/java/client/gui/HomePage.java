@@ -3,6 +3,7 @@ package client.gui;
 import client.WordleClientMain;
 import client.gui.authentication.AuthenticationPage;
 import client.gui.play.PlayPage;
+import client.gui.settings.SettingsDialog;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -39,7 +40,7 @@ public class HomePage extends JFrame {
             @Override
             public void windowClosing(WindowEvent e) {
                 super.windowClosing(e);
-                WordleClientMain.logout(username);
+                WordleClientMain.logout();
                 WordleClientMain.closeResources();
             }
         });
@@ -50,9 +51,10 @@ public class HomePage extends JFrame {
         final GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(10, 10, 10, 10);
-        final Dimension buttonSize = new Dimension(100, 50);
 
+        final Dimension buttonSize = new Dimension(100, 50);
         final JButton settingsButton = getSettingsButton();
+
         gbc.gridx = 0;
         gbc.gridy = 0;
         settingsButton.setPreferredSize(buttonSize);
@@ -95,8 +97,7 @@ public class HomePage extends JFrame {
             } else if (response.get().status() == Status.SUCCESS) {
                 if (response.get().data() instanceof Queue<?>) {
                     new NotificationDialog(this,
-                            (Queue<Notification>) response.get().data())
-                            .setVisible(true);
+                            (Queue<Notification>) response.get().data());
                 }
             } else {
                 JOptionPane.showMessageDialog(HomePage.this, response.get().message());
@@ -107,14 +108,18 @@ public class HomePage extends JFrame {
 
     @NotNull
     private JButton getSettingsButton() {
-        return new JButton("Settings");
+        final JButton settingsButton =  new JButton("Settings");
+        settingsButton.addActionListener(e -> {
+            new SettingsDialog();
+        });
+        return settingsButton;
     }
 
     @NotNull
     private JButton getLogoutButton(String username) {
         final JButton logoutButton = new JButton("Logout");
         logoutButton.addActionListener(e -> {
-            final Optional<Response> response = WordleClientMain.logout(username);
+            final Optional<Response> response = WordleClientMain.logout();
             if (response.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Server could not respond.");
             } else if (response.get().status() == Status.SUCCESS) {
