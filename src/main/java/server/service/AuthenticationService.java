@@ -16,7 +16,6 @@ import org.jetbrains.annotations.NotNull;
  */
 public class AuthenticationService {
 
-    private Optional<User> loggedUser;
     private final List<String> loggedUsers;
     private final ConcurrentHashMap<String, User> userStore;
     private final String filePath;
@@ -29,7 +28,6 @@ public class AuthenticationService {
      */
     public AuthenticationService(String filePath) {
         this.filePath = filePath;
-        this.loggedUser = Optional.empty();
         this.loggedUsers = UserServiceManager.getInstance(filePath).getLoggedUsers();
         this.userStore = UserServiceManager.getInstance(filePath).getUsersMap();
     }
@@ -39,7 +37,6 @@ public class AuthenticationService {
      */
     public AuthenticationService() {
         this.filePath = "src/main/java/server/conf/users.json";
-        this.loggedUser = Optional.empty();
         loggedUsers = UserServiceManager.getInstance(filePath).getLoggedUsers();
         userStore = UserServiceManager.getInstance(filePath).getUsersMap();
     }
@@ -55,7 +52,6 @@ public class AuthenticationService {
         if (loggedUsers.contains(user.getUsername())) {
             return false;
         }
-        this.loggedUser = Optional.of(user);
         return this.loggedUsers.add(user.getUsername());
     }
 
@@ -64,15 +60,10 @@ public class AuthenticationService {
      *
      * @return true if it was removed, false otherwise
      */
-    public synchronized boolean logout() {
-        final User loggedUser = this.loggedUser
-                .orElseThrow(IllegalArgumentException::new);
-        return loggedUsers.remove(loggedUser.getUsername());
+    public synchronized boolean logout(@NotNull String username) {
+        return loggedUsers.remove(username);
     }
 
-    public synchronized Optional<User> getLoggedUser() {
-        return loggedUser;
-    }
 
     /**
      * Removes a user from the list of registered users.
@@ -106,7 +97,6 @@ public class AuthenticationService {
         if (isRegistered(user.getUsername())) {
             return false;
         }
-
         userStore.put(user.getUsername(), user);
         try (final FileWriter writer = new FileWriter(filePath)) {
             gson.toJson(userStore, writer);

@@ -8,6 +8,7 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 import server.WordleServerMain;
 
 
@@ -51,6 +52,23 @@ public class StreamHandler {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Sends a request to a socket and returns the response.
+     *
+     * @param out       the output stream
+     * @param in        the input stream
+     * @param request   the request to be sent
+     * @return          the response from the server
+     */
+    public static Optional<Response> sendAndGetResponse(
+            @NotNull ObjectOutputStream out,
+            @NotNull ObjectInputStream in,
+            @NotNull Request request) {
+        return sendData(out, request)
+                ? getData(in, Response.class)
+                : Optional.empty();
     }
 
     /**

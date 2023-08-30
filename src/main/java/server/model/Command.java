@@ -17,6 +17,4 @@ public interface Command {
      */
     Response handle(@NotNull Request request);
 
-
-
 }

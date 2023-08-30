@@ -7,7 +7,6 @@ import model.enums.RequestType;
 import model.enums.Status;
 import org.jetbrains.annotations.NotNull;
 import server.model.Command;
-import server.service.AuthenticationService;
 import server.service.PlayWordleService;
 import server.service.UserStatisticsService;
 import server.service.WordExtractionService;
@@ -19,22 +18,18 @@ public class PlayCommand implements Command {
 
     private final PlayWordleService playWordleService;
     private final UserStatisticsService userStatisticsService;
-    private final AuthenticationService authenticationService;
 
     /**
      * Constructor for PlayCommand.
      *
      * @param playWordleService     the play wordle service
      * @param userStatisticsService the user statistics service
-     * @param authenticationService the authentication service
      */
     public PlayCommand(
             @NotNull PlayWordleService playWordleService,
-            @NotNull UserStatisticsService userStatisticsService,
-            @NotNull AuthenticationService authenticationService) {
+            @NotNull UserStatisticsService userStatisticsService) {
         this.playWordleService = playWordleService;
         this.userStatisticsService = userStatisticsService;
-        this.authenticationService = authenticationService;
     }
 
     /**
@@ -50,9 +45,7 @@ public class PlayCommand implements Command {
         }
 
         final String currentWord = WordExtractionService.getCurrentWord();
-        final String username = authenticationService.getLoggedUser()
-                .orElseThrow(IllegalStateException::new)
-                .getUsername();
+        final String username = request.username();
 
         if (playWordleService.hasPlayed(username, currentWord)) {
             return new Response(Status.FAILURE, "You have already played the game for this word.");

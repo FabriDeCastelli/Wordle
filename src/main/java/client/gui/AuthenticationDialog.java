@@ -98,15 +98,9 @@ public class AuthenticationDialog extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        final Optional<Response> response;
+        final Optional<Response> response = WordleClientMain.authenticate(
+                authType, usernameField.getText(), new String(passwordField.getPassword()));
 
-        if (this.authType == AuthType.Login) {
-            response = WordleClientMain.login(usernameField.getText(),
-                            new String(passwordField.getPassword()));
-        } else {
-            response = WordleClientMain.register(usernameField.getText(),
-                            new String(passwordField.getPassword()));
-        }
         if (response.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Server could not respond.");
         } else if (response.get().status() == Status.FAILURE) {
@@ -114,9 +108,9 @@ public class AuthenticationDialog extends JFrame implements ActionListener {
             usernameField.setText("");
             passwordField.setText("");
         } else {
-            dispose();
             resultListener.onAuthDialogClose();
             new HomePage(usernameField.getText()).setVisible(true);
+            dispose();
         }
     }
 

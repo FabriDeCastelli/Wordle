@@ -31,15 +31,6 @@ public class PlayWordleService {
         this.playedGames = getPlayedGames();
     }
 
-    /**
-     * Constructor for PlayWordleService.
-     *
-     * @param filePath the file path of the store
-     */
-    public PlayWordleService(String filePath) {
-        this.filePath = filePath;
-        this.playedGames = getPlayedGames();
-    }
 
     /**
      * Gets the list of all already played games.
@@ -68,10 +59,8 @@ public class PlayWordleService {
      * @return true if the user has played the game for that word, false otherwise
      */
     public synchronized boolean hasPlayed(@NotNull String username, @NotNull String word) {
-        if (!playedGames.containsKey(username)) {
-            return false;
-        }
-        return playedGames.get(username).contains(word);
+        final List<String> playedWords = playedGames.get(username);
+        return playedWords != null && playedWords.contains(word);
     }
 
 
@@ -119,13 +108,6 @@ public class PlayWordleService {
         }
         return true;
 
-    }
-
-    /**
-     * Gets the list of all already played games.
-     */
-    synchronized void clearPlayedGames(String username) {
-        playedGames.get(username).clear();
     }
 
 

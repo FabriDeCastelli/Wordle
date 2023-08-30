@@ -1,6 +1,7 @@
 package client;
 
 import client.gui.AuthenticationPage;
+import client.service.AuthenticationService;
 import client.service.NotificationService;
 import client.service.PasswordHashingService;
 import java.io.FileInputStream;
@@ -18,6 +19,7 @@ import model.Response;
 import model.StreamHandler;
 import model.WordAttempt;
 import model.WordHints;
+import model.enums.AuthType;
 import model.enums.RequestType;
 import model.enums.Status;
 import org.jetbrains.annotations.NotNull;
@@ -35,12 +37,7 @@ public class WordleClientMain {
     private static String multicastIP;
     private static int multicastPort;
 
-
-    /**
-     * Main method for the WordleClientMain.
-     */
-    public static void main(String[] args) {
-
+    static {
         final int port;
         final String server;
         try (final InputStream inputStream =
@@ -57,66 +54,57 @@ public class WordleClientMain {
             in = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
             System.out.println("Error connecting to server.");
-            return;
         }
+    }
+
+
+    /**
+     * Main method for the WordleClientMain.
+     */
+    public static void main(String[] args) {
         new AuthenticationPage().setVisible(true);
-
     }
 
     /**
-     * Sends a Request to the server and returns the Response through streams.
+     * Sends a LOGIN or REGISTER request to the server.
      *
-     * @param request the requestType to send
+     * @param authType the type of authentication
+     * @param username the username
+     * @param password the password
      * @return the response from the server
      */
-    public static Optional<Response> sendAndGetResponse(@NotNull Request request) {
-        return StreamHandler.sendData(out, request)
-                ? StreamHandler.getData(in, Response.class)
-                : Optional.empty();
-    }
-
-
-    /**
-     * Sends a LOGIN request to the server.
-     *
-     * @param username the username of the user sending the requestType
-     * @param password the password of the user sending the requestType
-     * @return the response from the server
-     */
-    public static Optional<Response> login(String username, String password) {
+    public static Optional<Response> authenticate(
+            @NotNull AuthType authType,
+            @NotNull String username,
+            @NotNull String password) {
         final String hashedPassword = PasswordHashingService.getInstance().hashPassword(password);
         final AuthDTO authDTO = new AuthDTO(username, hashedPassword);
-        final Request request = new Request(RequestType.LOGIN, authDTO);
+        final Request request = new Request(RequestType.valueOf(authType.name()), authDTO);
         if (StreamHandler.sendData(out, request)) {
+            final Optional<Response> response = StreamHandler.getData(in, Response.class);
+            response.filter(res -> res.status() == Status.SUCCESS)
+                    .ifPresent(res -> AuthenticationService.getInstance().login(username));
             new NotificationService(username, multicastIP, multicastPort).start();
-            return StreamHandler.getData(in, Response.class);
+            return response;
         }
         return Optional.empty();
     }
 
     /**
-     * Sends a REGISTER request to the server.
-     *
-     * @param username the username of the user sending the request
-     * @param password the password of the user sending the request
-     * @return the response from the server
-     */
-    public static Optional<Response> register(String username, String password) {
-        final String hashedPassword = PasswordHashingService.getInstance().hashPassword(password);
-        final AuthDTO authDTO = new AuthDTO(username, hashedPassword);
-        final Request request = new Request(RequestType.REGISTER, authDTO);
-        return sendAndGetResponse(request);
-    }
-
-    /**
      * Sends a LOGOUT request to the server.
      *
-     * @param username the username of the user sending the requestType
+     * @param username the username of the user sending the request
      * @return the response from the server
      */
     public static Optional<Response> logout(String username) {
         final Request request = new Request(RequestType.LOGOUT, username);
-        return sendAndGetResponse(request);
+        if (StreamHandler.sendData(out, request)) {
+            final Optional<Response> response = StreamHandler.getData(in, Response.class);
+            response.filter(res -> res.status() == Status.SUCCESS)
+                    .ifPresent(res -> AuthenticationService.getInstance().logout());
+            return response;
+        }
+        return Optional.empty();
     }
 
     /**
@@ -126,7 +114,7 @@ public class WordleClientMain {
      */
     public static Optional<Response> play() {
         final Request request = new Request(RequestType.PLAY);
-        return sendAndGetResponse(request);
+        return StreamHandler.sendAndGetResponse(out, in, request);
     }
 
     /**
@@ -138,7 +126,7 @@ public class WordleClientMain {
     public static Optional<Response> sendWord(String word, int attemptNumber) {
         final Request request = new Request(
                 RequestType.SENDWORD, new WordAttempt(word, attemptNumber));
-        return sendAndGetResponse(request);
+        return StreamHandler.sendAndGetResponse(out, in, request);
     }
 
     /**
@@ -149,7 +137,7 @@ public class WordleClientMain {
      */
     public static Optional<Response> share(List<WordHints> wordHintsHistory) {
         final Request request = new Request(RequestType.SHARE, wordHintsHistory);
-        return sendAndGetResponse(request);
+        return StreamHandler.sendAndGetResponse(out, in, request);
     }
 
     /**
@@ -159,7 +147,7 @@ public class WordleClientMain {
      */
     public static Optional<Response> sendMeStatistics() {
         final Request request = new Request(RequestType.SENDMESTATISTICS);
-        return sendAndGetResponse(request);
+        return StreamHandler.sendAndGetResponse(out, in, request);
     }
 
     /**

@@ -34,11 +34,9 @@ public class LogoutCommand implements Command {
 
         if (request.requestType() != RequestType.LOGOUT) {
             throw new IllegalArgumentException("Cannot handle a non-LOGIN requestType");
-        } else if (request.data() == null) {
-            throw new IllegalArgumentException("Cannot logout a user with null username");
         }
 
-        return authenticationService.logout()
+        return authenticationService.logout(request.username())
                 ? new Response(Status.SUCCESS, "Logout successful.")
                 : new Response(Status.FAILURE, "User not logged in.");
 

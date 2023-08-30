@@ -9,7 +9,6 @@ import model.enums.RequestType;
 import model.enums.Status;
 import org.jetbrains.annotations.NotNull;
 import server.model.Command;
-import server.service.AuthenticationService;
 
 /**
  * Shares a result with the other users in the multicast socket.
@@ -17,13 +16,9 @@ import server.service.AuthenticationService;
 public class ShareCommand implements Command {
 
     private final MulticastSocket multicastSocket;
-    private final AuthenticationService authenticationService;
 
-    public ShareCommand(
-            @NotNull MulticastSocket multicastSocket,
-            @NotNull AuthenticationService authenticationService) {
+    public ShareCommand(@NotNull MulticastSocket multicastSocket) {
         this.multicastSocket = multicastSocket;
-        this.authenticationService = authenticationService;
     }
 
     @Override
@@ -35,9 +30,7 @@ public class ShareCommand implements Command {
             throw new IllegalArgumentException("Cannot share a null result");
         }
 
-        final String username = authenticationService.getLoggedUser()
-                .orElseThrow(IllegalStateException::new)
-                .getUsername();
+        final String username = request.username();
 
         final Notification notification =
                 new Notification(username + " shared a result!", username,  request.data());

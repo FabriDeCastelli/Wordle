@@ -40,8 +40,8 @@ public class AuthenticationPage
 
         final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 170));
 
-        final JButton button1 = new JButton("Login");
-        final JButton button2 = new JButton("Register");
+        final JButton button1 = new JButton("LOGIN");
+        final JButton button2 = new JButton("REGISTER");
 
         final Dimension buttonSize = new Dimension(100, 50);
         button1.setPreferredSize(buttonSize);

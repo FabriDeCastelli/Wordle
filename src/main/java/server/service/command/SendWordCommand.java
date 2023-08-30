@@ -12,7 +12,6 @@ import model.enums.RequestType;
 import model.enums.Status;
 import org.jetbrains.annotations.NotNull;
 import server.model.Command;
-import server.service.AuthenticationService;
 import server.service.PlayWordleService;
 import server.service.UserStatisticsService;
 import server.service.WordExtractionService;
@@ -25,7 +24,6 @@ public class SendWordCommand implements Command {
     private final PlayWordleService playWordleService;
     private final UserStatisticsService userStatisticsService;
     private final List<WordHints> wordHintsHistory;
-    private final AuthenticationService authenticationService;
 
 
     /**
@@ -33,16 +31,13 @@ public class SendWordCommand implements Command {
      *
      * @param playWordleService     the play wordle service
      * @param userStatisticsService the user statistics service
-     * @param authenticationService the authentication service
      */
     public SendWordCommand(
             @NotNull PlayWordleService playWordleService,
-            @NotNull UserStatisticsService userStatisticsService,
-            @NotNull AuthenticationService authenticationService) {
+            @NotNull UserStatisticsService userStatisticsService) {
         this.playWordleService = playWordleService;
         this.userStatisticsService = userStatisticsService;
         this.wordHintsHistory = new ArrayList<>();
-        this.authenticationService = authenticationService;
     }
 
     @Override
@@ -57,10 +52,7 @@ public class SendWordCommand implements Command {
 
 
         if (wordAttempt.attemptNumber() - 11 > 0) {
-            final String loggedUsername =
-                authenticationService.getLoggedUser()
-                        .orElseThrow(IllegalStateException::new)
-                        .getUsername();
+            final String loggedUsername = request.username();
             final UserStatistics userStatistics =
                     userStatisticsService.getStatisticsByUsername(loggedUsername);
             userStatistics.resetCurrentStreak();
@@ -76,10 +68,7 @@ public class SendWordCommand implements Command {
         wordHintsHistory.add(wordHints);
 
         if (wordAttempt.word().equals(WordExtractionService.getCurrentWord())) {
-            final String loggedUsername =
-                authenticationService.getLoggedUser()
-                        .orElseThrow(IllegalStateException::new)
-                        .getUsername();
+            final String loggedUsername = request.username();
             final UserStatistics userStatistics =
                     userStatisticsService.getStatisticsByUsername(loggedUsername);
             userStatistics.incrementGamesWon();

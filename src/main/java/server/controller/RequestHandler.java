@@ -12,6 +12,7 @@ import model.Request;
 import model.Response;
 import model.StreamHandler;
 import model.enums.RequestType;
+import model.enums.Status;
 import org.jetbrains.annotations.NotNull;
 import server.model.Command;
 import server.service.AuthenticationService;
@@ -60,37 +61,48 @@ public class RequestHandler implements Runnable, AutoCloseable {
         commandMap.put(RequestType.REGISTER,
                 new RegisterCommand(authenticationService));
         commandMap.put(RequestType.PLAY,
-                new PlayCommand(playWordleService, userStatisticsService, authenticationService));
-        commandMap.put(RequestType.SENDWORD, new SendWordCommand(
-                playWordleService, userStatisticsService, authenticationService));
+                new PlayCommand(playWordleService, userStatisticsService));
+        commandMap.put(RequestType.SENDWORD,
+                new SendWordCommand(playWordleService, userStatisticsService));
         commandMap.put(RequestType.SENDMESTATISTICS,
-                new SendMeStatisticsCommand(userStatisticsService, authenticationService));
+                new SendMeStatisticsCommand(userStatisticsService));
         commandMap.put(RequestType.SHARE,
-                new ShareCommand(multicastSocket, authenticationService));
+                new ShareCommand(multicastSocket));
+
     }
 
     @Override
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public void run() {
 
         while (true) {
+
             final Optional<Request> request = StreamHandler.getData(in, Request.class);
+
             if (request.isEmpty()) {
                 break;
             }
 
             final RequestType requestType = request.get().requestType();
-
             final Command command = commandMap.get(requestType);
 
             if (command == null) {
                 throw new IllegalStateException("Command not found.");
             }
 
-            final Response response = command.handle(request.get());
+            Response response;
+
+            try {
+                response = command.handle(request.get());
+            } catch (Exception e) {
+                response = new Response(Status.FAILURE, e.getMessage());
+            }
 
             if (!StreamHandler.sendData(out, response)) {
                 break;
             }
+
+
         }
 
     }

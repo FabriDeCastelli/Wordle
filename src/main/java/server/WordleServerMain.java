@@ -44,7 +44,6 @@ public class WordleServerMain {
      * Loads the properties file, opens a ServerSocket and a MulticastSocket.
      * Creates a thread pool to handle the requests and a thread pool to extract a new word.
      */
-    @SuppressWarnings("PMD")
     public static void main(String[] args) {
 
 
@@ -68,7 +67,7 @@ public class WordleServerMain {
 
 
         } catch (IOException e) {
-            System.out.println("Error creating socket.");
+            System.out.println(e.getMessage());
         }
 
     }

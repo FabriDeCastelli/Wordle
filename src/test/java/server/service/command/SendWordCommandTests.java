@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import server.service.AuthenticationService;
 import server.service.PlayWordleService;
 import server.service.UserStatisticsService;
 
@@ -22,8 +21,6 @@ public class SendWordCommandTests {
     @Mock
     private final UserStatisticsService userStatisticsService = mock(UserStatisticsService.class);
     @Mock
-    private final AuthenticationService authenticationService = mock(AuthenticationService.class);
-    @Mock
     private final PlayWordleService playWordleService = mock(PlayWordleService.class);
     private SendWordCommand sendWordCommand;
     private String username;
@@ -34,7 +31,7 @@ public class SendWordCommandTests {
     @BeforeEach
     public void setUp() {
         sendWordCommand = new SendWordCommand(
-                playWordleService, userStatisticsService, authenticationService);
+                playWordleService, userStatisticsService);
         username = "username";
     }
 
