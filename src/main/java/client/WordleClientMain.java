@@ -64,8 +64,10 @@ public class WordleClientMain {
     public static void main(String[] args) {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             System.out.println("Shutting down...");
-            AuthenticationService.getInstance().getLoggedUser()
-                    .ifPresent(WordleClientMain::logout);
+            AuthenticationService.getInstance().getLoggedUser().ifPresent(user -> {
+                final Optional<Response> response = WordleClientMain.logout();
+                response.ifPresent(res -> System.out.println(res.message()));
+            });
             WordleClientMain.closeResources();
         }));
         new AuthenticationPage().setVisible(true);
@@ -99,11 +101,10 @@ public class WordleClientMain {
     /**
      * Sends a LOGOUT request to the server.
      *
-     * @param username the username of the user sending the request
      * @return the response from the server
      */
-    public static Optional<Response> logout(String username) {
-        final Request request = new Request(RequestType.LOGOUT, username);
+    public static Optional<Response> logout() {
+        final Request request = new Request(RequestType.LOGOUT);
         if (StreamHandler.sendData(out, request)) {
             final Optional<Response> response = StreamHandler.getData(in, Response.class);
             response.filter(res -> res.status() == Status.SUCCESS)
@@ -111,6 +112,19 @@ public class WordleClientMain {
             return response;
         }
         return Optional.empty();
+    }
+
+    /**
+     * Sends a CHANGE PASSWORD request to the server.
+     *
+     * @param newPassword the new password
+     * @return the response from the server
+     */
+    public static Optional<Response> changePassword(String newPassword) {
+        final String newPasswordHash =
+                PasswordHashingService.getInstance().hashPassword(newPassword);
+        final Request request = new Request(RequestType.CHANGEPASSWORD, newPasswordHash);
+        return StreamHandler.sendAndGetResponse(out, in, request);
     }
 
     /**
