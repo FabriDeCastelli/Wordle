@@ -2,10 +2,10 @@ package client.gui;
 
 import client.WordleClientMain;
 import client.gui.play.PlayPage;
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.io.Serial;
 import java.util.Optional;
 import java.util.Queue;
@@ -34,43 +34,50 @@ public class HomePage extends JFrame {
      */
     public HomePage(String username) {
         setTitle("Home" + " - " + username);
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                super.windowClosing(e);
-                WordleClientMain.logout(username);
-                WordleClientMain.closeResources();
-            }
-        });
-
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(600, 400);
         setLocationRelativeTo(null);
-        setLayout(new BorderLayout());
 
-        final JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        final JPanel bodyPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        final JPanel contentPanel = new JPanel(new GridBagLayout());
+        final GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        final Dimension buttonSize = new Dimension(100, 50);
 
         final JButton settingsButton = getSettingsButton();
-        headerPanel.add(settingsButton);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        settingsButton.setPreferredSize(buttonSize);
+        contentPanel.add(settingsButton, gbc);
 
         final JButton notificationsButton = getNotificationsButton(username);
-        headerPanel.add(notificationsButton);
-
-        final JButton logoutButton = getLogoutButton(username);
-        bodyPanel.add(logoutButton);
+        gbc.gridx = 1;
+        notificationsButton.setPreferredSize(buttonSize);
+        contentPanel.add(notificationsButton, gbc);
 
         final JButton playButton = getPlayButton(username);
-        bodyPanel.add(playButton);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        playButton.setPreferredSize(buttonSize);
+        contentPanel.add(playButton, gbc);
 
         final JButton showMyStatsButton = getShowMyStatisticsButton(username);
-        bodyPanel.add(showMyStatsButton);
+        gbc.gridy = 2;
+        showMyStatsButton.setPreferredSize(buttonSize);
+        contentPanel.add(showMyStatsButton, gbc);
 
-        add(bodyPanel, BorderLayout.CENTER);
-        add(headerPanel, BorderLayout.NORTH);
+        final JButton logoutButton = getLogoutButton(username);
+        gbc.gridy = 3;
+        logoutButton.setPreferredSize(buttonSize);
+        contentPanel.add(logoutButton, gbc);
+
+        add(contentPanel);
     }
 
     @NotNull
+    @SuppressWarnings("unchecked")
     private JButton getNotificationsButton(String username) {
         final JButton notificationsButton = new JButton("Notifications");
         notificationsButton.addActionListener(e -> {
@@ -87,7 +94,6 @@ public class HomePage extends JFrame {
                 JOptionPane.showMessageDialog(HomePage.this, response.get().message());
             }
         });
-        notificationsButton.setBounds(50, 10, 100, 30);
         return notificationsButton;
     }
 
@@ -104,9 +110,8 @@ public class HomePage extends JFrame {
             if (response.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Server could not respond.");
             } else if (response.get().status() == Status.SUCCESS) {
-                JOptionPane.showMessageDialog(this, response.get().message());
-                this.dispose();
                 new AuthenticationPage().setVisible(true);
+                this.dispose();
             } else {
                 JOptionPane.showMessageDialog(this, response.get().message());
             }
@@ -116,16 +121,13 @@ public class HomePage extends JFrame {
 
     @NotNull
     private JButton getShowMyStatisticsButton(String username) {
-        final JButton showMyStatsButton = new JButton("Show my stats");
+        final JButton showMyStatsButton = new JButton("My statistics");
         showMyStatsButton.addActionListener(e -> {
             final Optional<Response> response = WordleClientMain.sendMeStatistics();
             if (response.isEmpty()) {
                 JOptionPane.showMessageDialog(HomePage.this, "Server could not respond.");
             } else if (response.get().status() == Status.SUCCESS) {
-                if (response.get().data() instanceof UserStatistics) {
-                    new StatisticsDialog(this, username,
-                            (UserStatistics) response.get().data()).setVisible(true);
-                }
+                new StatisticsDialog(this, username, (UserStatistics) response.get().data());
             } else {
                 JOptionPane.showMessageDialog(HomePage.this, response.get().message());
             }
@@ -149,6 +151,5 @@ public class HomePage extends JFrame {
         });
         return playButton;
     }
-
 
 }

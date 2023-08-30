@@ -164,7 +164,7 @@ public class PlayPage extends JFrame implements ActionListener {
         } else {
             final GameResult gameResult = (GameResult) response.get().data();
             JOptionPane.showMessageDialog(this, response.get().message());
-            new ShareDialog(username, gameResult).setVisible(true);
+            new ShareDialog(username, gameResult);
             dispose();
         }
 

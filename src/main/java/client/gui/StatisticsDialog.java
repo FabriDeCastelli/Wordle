@@ -40,10 +40,11 @@ public class StatisticsDialog extends JDialog {
         final JScrollPane scrollPane = new JScrollPane(statisticsTextPane);
         add(scrollPane, BorderLayout.CENTER);
 
-        setSize(400, 450);
+        setSize(450, 500);
         setLocationRelativeTo(parent);
         setVisible(true);
     }
+
 
 
 }
