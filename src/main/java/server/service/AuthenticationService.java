@@ -105,6 +105,7 @@ public class AuthenticationService {
             return false;
         }
         userStore.put(user.getUsername(), user);
+        loggedUsers.add(user.getUsername());
         try (final FileWriter writer = new FileWriter(filePath)) {
             gson.toJson(userStore, writer);
         } catch (IOException e) {
