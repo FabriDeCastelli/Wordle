@@ -31,7 +31,7 @@ import server.service.command.ShareCommand;
  * Handles a request from a client.
  * It is created by the {@link server.WordleServerMain} when a client connects.
  * Uses the command pattern to handle requests.
- * See {@link <a href="https://refactoring.guru/design-patterns/command"> Command Pattern </a>}
+ * See <a href="https://refactoring.guru/design-patterns/command"> Command Pattern </a>.
  */
 public class RequestHandler implements Runnable, AutoCloseable {
 
