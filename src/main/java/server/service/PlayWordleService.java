@@ -27,7 +27,7 @@ public class PlayWordleService {
      * Constructor for PlayWordleService.
      */
     public PlayWordleService() {
-        this.filePath = "src/main/java/server/conf/playedGames.json";
+        this.filePath = "src/main/java/server/config/playedGames.json";
         this.playedGames = getPlayedGames();
     }
 

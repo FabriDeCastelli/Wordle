@@ -22,7 +22,7 @@ public class WordExtractionService extends Thread {
         extractedWords = new ArrayList<>();
         dictionary = new ArrayList<>();
         try (final RandomAccessFile file =
-                     new RandomAccessFile("src/main/java/server/conf/words.txt", "r")) {
+                     new RandomAccessFile("src/main/java/server/config/words.txt", "r")) {
             String line = file.readLine();
             while (line != null) {
                 dictionary.add(line);

@@ -1,0 +1,8 @@
+javac -d bin -cp "libs/*" -sourcepath src/main/java src/main/java/client/WordleClientMain.java
+jar cfm compile/client/client.jar compile/client/ManifestClient.txt -C bin . -C libs .
+java -jar compile/client/client.jar
+
+or
+
+javac -d bin -cp "libs/*" -sourcepath src/main/java src/main/java/client/WordleClientMain.java
+java -cp "bin:libs/*" client.WordleClientMain

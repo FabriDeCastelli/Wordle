@@ -41,7 +41,7 @@ public class WordleClientMain {
         final int port;
         final String server;
         try (final InputStream inputStream =
-                     new FileInputStream("src/main/java/client/conf/client.properties")) {
+                     new FileInputStream("src/main/java/client/config/client.properties")) {
             final Properties properties = new Properties();
             properties.load(inputStream);
             server = properties.getProperty("SERVER");

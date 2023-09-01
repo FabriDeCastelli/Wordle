@@ -1,2 +1,0 @@
-javac -d bin -cp "libs/*" -sourcepath src/main/java src/main/java/client/WordleClientMain.java
-java -cp "bin:libs" client.WordleClientMain

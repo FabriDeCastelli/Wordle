@@ -53,7 +53,7 @@ public class RequestHandler implements Runnable {
         this.in = new ObjectInputStream(socket.getInputStream());
         this.commandMap = new HashMap<>();
         final AuthenticationService authenticationService =
-                AuthenticationService.getInstance("src/main/java/server/conf/users.json");
+                AuthenticationService.getInstance("src/main/java/server/config/users.json");
         final UserStatisticsService userStatisticsService = new UserStatisticsService();
         final PlayWordleService playWordleService = new PlayWordleService();
         commandMap.put(RequestType.LOGIN,
