@@ -1,0 +1,2 @@
+Main-Class: server.WordleServerMain
+Class-Path: libs/gson-2.8.2.jar libs/annotations-24.0.1.jar
