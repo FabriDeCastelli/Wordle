@@ -1,6 +1,5 @@
 package client.service;
 
-
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -9,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Singleton service to handle password hashing.
+ * Uses SHA-256 as encryption algorithm.
  */
 public class PasswordHashingService {
 
@@ -41,8 +41,8 @@ public class PasswordHashingService {
     public String hashPassword(@NotNull String password) {
         try {
             final MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-            byte[] passwordBytes = password.getBytes(StandardCharsets.UTF_8);
-            byte[] hashBytes = messageDigest.digest(passwordBytes);
+            final byte[] passwordBytes = password.getBytes(StandardCharsets.UTF_8);
+            final byte[] hashBytes = messageDigest.digest(passwordBytes);
             return Base64.getEncoder().encodeToString(hashBytes);
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("SHA-256 algorithm not available.", e);

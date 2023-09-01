@@ -7,7 +7,7 @@ import java.net.NetworkInterface;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Class responsible for handling the termination of the multicast.
+ * Class responsible for handling the termination of the multicast socket.
  */
 public class MulticastTerminationHandler extends Thread {
 

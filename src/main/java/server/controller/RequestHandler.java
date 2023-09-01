@@ -29,28 +29,28 @@ import server.service.command.ShareCommand;
 
 /**
  * Handles a request from a client.
+ * It is created by the {@link server.WordleServerMain} when a client connects.
+ * Uses the command pattern to handle requests.
+ * See <a href="https://refactoring.guru/design-patterns/command"> Command Pattern </a>.
  */
-public class RequestHandler implements Runnable, AutoCloseable {
+public class RequestHandler implements Runnable {
 
-    private final Socket socket;
     private final ObjectInputStream in;
     private final ObjectOutputStream out;
-    private final MulticastSocket multicastSocket;
     private final Map<RequestType, Command> commandMap;
 
 
     /**
      * Constructor for RequestHandler.
+     * Takes the ownership of streams and initializes the command map.
      *
      * @param socket          the socket of the server, already accepted
      * @param multicastSocket the multicast socket on which to send notifications
      */
     public RequestHandler(@NotNull Socket socket, @NotNull MulticastSocket multicastSocket)
             throws IOException {
-        this.socket = socket;
         this.out = new ObjectOutputStream(socket.getOutputStream());
         this.in = new ObjectInputStream(socket.getInputStream());
-        this.multicastSocket = multicastSocket;
         this.commandMap = new HashMap<>();
         final AuthenticationService authenticationService =
                 AuthenticationService.getInstance("src/main/java/server/conf/users.json");
@@ -79,6 +79,8 @@ public class RequestHandler implements Runnable, AutoCloseable {
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public void run() {
 
+        Runtime.getRuntime().addShutdownHook(new Thread(this::close));
+
         while (true) {
 
             final Optional<Request> request = StreamHandler.getData(in, Request.class);
@@ -106,23 +108,22 @@ public class RequestHandler implements Runnable, AutoCloseable {
                 break;
             }
 
-
         }
 
     }
 
     /**
-     * Closes resources.
-     *
-     * @throws IOException if an I/O error occurs when closing this socket.
+     * Closes resources owned by this class.
+     * Socket and MulticastSocket are not closed here,
+     * but in the {@link server.controller.TerminationHandler}.
      */
-    @Override
-    public void close() throws IOException {
-        this.in.close();
-        this.out.close();
-        this.socket.close();
-        this.multicastSocket.close();
+    public void close()  {
+        try {
+            this.in.close();
+            this.out.close();
+        } catch (IOException e) {
+            System.out.println("RequestHandler: error closing streams.");
+        }
     }
-
 
 }

@@ -8,7 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * Service to hash passwords.
+ * Tests for the PasswordHashingService class.
  */
 @DisplayName("The PasswordHashingService tests ")
 public class PasswordHashingServiceTests {

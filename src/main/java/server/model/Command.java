@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 public interface Command {
 
     /**
-     * Handles a user requestType.
+     * Handles a request from a client.
      *
      * @param request the request the client sent
      * @return the response provided by the server

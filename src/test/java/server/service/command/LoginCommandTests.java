@@ -20,7 +20,7 @@ import org.mockito.Mock;
 import server.service.AuthenticationService;
 
 /**
- * LoginCommand tests.
+ * Tests for the LoginCommand class.
  */
 @DisplayName("The LoginCommand tests ")
 public class LoginCommandTests {

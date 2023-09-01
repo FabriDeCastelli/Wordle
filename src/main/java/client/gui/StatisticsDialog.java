@@ -1,7 +1,6 @@
 package client.gui;
 
 import java.awt.BorderLayout;
-import java.io.Serial;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -12,10 +11,8 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Interface for the statistics dialog.
  */
+@SuppressWarnings("serial")
 public class StatisticsDialog extends JDialog {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
 
 
     /**

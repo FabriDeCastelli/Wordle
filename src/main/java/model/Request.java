@@ -6,7 +6,11 @@ import model.enums.RequestType;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Represents a request from client to server.
+ * Represents a request that a client can do to the server.
+ *
+ * @param username the username of the user that is doing the request
+ * @param requestType the type of the request the client wants to be satisfied
+ * @param data the data of the request, if any
  */
 public record Request(
         @NotNull RequestType requestType,

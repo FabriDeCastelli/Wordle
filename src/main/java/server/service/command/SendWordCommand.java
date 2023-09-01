@@ -47,9 +47,7 @@ public class SendWordCommand implements Command {
             throw new IllegalArgumentException("Cannot handle a non-SENDWORD request");
         }
 
-
         final WordAttempt wordAttempt = getWordAttempt(request);
-
 
         if (wordAttempt.attemptNumber() - 11 > 0) {
             final String loggedUsername = request.username();

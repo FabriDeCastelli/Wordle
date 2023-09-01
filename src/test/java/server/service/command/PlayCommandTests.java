@@ -21,7 +21,7 @@ import server.service.PlayWordleService;
 import server.service.UserStatisticsService;
 
 /**
- * Tests for PlayCommand.
+ * Tests for the PlayCommand class.
  */
 @DisplayName("The PlayCommand tests")
 public class PlayCommandTests {

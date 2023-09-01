@@ -11,7 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * TerminationHandlerTests is the test suite for TerminationHandler.
+ * Tests for the TerminationHandler class.
  */
 @DisplayName("The termination handler test ")
 public class TerminationHandlerTests {

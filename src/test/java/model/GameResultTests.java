@@ -7,7 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for GameResult record.
+ * Tests for the GameResult class.
  */
 @DisplayName("The GameResult tests")
 public class GameResultTests {

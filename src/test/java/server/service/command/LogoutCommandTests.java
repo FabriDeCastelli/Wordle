@@ -17,7 +17,7 @@ import org.mockito.Mock;
 import server.service.AuthenticationService;
 
 /**
- * LogoutCommand Tests.
+ * Tests for the LogoutCommand class.
  */
 @DisplayName("The LogoutCommand Tests ")
 public class LogoutCommandTests {
