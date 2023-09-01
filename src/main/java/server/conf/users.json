@@ -1,1 +1,16 @@
-{ }
+{
+  "Fabrizio De Castelli": {
+    "username": "Fabrizio De Castelli",
+    "passwordHash": "/YFWOUEYfs5a8xU9AxiGzhArwaFCqO5r59C13DDexls\u003d",
+    "statistics": {
+      "gamesPlayed": 1,
+      "gamesWon": 1,
+      "gamesWonPercentage": 1.0,
+      "currentStreak": 1,
+      "longestStreak": 1,
+      "guessDistribution": [
+        3
+      ]
+    }
+  }
+}
