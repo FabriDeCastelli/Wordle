@@ -1,0 +1,8 @@
+javac -d bin -cp "libs/*" -sourcepath src/main/java src/main/java/server/WordleServerMain.java
+jar cfm compile/server/server.jar compile/server/ManifestServer.txt -C bin . -C libs .
+java -jar compile/server/server.jar
+
+or
+
+javac -d bin -cp "libs/*" -sourcepath src/main/java src/main/java/server/WordleServerMain.java
+java -cp "bin:libs/*" server.WordleServerMain
