@@ -29,7 +29,7 @@ public class WordleServerMain {
      */
     static {
         try (final InputStream inputStream =
-                     new FileInputStream("src/main/java/server/conf/server.properties")) {
+                     new FileInputStream("src/main/java/server/config/server.properties")) {
             final Properties properties = new Properties();
             properties.load(inputStream);
             port = Integer.parseInt(properties.getProperty("PORT"));

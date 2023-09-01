@@ -61,11 +61,11 @@ public class NotificationService extends Thread {
 
                 final Optional<Notification> notification =
                         StreamHandler.getData(objectInputStream, Notification.class);
+                objectInputStream.close();
 
                 notification.filter(n -> !n.senderUsername().equals(username))
                         .ifPresent(notifications::add);
 
-                objectInputStream.close();
 
             }
 

@@ -1,0 +1,34 @@
+{
+  "Mario Rossi": {
+    "username": "Mario Rossi",
+    "passwordHash": "QakEKeMInC+wb/5PrUG8o/o8oO27++h3qZ22DikXeXE\u003d",
+    "statistics": {
+      "gamesPlayed": 4,
+      "gamesWon": 4,
+      "gamesWonPercentage": 1.0,
+      "currentStreak": 4,
+      "longestStreak": 4,
+      "guessDistribution": [
+        1,
+        1,
+        2,
+        2
+      ]
+    }
+  },
+  "Fabrizio De Castelli": {
+    "username": "Fabrizio De Castelli",
+    "passwordHash": "/YFWOUEYfs5a8xU9AxiGzhArwaFCqO5r59C13DDexls\u003d",
+    "statistics": {
+      "gamesPlayed": 2,
+      "gamesWon": 2,
+      "gamesWonPercentage": 1.0,
+      "currentStreak": 2,
+      "longestStreak": 2,
+      "guessDistribution": [
+        3,
+        2
+      ]
+    }
+  }
+}

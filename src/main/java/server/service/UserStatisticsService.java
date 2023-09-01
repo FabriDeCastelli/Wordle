@@ -23,7 +23,7 @@ public class UserStatisticsService {
      * Constructor for the UserStatisticsService.
      */
     public UserStatisticsService() {
-        this.filePath = "src/main/java/server/conf/users.json";
+        this.filePath = "src/main/java/server/config/users.json";
         this.userStore = UserServiceManager.getInstance(filePath).getUsersMap();
     }
 

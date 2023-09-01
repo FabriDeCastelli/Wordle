@@ -13,9 +13,9 @@ import org.junit.jupiter.api.Test;
 public class UserServiceManagerTests {
 
     private final UserServiceManager userServiceManager =
-            UserServiceManager.getInstance("src/test/java/server/conf/usersTest.json");
+            UserServiceManager.getInstance("src/test/java/server/config/usersTest.json");
     final UserServiceManager anotherUserServiceManager =
-            UserServiceManager.getInstance("src/test/java/server/conf/usersTest.json");
+            UserServiceManager.getInstance("src/test/java/server/config/usersTest.json");
 
     @Test
     @DisplayName(" correctly gets all registered users")
