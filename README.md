@@ -1,5 +1,9 @@
 # Wordle 3.0 
 
+An implementation of Wordle in a client-server fashion. Both sides are implemented in Java:  
+- Frontend: Swing
+- Backend: Thread pooling to handle multiple requests from different sessions [command pattern](https://refactoring.guru/design-patterns/command). The database is simplified and handled via serialization of objects in json files.
+
 ## Running Instructions
 
 1. git clone this repository;
